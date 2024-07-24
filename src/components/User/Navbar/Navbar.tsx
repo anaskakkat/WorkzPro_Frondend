@@ -2,8 +2,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationCrosshairs } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../../assets/Logo workzpro.png";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <div className="navbar text-white px-4 sm:px-6 lg:px-20 flex flex-wrap justify-between items-center border-b-2 border-blue-200 shadow-sm">
       {/* Logo */}
@@ -28,10 +30,10 @@ const Navbar = () => {
 
       {/* Buttons */}
       <div className="flex flex-wrap space-x-0 sm:space-x-4 w-full sm:w-auto justify-center">
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full sm:w-auto text-xs mb-2 sm:mb-0">
+        <button onClick={()=>navigate('/login')} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full sm:w-auto text-xs mb-2 sm:mb-0">
           Login
         </button>
-        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full sm:w-auto text-xs mb-2 sm:mb-0">
+        <button onClick={()=>navigate('/signup')} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full sm:w-auto text-xs mb-2 sm:mb-0">
           Professionals Login
         </button>
       </div>

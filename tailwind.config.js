@@ -4,10 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        lightBlue: "#BFDBFE",
-        navyBlue: "#003383",
-        buttonColor: "#3B82F6",
-        bg_blue: "#F4F9FF",
+        custom_lightBlue: "#BFDBFE",
+        custom_button_Sp: "#01B7F2",
+        custom_navyBlue: "#003383",
+        custom_buttonColor: "#3B82F6",
+        custom_bg_blue: "#F4F9FF",
       },
     },
   },

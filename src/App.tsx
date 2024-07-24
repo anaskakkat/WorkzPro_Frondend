@@ -1,15 +1,21 @@
-import './App.css'
-import HomePage from './pages/User/HomePage'
-// import LoginPage from './pages/User/LoginPage'
+import { BrowserRouter } from "react-router-dom";
+import "./App.css";
+import AppRouter from "./router/AppRouter";
+import { Toaster } from "react-hot-toast";
 function App() {
-
   return (
-  <>
-  {/* <LoginPage/> */}
-  <HomePage/>
-    
-  </>
-  )
+    <>
+      <BrowserRouter>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 5000,
+          }}
+        />{" "}
+        <AppRouter />
+      </BrowserRouter>
+    </>
+  );
 }
 
-export default App
+export default App;
