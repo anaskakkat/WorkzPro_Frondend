@@ -1,10 +1,16 @@
 import React, { useState, FormEvent } from "react";
-import { TextField, Button, Container, Paper, Typography } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Container,
+  Paper,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../../api/user";
 import toast from "react-hot-toast";
-import Loader from "../../components/Loader/Loader";
 
 const CustomTextField = styled(TextField)(() => ({
   "& .MuiInputBase-root": {
@@ -64,7 +70,7 @@ const SignUp = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^\d{10}$/; // Assumes a 10-digit phone number
   const nameRegex = /^(?!^\s)(?!.*\s$)(?!\s*$)[a-zA-Z\s'-]+$/;
-  // const passwordRegex =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const validateForm = (): FormErrors => {
     const newErrors: FormErrors = {
@@ -104,16 +110,14 @@ const SignUp = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    // console.log("submit function called");
 
     const formErrors = validateForm();
-    // console.log('formErrors:', formErrors);
 
     if (
       Object.keys(formErrors).some((key) => formErrors[key as keyof FormErrors])
     ) {
       setErrors(formErrors);
-      toast.error("Please fill  all fields.");
+      toast.error("Please fill all fields.");
       return;
     }
 
@@ -121,13 +125,12 @@ const SignUp = () => {
       setLoading(true);
       const response = await signUp(formData);
 
+      const { status, message, email } = response.data;
+      console.log("Response:", { status, message, email });
       if (response.status === 200) {
-        console.log(response);
-       
-        toast.success(response.data);
+        toast.success(message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        navigate("/otp");
+        navigate("/otp", { state: { email } });
       } else {
         toast.error("Failed to sign up. Please try again.");
       }
@@ -141,123 +144,123 @@ const SignUp = () => {
 
   return (
     <>
-    {loading && <Loader />}
-    <div className="bg-custom_bg_blue min-h-screen">
-      <nav className="bg-white border-b-2 border-custom_lightBlue shadow-custom">
-        <div className="flex items-center justify-center h-16">
-          <Link to="/" aria-label="logo" className="flex items-center">
-            {/* <img src={logo} width={50} height={50} alt="Logo" /> */}
-          </Link>
-        </div>
-      </nav>
+      <div className="bg-custom_bg_blue min-h-screen">
+        <nav className="bg-white border-b-2 border-custom_lightBlue shadow-custom">
+          <div className="flex items-center justify-center h-16">
+            <Link to="/" aria-label="logo" className="flex items-center">
+              {/* <img src={logo} width={50} height={50} alt="Logo" /> */}
+            </Link>
+          </div>
+        </nav>
 
-      <div className="flex items-center justify-center pt-6">
-        <Container component="main" maxWidth="xs">
-          <Paper className="p-6 mx-auto" elevation={10}>
-            <Typography
-              variant="h5"
-              component="h6"
-              className="text-center font-bold text-navyBlue"
-            >
-              Sign Up
-            </Typography>
+        <div className="flex items-center justify-center pt-6">
+          <Container component="main" maxWidth="xs">
+            <Paper className="p-6 mx-auto" elevation={10}>
+              <Typography
+                variant="h5"
+                component="h6"
+                className="text-center font-bold text-navyBlue"
+              >
+                Sign Up
+              </Typography>
 
-            <form onSubmit={handleSubmit}>
-              <CustomTextField
-                label="Name"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                name="name"
-                InputProps={{
-                  style: { height: 50 },
-                }}
-                style={{ marginBottom: "0px" }}
-                onChange={handleChange}
-                error={!!errors.name}
-                helperText={errors.name}
+              <form onSubmit={handleSubmit}>
+                <CustomTextField
+                  label="Name"
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="name"
+                  InputProps={{
+                    style: { height: 50 },
+                  }}
+                  style={{ marginBottom: "0px" }}
+                  onChange={handleChange}
+                  error={!!errors.name}
+                  helperText={errors.name}
                 />
 
-              <CustomTextField
-                label="Email"
-                type="email"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                name="email"
-                InputProps={{
-                  style: { height: 50 },
-                }}
-                style={{ marginBottom: "0px" }}
-                onChange={handleChange}
-                error={!!errors.email}
-                helperText={errors.email}
+                <CustomTextField
+                  label="Email"
+                  type="email"
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="email"
+                  InputProps={{
+                    style: { height: 50 },
+                  }}
+                  style={{ marginBottom: "0px" }}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
                 />
 
-              <CustomTextField
-                label="Mobile Number"
-                type="tel"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                name="mobile"
-                InputProps={{
-                  style: { height: 50 },
-                }}
-                style={{ marginBottom: "0px" }}
-                onChange={handleChange}
-                error={!!errors.mobile}
-                helperText={errors.mobile}
+                <CustomTextField
+                  label="Mobile Number"
+                  type="tel"
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="mobile"
+                  InputProps={{
+                    style: { height: 50 },
+                  }}
+                  style={{ marginBottom: "0px" }}
+                  onChange={handleChange}
+                  error={!!errors.mobile}
+                  helperText={errors.mobile}
                 />
 
-              <CustomTextField
-                label="Password"
-                type="password"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                name="password"
-                InputProps={{
-                  style: { height: 50 },
-                }}
-                style={{ marginBottom: "0px" }}
-                onChange={handleChange}
-                error={!!errors.password}
-                helperText={errors.password}
+                <CustomTextField
+                  label="Password"
+                  type="password"
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="password"
+                  InputProps={{
+                    style: { height: 50 },
+                  }}
+                  style={{ marginBottom: "0px" }}
+                  onChange={handleChange}
+                  error={!!errors.password}
+                  helperText={errors.password}
                 />
 
-              <CustomTextField
-                label="Confirm Password"
-                type="password"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                name="confirmPassword"
-                InputProps={{
-                  style: { height: 50 },
-                }}
-                style={{ marginBottom: "10px" }}
-                onChange={handleChange}
-                error={!!errors.confirmPassword}
-                helperText={errors.confirmPassword}
-              />
+                <CustomTextField
+                  label="Confirm Password"
+                  type="password"
+                  fullWidth
+                  margin="normal"
+                  variant="outlined"
+                  name="confirmPassword"
+                  InputProps={{
+                    style: { height: 50 },
+                  }}
+                  style={{ marginBottom: "10px" }}
+                  onChange={handleChange}
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword}
+                />
 
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className="mb-10-4"
-                style={{ marginBottom: "10px" }}
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className="mb-10-4"
+                  style={{ marginBottom: "10px" }}
+                  disabled={loading}
                 >
-                Get OTP
-              </Button>
-            </form>
-          </Paper>
-        </Container>
+                  {loading ? <CircularProgress size={24} /> : "Get OTP"}
+                </Button>
+              </form>
+            </Paper>
+          </Container>
+        </div>
       </div>
-    </div>
-                </>
+    </>
   );
 };
 

@@ -30,7 +30,7 @@ const Cards = () => {
             {services.map((service, index) => (
               <div
                 key={index}
-                className="bg-white p-4 md:p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1 text-center w-full"
+                className="bg-white p-4 md:p-6 rounded-lg shadow-lg hover:shadow-xl  hover:-translate-y-2 text-center w-full"
               >
                 <img
                   src={service.logo}
