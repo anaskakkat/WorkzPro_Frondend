@@ -21,10 +21,10 @@ const Cards = () => {
 
   return (
     <>
-      <h2 className=" sm:2xl mt-4 text-navyBlue font-bold text-center mb-8">
+      <h2 className="text-sm lg:text-2xl  text-custom_navyBlue font-bold text-center my-4">
         What We Can Help With
       </h2>
-      <div className="bg-bg_blue py-8">
+      <div className="bg-custom_bg_blue py-8">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service, index) => (

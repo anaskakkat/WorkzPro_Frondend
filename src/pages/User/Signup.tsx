@@ -11,15 +11,16 @@ import { styled } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "../../api/user";
 import toast from "react-hot-toast";
-
+import logo from '../../assets/Logo workzpro.png'
 const CustomTextField = styled(TextField)(() => ({
   "& .MuiInputBase-root": {
     "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#3B82F6",
+      borderColor: "#01B7F2",
     },
   },
   "& .MuiOutlinedInput-notchedOutline": {
     borderColor: "#BFDBFE",
+    
   },
 }));
 
@@ -70,7 +71,7 @@ const SignUp = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^\d{10}$/; // Assumes a 10-digit phone number
   const nameRegex = /^(?!^\s)(?!.*\s$)(?!\s*$)[a-zA-Z\s'-]+$/;
-  // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   const validateForm = (): FormErrors => {
     const newErrors: FormErrors = {
@@ -96,14 +97,14 @@ const SignUp = () => {
       newErrors.mobile = "Invalid mobile number";
     }
 
-    // if (!passwordRegex.test(formData.password)) {
-    //   newErrors.password =
-    //     "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character";
-    // }
+    if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character";
+    }
 
-    // if (formData.password !== formData.confirmPassword) {
-    //   newErrors.confirmPassword = "Passwords do not match";
-    // }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
 
     return newErrors;
   };
@@ -125,14 +126,14 @@ const SignUp = () => {
       setLoading(true);
       const response = await signUp(formData);
 
-      const { status, message, email } = response.data;
-      console.log("Response:", { status, message, email });
+      const {message, email } = response.data;
+      console.log("Response:", response.data);
       if (response.status === 200) {
         toast.success(message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         navigate("/otp", { state: { email } });
       } else {
-        toast.error("Failed to sign up. Please try again.");
+        toast.error(message)
       }
     } catch (error) {
       console.error("Error during signUp:", error);
@@ -148,22 +149,22 @@ const SignUp = () => {
         <nav className="bg-white border-b-2 border-custom_lightBlue shadow-custom">
           <div className="flex items-center justify-center h-16">
             <Link to="/" aria-label="logo" className="flex items-center">
-              {/* <img src={logo} width={50} height={50} alt="Logo" /> */}
+              <img src={logo} width={50} height={50} alt="Logo" />
             </Link>
           </div>
         </nav>
 
         <div className="flex items-center justify-center pt-6">
-          <Container component="main" maxWidth="xs">
-            <Paper className="p-6 mx-auto" elevation={10}>
+          <Container component="main" maxWidth="sm">
+            <Paper className="py-4 px-10 w-10/12 mx-auto bg-white rounded  " elevation={1}>
               <Typography
                 variant="h5"
                 component="h6"
-                className="text-center font-bold text-navyBlue"
+                className="text-center font-bold text-custom_navyBlue"
               >
                 Sign Up
               </Typography>
-
+{/* <hr className="mt-2 w-40 mx-auto" /> */}
               <form onSubmit={handleSubmit}>
                 <CustomTextField
                   label="Name"
@@ -249,13 +250,20 @@ const SignUp = () => {
                   fullWidth
                   variant="contained"
                   color="primary"
-                  className="mb-10-4"
-                  style={{ marginBottom: "10px" }}
+                  style={{ marginTop: "10px" }}
                   disabled={loading}
                 >
                   {loading ? <CircularProgress size={24} /> : "Get OTP"}
                 </Button>
               </form>
+              <div className="text-center mt-4">
+                <Typography variant="body2" className="text-custom_navyBlue">
+                  Already have an account?{" "}
+                  <Link to="/login" className="text-black font-semibold hover:text-custom_buttonColor">
+                    Login Here
+                  </Link>
+                </Typography>
+              </div>
             </Paper>
           </Container>
         </div>

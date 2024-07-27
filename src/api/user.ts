@@ -87,3 +87,25 @@ export const resendOtp = async (email: string) => {
     throw error;
   }
 };
+export const verfylogin = async (email: string, password: string) => {
+  try {
+    const response = await Api.post(userRoutes.loginVerify, {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const logoutUser = async () => {
+  try {
+    const response = await Api.post(userRoutes.logoutUser);
+    
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
