@@ -1,30 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import Logo from "../../assets/Logo workzpro.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AxiosResponse } from "axios"; // Ensure axios is installed: npm install axios
+import { AxiosResponse } from "axios";
 import toast from "react-hot-toast";
 import { resendOtp, verifyotp } from "../../api/user";
-import { useDispatch } from "react-redux";
-import { setUserInfo } from "../../redux/slices/userSlices";
+// import { useDispatch } from "react-redux";
+// import { setUserInfo } from "../../redux/slices/userSlices";
 
 interface Resp {
   data: string;
-  user?: {
-    userName: string;
-    email: string;
-    phoneNumber: number;
-    password: string;
-    wallet: number;
-    isBlocked: boolean;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  };
+  email: string;
   message: string;
 }
 
-const Otp: React.FC = () => {
+const OtpWorker: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(4).fill(""));
   const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
   const [resendTimer, setResendTimer] = useState(60);
@@ -33,9 +22,10 @@ const Otp: React.FC = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const location = useLocation();
   const email = location.state?.email || "Email not found";
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-console.log('email:-',email);
+  console.log('email',email);
+  
+  //   const dispatch = useDispatch();
+  //   const navigate = useNavigate();
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -85,17 +75,11 @@ console.log('email:-',email);
   const verifyOtp = async (otpCode: string): Promise<void> => {
     setLoading(true);
     try {
-      const response: AxiosResponse<Resp> = await verifyotp(email, otpCode);
-      if (response.status === 200) {
-        toast.success(response.data.message);
-        console.log("OTP verified:", response);
-        const user = response.data.user;
-        console.log("user:", user);
-
-        dispatch(setUserInfo(user));
-        navigate("/");
+      const response = await verifyotp(email, otpCode);
+      if (response) {
+        console.log(response);
       } else {
-        toast.error(response.data.message);
+        toast.error(response);
         console.error("Unexpected response:", response);
         setError("Failed to verify OTP. Please try again.");
       }
@@ -141,7 +125,7 @@ console.log('email:-',email);
             OTP
           </h3>
           <h2 className="text-sm sm:text-sm md:text-sm text-custom_navyBlue font-normal text-center mb-6">
-            OTP sent to your email, please check.
+            OTP sent to your email:{email ? email : ""} please check.
           </h2>
           <div className="flex flex-col items-center mb-4 w-full">
             <div className="flex flex-wrap justify-center mb-4 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
@@ -194,4 +178,4 @@ console.log('email:-',email);
   );
 };
 
-export default Otp;
+export default OtpWorker;

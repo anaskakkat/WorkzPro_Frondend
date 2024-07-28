@@ -6,7 +6,6 @@ interface FormData {
   email: string;
   mobile: string;
   password: string;
-  confirmPassword: string;
 }
 interface Resp {
   data: string;

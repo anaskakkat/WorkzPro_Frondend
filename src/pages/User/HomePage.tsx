@@ -1,7 +1,7 @@
 // import React from 'react'
 
 import { lazy, Suspense } from "react";
-import Loader from "../../components/Loader/Loader";
+import Loader from "../../components/loader/Loader";
 
 
 const HomePage = () => {
@@ -18,6 +18,7 @@ const HomePage = () => {
       <Navbar />
       <Banner />
       {/* <MidBanner /> */}
+        
       <Cards />
       {/* <FooterCards /> */}
       <Footer />
