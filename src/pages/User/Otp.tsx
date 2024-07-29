@@ -13,18 +13,13 @@ interface Resp {
     userName: string;
     email: string;
     phoneNumber: number;
-    password: string;
-    wallet: number;
-    isBlocked: boolean;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
   };
   message: string;
 }
 
 const Otp: React.FC = () => {
+  console.log("user otp renedered");
+
   const [otp, setOtp] = useState<string[]>(Array(4).fill(""));
   const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
   const [resendTimer, setResendTimer] = useState(60);
@@ -35,7 +30,7 @@ const Otp: React.FC = () => {
   const email = location.state?.email || "Email not found";
   const dispatch = useDispatch();
   const navigate = useNavigate();
-console.log('email:-',email);
+  console.log("email:-", email);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -45,7 +40,7 @@ console.log('email:-',email);
           if (prev <= 1) {
             setIsResendDisabled(false);
             clearInterval(timer as NodeJS.Timeout);
-            return 60; // Reset timer
+            return 60;
           } else {
             return prev - 1;
           }
@@ -97,7 +92,7 @@ console.log('email:-',email);
       } else {
         toast.error(response.data.message);
         console.error("Unexpected response:", response);
-        setError("Failed to verify OTP. Please try again.");
+        // setError("Failed to verify OTP. Please try again.");
       }
     } catch (error) {
       console.error("Error verifying OTP:", error);

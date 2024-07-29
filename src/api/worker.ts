@@ -1,7 +1,6 @@
 import Api from "../config/axiosConfig";
-import { AxiosError } from "axios";
 import workerRoutes from "../endpoints/workerEndpoints";
-
+import { handleApiError } from "../config/HandleApiErrors";
 interface IWorker {
   name: string;
   email: string;
@@ -15,16 +14,37 @@ export const registerWorker = async (worker: IWorker) => {
     const response = await Api.post(workerRoutes.signUp, worker);
     return response.data;
   } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      if (error.response) {
-        console.error("Error response:", error.response.data);
-        return error.response.data;
-      } else {
-        console.error("Error message:", error.message);
-      }
-    } else {
-      console.error("An unexpected error occurred", error);
-    }
-    throw error;
+    handleApiError(error);
+  }
+};
+export const verifyWorkerOtp = async (email: string, otp: string | number) => {
+  try {
+    const response = await Api.post(workerRoutes.verifyOtp, {
+      email,
+      otp,
+    });
+    return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const logoutWorker = async () => {
+  try {
+    const response = await Api.post(workerRoutes.logoutUser);
+
+    return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const verfyloginWorker = async (email: string, password: string) => {
+  try {
+    const response = await Api.post(workerRoutes.loginVerify, {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
   }
 };

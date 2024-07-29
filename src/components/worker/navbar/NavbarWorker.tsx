@@ -1,11 +1,25 @@
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { useState } from "react";
-import logo from "../../../assets/Logo workzpro.png"; // Replace with your logo path
+import logo from "../../../assets/Logo workzpro.png";
+import { logoutWorker } from "../../../api/worker";
+import { removeWorkerInfo } from "../../../redux/slices/workerSlice";
+import toast from "react-hot-toast";
+// import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+// import { useSelector } from "react-redux";
 
 const NavbarWorker = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
+  // const naviate = useNavigate();
+  const dispatch = useDispatch();
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -13,7 +27,18 @@ const NavbarWorker = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const handleLogout = async () => {
+    try {
+      const response = await logoutWorker();
+      if (response) {
+        toast.success(response.data.message);
+        dispatch(removeWorkerInfo());
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
   return (
     <AppBar position="static" style={{ backgroundColor: "#fff" }}>
       <Toolbar className="flex justify-between shadow-md shadow-custom_lightBlue">
@@ -21,8 +46,13 @@ const NavbarWorker = () => {
           <img src={logo} alt="My Logo" className="h-12 w-auto" />
         </div>
         <div className="flex items-center">
-          <Typography variant="h6" component="div" color="textPrimary" className="mr-2">
-            John Doe
+          <Typography
+            variant="h6"
+            component="div"
+            color="textPrimary"
+            className="mr-2"
+          >
+            {/* {name} */}
           </Typography>
           <IconButton
             size="large"
@@ -65,7 +95,7 @@ const NavbarWorker = () => {
                   backgroundColor: "rgb(227, 5, 5)",
                 },
               }}
-              onClick={handleClose}
+              onClick={handleLogout}
             >
               Logout
             </MenuItem>

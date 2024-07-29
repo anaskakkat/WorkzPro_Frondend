@@ -8,6 +8,7 @@ import {
   Button,
   IconButton,
   InputAdornment,
+  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { toast } from "react-hot-toast";
@@ -17,7 +18,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { registerWorker } from "../../api/worker";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=\S)(?=\S{8,})/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])\S{8,}$/;
 const phoneRegex = /^[0-9]{10}$/;
 
 const CustomTextField = styled(TextField)(() => ({
@@ -44,6 +45,7 @@ const SignUpPage: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const validateName = (name: string) => {
@@ -62,7 +64,7 @@ const SignUpPage: React.FC = () => {
 
   const validatePassword = (password: string) => {
     if (!passwordRegex.test(password)) {
-      return "Password must be at least 8 characters long and contain no spaces.";
+      return "Password must be at least one letter (uppercase or lowercase)at least one digit at least one special character from the set A minimum length of 8 characters.";
     }
     return "";
   };
@@ -174,6 +176,8 @@ const SignUpPage: React.FC = () => {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const response = await registerWorker({
         name,
@@ -194,6 +198,8 @@ const SignUpPage: React.FC = () => {
     } catch (error) {
       toast.error("Failed to sign up. Please try again.");
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -332,8 +338,10 @@ const SignUpPage: React.FC = () => {
               variant="contained"
               className="bg-custom_blue text-white"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
+              startIcon={isLoading && <CircularProgress size={24} />}
             >
-              Sign Up
+              {isLoading ? "Signing Up..." : "Sign Up"}
             </Button>
           </Box>
           <Typography

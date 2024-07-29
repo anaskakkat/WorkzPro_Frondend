@@ -1,6 +1,6 @@
 import {  useState } from "react";
-import { FaUserAlt, FaLocationArrow } from "react-icons/fa"; // Import icons from react-icons
-import { MdLogout } from "react-icons/md"; // Import icons from react-icons
+import { FaUserAlt, FaLocationArrow } from "react-icons/fa"; 
+import { MdLogout } from "react-icons/md"; 
 import logo from "../../../assets/Logo workzpro.png";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../../api/user";
@@ -31,8 +31,7 @@ const Navbar = () => {
       if (response) {
         toast.success(response.data.message);
         dispatch(removeUserInfo());
-        // setIsLoggedIn(false);
-        // setUserName("");
+     
       }
     } catch (error) {
       console.log(error);
@@ -114,7 +113,7 @@ const Navbar = () => {
               Login
             </button>
             <button
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/worker/login")}
               className="bg-black hover:bg-custom_button_Sp text-white font-bold py-2 px-4 rounded w-full sm:w-auto text-xs mb-2 sm:mb-0"
             >
               Professionals Login
