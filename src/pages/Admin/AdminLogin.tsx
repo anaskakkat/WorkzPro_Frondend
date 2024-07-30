@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Box, Typography, TextField, Button } from "@mui/material";
+import { Container, Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import logo from "../../assets/Logo workzpro.png";
-import { verfylogin } from "../../api/user";
 import { useDispatch } from "react-redux";
-import { setUserInfo } from "../../redux/slices/userSlices";
+import { setadminInfo } from "../../redux/slices/adminSlice";
+import { verifyloginAdmin } from "../../api/admin";
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=\S)(?=\S{8,})/;
+
 const CustomTextField = styled(TextField)(() => ({
   "& .MuiInputBase-root": {
     "&:hover .MuiOutlinedInput-notchedOutline": {
@@ -21,13 +23,15 @@ const CustomTextField = styled(TextField)(() => ({
   },
 }));
 
-const LoginPage: React.FC = () => {
+const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false); // Loading state
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const validateEmail = (email: string) => {
     if (!emailRegex.test(email)) {
       return "Invalid email format";
@@ -41,6 +45,7 @@ const LoginPage: React.FC = () => {
     }
     return "";
   };
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
@@ -82,24 +87,25 @@ const LoginPage: React.FC = () => {
       return;
     }
 
+    setLoading(true); // Set loading to true before making the API call
+
     try {
-      const response = await verfylogin(email, password);
-      // console.log("response:", response);
+      const response = await verifyloginAdmin(email, password);
 
-      if (response) {
-        const { user, message } = response.data;
-
-        if (user) {
-          toast.success(message);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          dispatch(setUserInfo(user));
-          navigate("/");
-        } else {
-          toast.error(message || "Unexpected response format.");
-        }
+      console.log("response--", response);
+      if (response.admin) {
+        toast.success(response.message);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        dispatch(setadminInfo(response.admin));
+        navigate("/admin");
+      } else {
+        toast.error(response.message);
       }
-    } catch (error: any) {
-      console.error(error.message || "Login failed. Please try again.");
+    } catch (error) {
+      toast.error("Failed to login. Please try again.");
+      console.error(error);
+    } finally {
+      setLoading(false); // Set loading to false after the API call completes
     }
   };
 
@@ -119,13 +125,13 @@ const LoginPage: React.FC = () => {
             variant="h4"
             className="text-center text-custom_navyBlue font-bold"
           >
-            Login
+            Admin Login
           </Typography>
           <Typography
             variant="body1"
             className="text-center text-custom_navyBlue"
           >
-            Login to access your WorkzPro account
+            Login to access your WorkzPro admin account
           </Typography>
           <Box
             component="form"
@@ -165,82 +171,15 @@ const LoginPage: React.FC = () => {
               helperText={passwordError}
               error={!!passwordError}
             />
-            <Box className="flex items-center justify-between">
-              <Link
-                to="#"
-                className="text-sm font-medium text-custom_navyBlue hover:text-custom_buttonColor"
-              >
-                Forgot Password
-              </Link>
-            </Box>
+            <Box className="flex items-center justify-between"></Box>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               className="w-full px-4 py-2 text-sm font-medium text-white bg-custom_button_Sp rounded"
+              disabled={loading} 
             >
-              Login
-            </Button>
-            <Typography
-              variant="body2"
-              className="text-center text-gray-600 mt-4"
-            >
-              Don't have an account?{" "}
-              <Link to="/signup" className="font-medium ">
-                <span className="text-custom_navyBlue font-semibold hover:text-custom_buttonColor">
-                  {" "}
-                  Sign up
-                </span>
-              </Link>
-            </Typography>
-            <Typography
-              variant="body2"
-              className="text-center text-custom_navyBlue mt-4"
-            >
-              Or login with
-            </Typography>
-            <Button
-              sx={{
-                "&:hover": {
-                  backgroundColor: "black",
-                  color: "white",
-                },
-                borderColor: "#4285F4",
-              }}
-              type="button"
-              fullWidth
-              variant="outlined"
-              startIcon={
-                <svg
-                  className="w-5 h-5 mr-2"
-                  aria-hidden="true"
-                  focusable="false"
-                  data-prefix="fab"
-                  data-icon="google"
-                  role="img"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 488 512"
-                >
-                  <path
-                    fill="#4285F4"
-                    d="M488 261.8c0-15.2-1.4-29.9-4-44H250v85.2h133.9c-5.8 29.7-23.5 54.8-49.9 71.4l79.8 62c46.6-42.9 73.2-106 73.2-174.6z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M250 484c64.7 0 118.9-21.5 158.6-57.6l-79.8-62c-22.2 14.9-50.4 23.8-78.8 23.8-61.6 0-113.8-41.6-132.5-97.4H54v61.4C94.3 450.6 167.5 484 250 484z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M117.5 307.8c-8.8-26.4-8.8-54.6 0-81l-79.8-62C7.4 194.4 0 221.2 0 250s7.4 55.6 37.8 81.2l79.8-62.4z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M250 108.4c28.4 0 54.8 10.4 75.3 27.5l55.6-55.6C343.9 48.5 300.1 30 250 30 167.5 30 94.3 63.4 54 117.5l79.8 62c18.7-55.8 70.9-97.4 132.5-97.4z"
-                  />
-                </svg>
-              }
-            >
-              Sign in with Google
+              {loading ? <CircularProgress size={24} color="inherit" /> : "Login"} {/* Show spinner or text */}
             </Button>
           </Box>
         </Box>
@@ -249,4 +188,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default AdminLogin;

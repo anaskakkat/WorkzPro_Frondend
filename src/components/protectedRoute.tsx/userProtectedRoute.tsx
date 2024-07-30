@@ -3,9 +3,7 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import { RootState } from "../../redux/store/store";
 
-// interface ProtectedRouteProps {
-//   element: React.ReactElement;
-// }
+
 
 const ProtectedRoute: React.FC = () => {
   const userInfo = useSelector((state: RootState) => state.userInfo.userInfo);

@@ -87,7 +87,7 @@ const WorkerLogin = () => {
 
       const response = await verfyloginWorker(email, password);
 
-      console.log("response--", response.user);
+      console.log("response--", response);
       if (response.user) {
         toast.success(response.message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -185,7 +185,7 @@ const WorkerLogin = () => {
               className="text-center text-gray-600 mt-4"
             >
               Don't have an account?{" "}
-              <Link to="/signup" className="font-medium ">
+              <Link to="/worker/signup" className="font-medium ">
                 <span className="text-custom_navyBlue font-semibold hover:text-custom_buttonColor">
                   {" "}
                   Sign up

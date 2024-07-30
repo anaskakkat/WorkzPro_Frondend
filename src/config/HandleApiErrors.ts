@@ -4,11 +4,11 @@ import toast from "react-hot-toast";
 export const handleApiError = (error: unknown) => {
   if (error instanceof AxiosError) {
     if (error.response) {
-      console.error("Error response:", error.response.data);
+      console.log("Error response:", error.response.data);
       
       switch (error.response.status) {
         case 400:
-          const errorMessage = error.response.data.message || "Bad request. Please check your input.";
+          const errorMessage = error.response.data.message || "Bad request. Please check your input.";          
           toast.error(errorMessage);
           break;
         case 401:

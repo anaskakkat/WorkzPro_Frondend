@@ -1,29 +1,27 @@
 import Api from "../config/axiosConfig";
-import { AxiosError, AxiosResponse } from "axios";
+import {  AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
+import { handleApiError } from "../config/HandleApiErrors";
 interface FormData {
   name: string;
   email: string;
   mobile: string;
   password: string;
 }
+interface UserResponse {
+  userName: string;
+  email: string;
+  phoneNumber: number;
+}
 interface Resp {
   data: string;
-  user?: {
-    userName: string;
-    email: string;
-    phoneNumber: number;
-    password: string;
-    wallet: number;
-    isBlocked: boolean;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  };
+  user?: UserResponse;
   message: string;
 }
-export const signUp = async (user: FormData) => {
+
+export const signUp = async (
+  user: FormData
+): Promise<AxiosResponse<any> | void> => {
   try {
     // console.log("user:",user);
 
@@ -31,80 +29,58 @@ export const signUp = async (user: FormData) => {
 
     // console.log("signUp touched response", response);
     return response;
-  } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      if (error.response) {
-        return error.response;
-      } else {
-        console.error("Error", error.message);
-      }
-    } else {
-      console.error("An unexpected error occurred", error);
-    }
-    throw error;
+  } catch (error) {
+    handleApiError(error);
   }
 };
 
 export const verifyotp = async (
   email: string,
   otp: string | number
-): Promise<AxiosResponse<Resp>> => {
+): Promise<AxiosResponse<Resp> | void> => {
   try {
     const response: AxiosResponse<Resp> = await Api.post(userRoutes.verifyOtp, {
       email,
       otp,
     });
     return response;
-  } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      if (error.response) {
-        return error.response as AxiosResponse<Resp>;
-      } else {
-        console.error("Error", error.message);
-      }
-    } else {
-      console.error("An unexpected error occurred", error);
-    }
-    throw error;
+  } catch (error) {
+    handleApiError(error);
   }
 };
-export const resendOtp = async (email: string) => {
+export const resendOtp = async (
+  email: string
+): Promise<AxiosResponse<Resp> | void> => {
   try {
     const response = await Api.post(userRoutes.resendOtp, { email });
     console.log("response:", response);
     return response.data;
-  } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      if (error.response) {
-        return error.response;
-      } else {
-        console.error("Error", error.message);
-      }
-    } else {
-      console.error("An unexpected error occurred", error);
-    }
-    throw error;
+  } catch (error) {
+    handleApiError(error);
   }
 };
-export const verfylogin = async (email: string, password: string) => {
+export const verfylogin = async (
+  email: string,
+  password: string
+): Promise<AxiosResponse<UserResponse> | any> => {
   try {
     const response = await Api.post(userRoutes.loginVerify, {
       email,
       password,
     });
-    return response.data;
+    // console.log("response-- frond", response);
+
+    return response;
   } catch (error) {
-    console.log(error);
-    throw error;
+    handleApiError(error);
   }
 };
 export const logoutUser = async () => {
   try {
     const response = await Api.post(userRoutes.logoutUser);
-    
+
     return response;
   } catch (error) {
-    console.log(error);
-    throw error;
+    handleApiError(error);
   }
 };
