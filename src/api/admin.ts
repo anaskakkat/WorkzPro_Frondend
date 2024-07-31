@@ -41,3 +41,30 @@ export const logoutAdmin = async () => {
     handleApiError(error);
   }
 };
+export const getUsers = async () => {
+  try {
+    const response = await Api.post(adminRoutes.getUser);
+
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const blockUser = async (userId: number) => {
+  try {
+    const response = await Api.patch(adminRoutes.blockUser(userId));
+
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const unblockUser = async (userId: number) => {
+  try {
+    const response = await Api.patch(adminRoutes.unblockUser(userId));
+
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};

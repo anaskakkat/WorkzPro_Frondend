@@ -16,20 +16,22 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import logo from "../../assets/Logo workzpro.png";
-import { useNavigate } from "react-router-dom";
+import { MenuItem, styled } from "@mui/material";
 
-// Import your components
-// import Dashboard from './Dashboard';
-// import Requests from './Requests';
+const StyledMenuItem = styled(MenuItem)(({}) => ({
+  "&:hover": {
+    backgroundColor: "#e00202",
+    color: "white",
+  },
+}));
 import UsersAdmin from "./UsersAdmin";
 import toast from "react-hot-toast";
 import { removeadminInfo } from "../../redux/slices/adminSlice";
 import { useDispatch } from "react-redux";
 import { logoutAdmin } from "../../api/admin";
-// import Workers from './Workers';
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -37,6 +39,9 @@ export default function SideBarAdmin() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [activeItem, setActiveItem] = useState("Dashboard");
   const dispatch = useDispatch();
+
+  const adminInfo = useSelector((state:any) => state.adminInfo.adminInfo);
+  const adminName = adminInfo ? adminInfo.name : "Admin"; 
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -62,6 +67,7 @@ export default function SideBarAdmin() {
       throw error;
     }
   };
+  const toUppercase = (str:string) => str.toUpperCase();
 
   const renderComponent = () => {
     switch (activeItem) {
@@ -91,16 +97,20 @@ export default function SideBarAdmin() {
             Admin Panel
           </Typography>
           <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            <div className="flex items-center">
+              <Typography component="div">{toUppercase(adminName)}
+              </Typography>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </div>
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -116,14 +126,14 @@ export default function SideBarAdmin() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem
+              <StyledMenuItem
                 onClick={() => {
                   handleLogout();
                   handleClose();
                 }}
               >
                 Logout
-              </MenuItem>
+              </StyledMenuItem>
             </Menu>
           </div>
         </Toolbar>

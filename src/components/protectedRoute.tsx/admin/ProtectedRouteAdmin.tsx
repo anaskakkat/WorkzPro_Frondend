@@ -7,7 +7,6 @@ const ProtectedRouteAdmin: React.FC = () => {
   const adminInfo = useSelector(
     (state: RootState) => state.adminInfo.adminInfo
   );
-  console.log("ProtectedRouteAdmin:--", adminInfo);
 
   return adminInfo ? <Outlet /> : <Navigate to="/admin/login" />;
 };

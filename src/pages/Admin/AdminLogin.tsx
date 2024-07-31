@@ -92,7 +92,7 @@ const AdminLogin = () => {
     try {
       const response = await verifyloginAdmin(email, password);
 
-      console.log("response--", response);
+      // console.log("response--", response);
       if (response.admin) {
         toast.success(response.message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
