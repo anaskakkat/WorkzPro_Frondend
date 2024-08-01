@@ -50,11 +50,11 @@ export const verifyotp = async (
 };
 export const resendOtp = async (
   email: string
-): Promise<AxiosResponse<Resp> | void> => {
+): Promise<AxiosResponse<Resp> |undefined> => {
   try {
     const response = await Api.post(userRoutes.resendOtp, { email });
-    console.log("response:", response);
-    return response.data;
+    // console.log("response:", response);
+    return response
   } catch (error) {
     handleApiError(error);
   }

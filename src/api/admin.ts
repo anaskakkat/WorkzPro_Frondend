@@ -68,3 +68,18 @@ export const unblockUser = async (userId: number) => {
     handleApiError(error);
   }
 };
+export const createServices = async (name: string, description: string) => {
+  try {
+    const response = await Api.post(adminRoutes.createServices, {
+      name,
+      description,
+    });
+
+    return response
+  } catch (error) {
+    console.log('catch');
+    
+    handleApiError(error);
+    return 
+  }
+};

@@ -32,6 +32,7 @@ import { removeadminInfo } from "../../redux/slices/adminSlice";
 import { useDispatch } from "react-redux";
 import { logoutAdmin } from "../../api/admin";
 import { useSelector } from "react-redux";
+import Services from "./Services";
 
 const drawerWidth = 240;
 
@@ -40,8 +41,8 @@ export default function SideBarAdmin() {
   const [activeItem, setActiveItem] = useState("Dashboard");
   const dispatch = useDispatch();
 
-  const adminInfo = useSelector((state:any) => state.adminInfo.adminInfo);
-  const adminName = adminInfo ? adminInfo.name : "Admin"; 
+  const adminInfo = useSelector((state: any) => state.adminInfo.adminInfo);
+  const adminName = adminInfo ? adminInfo.name : "Admin";
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -67,7 +68,7 @@ export default function SideBarAdmin() {
       throw error;
     }
   };
-  const toUppercase = (str:string) => str.toUpperCase();
+  const toUppercase = (str: string) => str.toUpperCase();
 
   const renderComponent = () => {
     switch (activeItem) {
@@ -75,6 +76,8 @@ export default function SideBarAdmin() {
       // return <Dashboard />;
       // case 'Requests':
       //   return <Requests />;
+      case 'Services':
+        return <Services />;
       case "Users":
         return <UsersAdmin />;
       // case 'Workers':
@@ -98,8 +101,7 @@ export default function SideBarAdmin() {
           </Typography>
           <div>
             <div className="flex items-center">
-              <Typography component="div">{toUppercase(adminName)}
-              </Typography>
+              <Typography component="div">{toUppercase(adminName)}</Typography>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -160,19 +162,21 @@ export default function SideBarAdmin() {
         </Toolbar>
         <Divider />
         <List>
-          {["Dashboard", "Requests", "Users", "Workers"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton
-                onClick={() => handleItemClick(text)}
-                selected={activeItem === text}
-              >
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {["Dashboard", "Requests", "Services", "Users", "Workers"].map(
+            (text, index) => (
+              <ListItem key={text} disablePadding>
+                <ListItemButton
+                  onClick={() => handleItemClick(text)}
+                  selected={activeItem === text}
+                >
+                  <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItemButton>
+              </ListItem>
+            )
+          )}
         </List>
         <Divider />
       </Drawer>

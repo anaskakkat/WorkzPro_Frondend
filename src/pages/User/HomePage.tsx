@@ -2,7 +2,7 @@
 
 import { lazy, Suspense } from "react";
 import Loader from "../../components/loader/Loader";
-
+import Sample from "../../components/sample";
 
 const HomePage = () => {
   // Lazy load components
@@ -16,9 +16,10 @@ const HomePage = () => {
   return (
     <Suspense fallback={<Loader />}>
       <Navbar />
+      {/* <Sample /> */}
       <Banner />
       {/* <MidBanner /> */}
-        
+
       <Cards />
       {/* <FooterCards /> */}
       <Footer />

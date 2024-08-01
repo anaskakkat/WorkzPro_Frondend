@@ -1,18 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import Logo from "../../assets/Logo workzpro.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AxiosResponse } from "axios";
 import toast from "react-hot-toast";
 import { resendOtp } from "../../api/user";
 import { verifyWorkerOtp } from "../../api/worker";
 import { useDispatch } from "react-redux";
 import { setWorkerInfo } from "../../redux/slices/workerSlice";
-
-interface Resp {
-  data: string;
-  email: string;
-  message: string;
-}
 
 const OtpWorker: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(Array(4).fill(""));
@@ -77,7 +70,7 @@ const OtpWorker: React.FC = () => {
     try {
       const response = await verifyWorkerOtp(email, otpCode);
       if (response && response.status === 200) {
-        console.log("OTP verified:", response);
+        // console.log("OTP verified:", response);
         const user = response.data.user;
         dispatch(setWorkerInfo(user));
         navigate("/worker");
@@ -98,13 +91,16 @@ const OtpWorker: React.FC = () => {
       setResendLoading(true);
       setError(null);
       try {
-        const response: AxiosResponse<Resp> = await resendOtp(email);
-        toast.success(response.data.message);
-        console.log("OTP resent", response);
-        setIsResendDisabled(true);
-        setResendTimer(60);
-        setOtp(Array(4).fill(""));
-        inputRefs.current[0]?.focus();
+        const response = await resendOtp(email);
+        if (response) {
+          toast.success(response.data.message);
+          setIsResendDisabled(true);
+          setResendTimer(60);
+          setOtp(Array(4).fill(""));
+          inputRefs.current[0]?.focus();
+        } else {
+          setError("Failed to resend OTP. Please try again.");
+        }
       } catch (error) {
         console.error("Error resending OTP:", error);
         setError("Failed to resend OTP. Please try again.");
