@@ -1,24 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+// import { useNavigate } from "react-router-dom";
+
 
 const Dashboard: React.FC = () => {
+  const user= useSelector((state:any) => state.workerInfo);
+
   // Sample data
   const totalBookings = 120;
   const averageRating = 4.5;
   const pendingBookings = 15;
   const workCompleted = 105;
-  // const latestReviews = [
-  //   { id: 1, user: 'John Doe', review: 'Great service!', rating: 5 },
-  //   { id: 2, user: 'Jane Smith', review: 'Very satisfied.', rating: 4 },
-  //   { id: 3, user: 'Michael Brown', review: 'Good work!', rating: 4 },
-  //   { id: 4, user: 'Emily White', review: 'Excellent!', rating: 5 },
-  //   { id: 5, user: 'David Johnson', review: 'Not bad.', rating: 3 },
-  // ];
-  // const pendingBookingsList = [
-  //   { id: 1, user: 'Alice Walker', service: 'Plumbing', date: '2024-08-01' },
-  //   { id: 2, user: 'Bob Thompson', service: 'Electrical', date: '2024-08-02' },
-  //   { id: 3, user: 'Carol Wilson', service: 'Carpentry', date: '2024-08-03' },
-  //   // Add more pending bookings as needed
-  // ];
+  // const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+  useEffect(() => {
+    // Open the modal if the profile is not verified
+    if (!user.isProfileVerified) {
+      setIsModalOpen(true);
+    }
+  }, []);
+
+
+  
+
 
   return (
     <div className="container mx-auto p-4">
@@ -70,6 +76,26 @@ const Dashboard: React.FC = () => {
           ))}
         </ul> */}
       </div>
+
+      {/* Modal for profile verification */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-custom_navyBlue bg-o z-50">
+          <div className="bg-white p-6 rounded-lg shadow-md w-80">
+            <h2 className="text-xl font-semibold mb-4">
+              Admin Verification Pending
+            </h2>
+            <p className="mb-4">Please wait.. to access all features.</p>
+            {/* <button
+              onClick={handleSetupProfile}
+              className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+            >
+              Setup Profile
+            </button> */}
+          </div>
+        </div>
+      )}
+
+    
     </div>
   );
 };

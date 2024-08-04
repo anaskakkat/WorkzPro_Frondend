@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import Service from "../../components/User/servicesPage/Service";
 
 const Services = () => {

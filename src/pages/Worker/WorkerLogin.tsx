@@ -4,7 +4,6 @@ import { Container, Box, Typography, TextField, Button } from "@mui/material";
 import { styled } from "@mui/system";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
-import logo from "../../assets/Logo workzpro.png";
 import { useDispatch } from "react-redux";
 import { setWorkerInfo } from "../../redux/slices/workerSlice";
 import { verfyloginWorker } from "../../api/worker";
@@ -86,15 +85,25 @@ const WorkerLogin = () => {
       console.log("submitting");
 
       const response = await verfyloginWorker(email, password);
+      const { worker } = response;
 
-      console.log("response--", response);
-      if (response.user) {
+      if (response) {
+        // console.log(worker);
+
         toast.success(response.message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        dispatch(setWorkerInfo(response.user));
+        dispatch(
+          setWorkerInfo({
+            id: worker._id,
+            name: worker.name,
+            isProfileSetup: worker.isProfileSetup,
+            email: worker.email,
+            role: worker.role,
+            phoneNumber: worker.phoneNumber,
+            status: worker.status,
+          })
+        );
         navigate("/worker");
-      } else {
-        toast.error(response.message);
       }
     } catch (error) {
       toast.error("Failed to login. Please try again.");
@@ -104,21 +113,13 @@ const WorkerLogin = () => {
 
   return (
     <div className="bg-custom_bg_blue">
-      <nav className="bg-white border-b-2 border-custom_lightBlue shadow-custom">
-        <div className="flex items-center justify-center h-16">
-          <Link to="/" aria-label="logo" className="flex items-center">
-            <img src={logo} width={50} height={50} alt="Logo" />
-          </Link>
-        </div>
-      </nav>
-
-      <Container className="min-h-screen flex items-center justify-center">
-        <Box className="w-full max-w-md p-8 bg-white rounded shadow-lg space-y-4 mx-auto mt-6">
+      <Container className="min-h-screen flex items-center justify-center pt-8">
+        <Box className="w-full max-w-md p-8 bg-white rounded shadow-lg space-y-4 mx-auto">
           <Typography
             variant="h4"
             className="text-center text-custom_navyBlue font-bold"
           >
-           Worker Login
+            Worker Login
           </Typography>
           <Typography
             variant="body1"

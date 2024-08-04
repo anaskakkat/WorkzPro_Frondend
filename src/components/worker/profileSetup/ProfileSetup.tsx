@@ -14,6 +14,8 @@ import {
 import { styled } from "@mui/material/styles";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { toast } from "react-hot-toast";
+import { workerServices } from "../../../api/worker";
+import axios from "axios";
 // ------------------------------
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
@@ -25,19 +27,34 @@ const StyledBox = styled(Box)(({ theme }) => ({
 }));
 //---------------------------
 const ProfileSetup: React.FC = () => {
-  const [profilePic, setProfilePic] = useState<string | ArrayBuffer | null>(
+  const [profilePic, setProfilePic] = useState<File | null>(
     null
   );
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const fileInputRef = useRef(null);
+
   const [experience, setExperience] = useState("");
   const [wageDay, setWageDay] = useState("");
   const [location, setLocation] = useState("");
-  const [service, setService] = useState("");
   const [identityProof, setIdentityProof] = useState<File | null>(null);
   const [showIdentityProof, setShowIdentityProof] = useState<
     string | ArrayBuffer | null
   >(null);
+  // const worker=useSelector((state:any)=>state.workerInfo)
+  const [serviceList, setServiceList] = useState<string[]>([]);
+  const [selectedService, setSelectedService] = useState<string>("");
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await workerServices();
+        console.log("response:", response);
+        setServiceList(response);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   const handleProfilePicChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -45,8 +62,9 @@ const ProfileSetup: React.FC = () => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => setProfilePic(reader.result);
+      reader.onloadend = () => setProfilePic(file);
       reader.readAsDataURL(file);
+
     }
   };
 
@@ -62,21 +80,46 @@ const ProfileSetup: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
-      !name ||
-      !email ||
+      // !name ||
+      // !email ||
       !experience ||
       !wageDay ||
       !location ||
-      !service ||
+      !selectedService ||
       !identityProof
     ) {
       toast.error("Please fill all fields and upload identity proof");
       return;
     }
+    if (profilePic instanceof File) {
+      try {
+        const formData = new FormData();
+        formData.append("file", profilePic);
+        formData.append("upload_preset", "xyou11gc");
 
-    // Implement form submission logic here
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/dvq7oswim/image/upload`,
+          formData
+        );
+        console.log("Profile picture uploaded:", response.data);
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+      }
+    }
+
+    console.log(
+      profilePic,
+      "---",
+      experience,
+      "--",
+      wageDay,
+      "--",
+      location,
+      "--",
+      identityProof
+    );
   };
 
   return (
@@ -93,7 +136,7 @@ const ProfileSetup: React.FC = () => {
         <div className="flex items-center mb-4 justify-center">
           <div className="relative">
             <img
-              src={(profilePic as string) || "/placeholder-profile-pic.png"}
+              // src={profilePic}
               alt="Profile"
               className="w-24 h-24 rounded-full border-2 border-gray-300 object-cover"
             />
@@ -117,11 +160,11 @@ const ProfileSetup: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-0">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-0">
           <FormControl fullWidth margin="normal">
             <TextField
               label="Name"
-              value={name}
+              value={worker.name}
               onChange={(e) => setName(e.target.value)}
               required
               sx={{
@@ -135,7 +178,7 @@ const ProfileSetup: React.FC = () => {
             <TextField
               label="Email"
               type="email"
-              value={email}
+              value={worker.email}
               onChange={(e) => setEmail(e.target.value)}
               required
               sx={{
@@ -144,7 +187,7 @@ const ProfileSetup: React.FC = () => {
               }}
             />
           </FormControl>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-1">
           <FormControl fullWidth margin="normal">
@@ -179,13 +222,13 @@ const ProfileSetup: React.FC = () => {
           <FormControl fullWidth margin="normal">
             <InputLabel>Service</InputLabel>
             <Select
-              value={service}
-              onChange={(e) => setService(e.target.value as string)}
+              value={selectedService}
+              onChange={(e) => setSelectedService(e.target.value as any)}
               required
               sx={{
                 fontSize: "1rem",
                 "& .MuiOutlinedInput-notchedOutline": {
-                  border: "1px solid #d1d5db", // Adjust border color
+                  border: "1px solid #d1d5db",
                 },
                 "& .MuiSelect-select": {
                   padding: "12px",
@@ -193,10 +236,11 @@ const ProfileSetup: React.FC = () => {
               }}
               input={<OutlinedInput label="Service" />}
             >
-              <MenuItem value="plumbing">Plumbing</MenuItem>
-              <MenuItem value="electrical">Electrical</MenuItem>
-              <MenuItem value="carpentry">Carpentry</MenuItem>
-              {/* Add more services as needed */}
+              {serviceList.map((service: any, index) => (
+                <MenuItem key={index} value={service._id}>
+                  {service.name as string}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 
@@ -211,7 +255,6 @@ const ProfileSetup: React.FC = () => {
                 "& .MuiInputBase-input": { padding: "12px" },
               }}
             />
-        
           </FormControl>
         </div>
 

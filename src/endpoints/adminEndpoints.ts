@@ -9,6 +9,11 @@ const adminRoutes = {
   blockService: (id: string) => `admin/services/${id}/block`,
   unblockService: (id: string) => `admin/services/${id}/unblock`,
   updateService: (id: string) => `admin/services/${id}/edit`,
+  getWorkers: "admin/get_Workers",
+
+  blockWorker: (id: string) => `admin/workers/${id}/block`,
+  unblockWorker: (id: string) => `admin/workers/${id}/unblock`,
+  worker_request: (id: string) => `admin/request/${id}/worker_request`,
 };
 
 export default adminRoutes;

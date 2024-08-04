@@ -33,6 +33,9 @@ import { useDispatch } from "react-redux";
 import { logoutAdmin } from "../../api/admin";
 import { useSelector } from "react-redux";
 import Services from "./Services";
+import Workers from "../../pages/Admin/Workers";
+import DashboardAdmin from "./DashboardAdmin";
+import Request from "../../pages/Admin/Request";
 
 const drawerWidth = 240;
 
@@ -73,17 +76,17 @@ export default function SideBarAdmin() {
   const renderComponent = () => {
     switch (activeItem) {
       case "Dashboard":
-      // return <Dashboard />;
-      // case 'Requests':
-      //   return <Requests />;
+      return <DashboardAdmin />;
+      case 'Requests':
+        return <Request />;
       case 'Services':
         return <Services />;
       case "Users":
         return <UsersAdmin />;
-      // case 'Workers':
-      //   return <Workers />;
+      case 'Workers':
+        return <Workers />;
       default:
-      // return <Dashboard />;
+      return <DashboardAdmin />;
     }
   };
 

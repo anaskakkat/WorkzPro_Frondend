@@ -7,7 +7,7 @@ import { RootState } from "../../../redux/store/store";
 
 const WorkerProtectedRoute: React.FC = () => {
   const workerInfo = useSelector((state: RootState) => state.workerInfo.workerInfo);
-  console.log("ProtectedRoute:--", workerInfo);
+  // console.log("ProtectedRoute:--", workerInfo);
 
   return workerInfo ? <Outlet /> : <Navigate to="/worker/login" />;
 };

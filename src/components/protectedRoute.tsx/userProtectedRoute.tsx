@@ -7,7 +7,7 @@ import { RootState } from "../../redux/store/store";
 
 const ProtectedRoute: React.FC = () => {
   const userInfo = useSelector((state: RootState) => state.userInfo.userInfo);
-  console.log("ProtectedRoute:--", userInfo);
+  // console.log("ProtectedRoute:--", userInfo);
 
   return userInfo ? <Outlet /> : <Navigate to="/login" />;
 };

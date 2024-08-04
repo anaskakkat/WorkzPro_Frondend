@@ -1,5 +1,5 @@
 import Api from "../config/axiosConfig";
-import {  AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 interface FormData {
@@ -23,7 +23,7 @@ export const signUp = async (
   user: FormData
 ): Promise<AxiosResponse<any> | any> => {
   try {
-    console.log("user:",user);
+    console.log("user:", user);
 
     const response = await Api.post(userRoutes.signUp, user);
 
@@ -51,11 +51,11 @@ export const verifyotp = async (
 };
 export const resendOtp = async (
   email: string
-): Promise<AxiosResponse<Resp> |any> => {
+): Promise<AxiosResponse<Resp> | any> => {
   try {
     const response = await Api.post(userRoutes.resendOtp, { email });
     // console.log("response:", response);
-    return response.data
+    return response.data;
   } catch (error) {
     handleApiError(error);
   }
@@ -81,6 +81,15 @@ export const logoutUser = async () => {
     const response = await Api.post(userRoutes.logoutUser);
 
     return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const userServices = async () => {
+  try {
+    const response = await Api.get(userRoutes.getService);
+    // console.log("userServices:--", response);
+    return response.data
   } catch (error) {
     handleApiError(error);
   }

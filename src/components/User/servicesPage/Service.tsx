@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, Typography, IconButton } from "@mui/material";
-import Navbar from "../Navbar/Navbar";
-import { getServices } from "../../../api/admin";
+import { userServices } from "../../../api/user";
 import icon from "../../../assets/maintenance.png";
 
 interface ServiceType {
@@ -15,8 +14,10 @@ const Service: React.FC = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await getServices();
-      console.log(response);
+      console.log('fetchServices tousched');
+      
+      const response = await userServices();
+      // console.log(response);
       const filteredServices = response.filter(
         (service: ServiceType) => service.isBlocked === false
       );
@@ -36,16 +37,16 @@ const Service: React.FC = () => {
       <div className="flex flex-col h-screen">
         <div className="flex-grow flex items-center justify-center bg-custom_bg_blue px-10 md:px-20">
           <div className="w-full flex flex-col md:flex-row items-center gap-20">
-          <div className="max-w-60 md:w-1/3 mb-6 md:mb-0 flex items-center justify-center">
-  <Typography
-    variant="h4"
-    component="h3"
-    className="min-w-28 font-extrabold text-left md:text-2xl"
-  >
-    <strong className="">LEARN MORE ABOUT OUR</strong> <br />
-    <strong className="text-custom_buttonColor">SERVICES</strong>
-  </Typography>
-</div>
+            <div className="max-w-60 md:w-1/3 mb-6 md:mb-0 flex items-center justify-center">
+              <Typography
+                variant="h4"
+                component="h3"
+                className="min-w-28 font-extrabold text-left md:text-2xl"
+              >
+                <strong className="">LEARN MORE ABOUT OUR</strong> <br />
+                <strong className="text-custom_buttonColor">SERVICES</strong>
+              </Typography>
+            </div>
 
             <div className="w-full md:w-3/3 grid grid-cols-1 sm:grid-cols-2 mx-auto lg:grid-cols-4 gap-2">
               {services.map((service, index) => (

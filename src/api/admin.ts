@@ -84,7 +84,7 @@ export const createServices = async (name: string, description: string) => {
 export const getServices = async () => {
   try {
     const response = await Api.post(adminRoutes.getServices);
-    
+
     if (response) {
       return response.data.service;
     }
@@ -121,5 +121,52 @@ export const blockService = async (serviceId: string, isBlocked: boolean) => {
     console.error("Error in blockService:", error);
     handleApiError(error);
     return;
+  }
+};
+
+export const getWorkers = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getWorkers);
+
+    if (response) {
+      return response.data.workers;
+    }
+  } catch (error) {
+    handleApiError(error);
+    return;
+  }
+};
+
+export const blockWorker = async (userId: string) => {
+  try {
+    const response = await Api.patch(adminRoutes.blockWorker(userId));
+
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const unblockWorker = async (userId: string) => {
+  try {
+    const response = await Api.patch(adminRoutes.unblockWorker(userId));
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const getRequests = async () => {
+  try {
+    const response = await Api.get(adminRoutes.getWorkers);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const acceptRequest = async (id:string) => {
+  try {
+    const response = await Api.patch(adminRoutes.worker_request(id));
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
   }
 };

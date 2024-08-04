@@ -43,8 +43,18 @@ export const verfyloginWorker = async (email: string, password: string) => {
       email,
       password,
     });
+    console.log("verfyloginWorker:--", response);
+    
     return response.data;
   } catch (error) {
     handleApiError(error);
   }
 };
+export const workerServices = async () => {
+  try {
+    const response = await Api.get(workerRoutes.getService);
+    // console.log("workerServices:--", response.data);
+    return response.data
+  } catch (error) {
+    handleApiError(error);
+  }}

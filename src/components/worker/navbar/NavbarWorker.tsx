@@ -33,14 +33,14 @@ const NavbarWorker: React.FC = () => {
   };
 
   return (
-    <div>
+  
       <nav className="bg-white border-custom_lightBlue border-b-2">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1">
           <Link
             to="/worker"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
-            <img src={logo} className="h-10" alt="Workzpro Logo" />
+            <img src={logo} className="h-14" alt="Workzpro Logo" />
           </Link>
           <div
             className="relative flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
@@ -140,7 +140,7 @@ const NavbarWorker: React.FC = () => {
           </div>
         </div>
       </nav>
-    </div>
+  
   );
 };
 

@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.13.0",
+    "@cloudinary/url-gen": "^1.20.0",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@fortawesome/fontawesome-free": "^6.6.0",
@@ -30,6 +32,7 @@
     "@types/react-toastify": "^4.1.0",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
+    "cloudinary": "^2.4.0",
     "formik": "^2.4.6",
     "framer-motion": "^11.3.20",
     "mapbox-gl": "^3.5.2",
