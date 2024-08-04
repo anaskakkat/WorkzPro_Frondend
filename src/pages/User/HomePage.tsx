@@ -1,21 +1,16 @@
-// import React from 'react'
+import React from 'react'
 
 import { lazy, Suspense } from "react";
 import Loader from "../../components/loader/Loader";
-import Sample from "../../components/sample";
+// import Sample from "../../components/sample";
 
-const HomePage = () => {
-  // Lazy load components
+const HomePage: React.FC =() => {
   const Banner = lazy(() => import("../../components/User/Banner/Banner"));
   const Cards = lazy(() => import("../../components/User/Cards/Cards"));
-  // const FooterCards = lazy(
-  //   () => import("../../components/User/CardsFooter/FooterCards")
-  // );
   const Footer = lazy(() => import("../../components/User/Footer/Footer"));
-  const Navbar = lazy(() => import("../../components/User/Navbar/Navbar"));
+  
   return (
     <Suspense fallback={<Loader />}>
-      <Navbar />
       {/* <Sample /> */}
       <Banner />
       {/* <MidBanner /> */}

@@ -3,10 +3,15 @@ import { Button, Modal, TextField, Box, Typography } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { styled } from "@mui/system";
 import toast from "react-hot-toast";
-import { createServices } from "../../api/admin";
-
+import Swal from "sweetalert2";
+import {
+  blockService,
+  createServices,
+  getServices,
+  updateService,
+} from "../../api/admin";
 interface IService {
-  _id: number;
+  _id: string;
   name: string;
   description: string;
   isBlocked: boolean;
@@ -44,30 +49,57 @@ const Services: React.FC = () => {
     name: "",
     description: "",
   });
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [editingService, setEditingService] = useState<IService | null>(null);
 
+  const fetchServices = async () => {
+    try {
+      const response = await getServices();
+      setServices(response);
+    } catch (err) {
+      setError("Failed to fetch services.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        // const response = await getServices();
-        // setServices(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch services.");
-        console.error(err);
-        setLoading(false);
-      }
-    };
-
     fetchServices();
   }, []);
 
-  const handleBlockUnblock = async (
-    serviceId: number,
-    isBlocked: boolean
-  ) => {};
+  const handleBlockUnblock = async (serviceId: string, isBlocked: boolean) => {
+    const action = isBlocked ? "unlist" : "list";
+    const result = await Swal.fire({
+      title: `Are you sure?`,
+      text: `Do you want to ${action} this service?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${action} it!`,
+      customClass: {
+        container: "custom-swal",
+      },
+    });
+    if (result.isConfirmed) {
+      try {
+        const response = await blockService(serviceId, isBlocked);
+        // console.log(response);
 
-  const handleEdit = (serviceId: number) => {
-    console.log(`Edit service with ID: ${serviceId}`);
+        Swal.fire("Success!", response.message, "success");
+
+        setServices((prevServices) =>
+          prevServices.map((service) =>
+            service._id === serviceId
+              ? { ...service, isBlocked: !isBlocked }
+              : service
+          )
+        );
+      } catch (error) {
+        console.error("Error blocking/unblocking service:", error);
+        Swal.fire("Error!", "Failed to update service status.", "error");
+      }
+    }
   };
 
   const handleAddService = () => {
@@ -77,6 +109,7 @@ const Services: React.FC = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
   const validateServiceName = (name: string): boolean => {
     const regex = /^[a-zA-Z0-9][a-zA-Z0-9\s]{4,48}[a-zA-Z0-9]$/;
     return regex.test(name.trim());
@@ -86,6 +119,7 @@ const Services: React.FC = () => {
     const regex = /^[\s\S]{5,200}$/;
     return regex.test(description.trim());
   };
+
   const handleCreateService = async () => {
     try {
       const trimmedName = newService.name.trim();
@@ -109,16 +143,45 @@ const Services: React.FC = () => {
       console.log("Response from frontend:", response);
 
       if (response && response.status === 200) {
-        console.log('asdsadsa');
-        
         toast.success(response.data.message);
-        handleClose(); 
+        setNewService({ name: "", description: "" });
+        await fetchServices();
+        handleClose();
       }
     } catch (error) {
       console.error("Failed to create service", error);
-      const errorMessage =
-        error instanceof Error ? error.message : "An unexpected error occurred";
-      toast.error(errorMessage);
+    }
+  };
+
+  const handleEdit = (serviceId: string) => {
+    const serviceToEdit = services.find((service) => service._id === serviceId);
+    if (serviceToEdit) {
+      setEditingService(serviceToEdit);
+      setEditModalOpen(true);
+    }
+  };
+
+  const handleUpdateService = async () => {
+    if (!editingService) return;
+
+    try {
+      const response = await updateService(
+        editingService._id,
+        editingService.name,
+        editingService.description
+      );
+
+      if (response) {
+        console.log(response.message);
+
+        toast.success("Service updated successfully");
+        setEditModalOpen(false);
+        setEditingService(null);
+        fetchServices();
+      }
+    } catch (error) {
+      console.error("Failed to update service", error);
+      toast.error("Failed to update service");
     }
   };
 
@@ -140,7 +203,7 @@ const Services: React.FC = () => {
       <div className="overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700  bg-gray-50">
-            <tr>
+            <tr className="bg-blue-50">
               <th scope="col" className="px-6 py-3">
                 Sr. No
               </th>
@@ -164,28 +227,32 @@ const Services: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="bg-white border-b"
+                  className="bg-white border-b hover:bg-custom_bg_blue"
                 >
                   <td className="px-6 py-4">{index + 1}</td>
                   <td className="px-6 py-4">{service.name}</td>
-                  <td className="px-6 py-4">
+                  <td
+                    className={`px-6 py-4 ${
+                      service.isBlocked ? "text-red-500" : "text-green-600"
+                    }`}
+                  >
                     {service.isBlocked ? "Blocked" : "Active"}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className=" py-4">
                     <Button
-                      variant="contained"
+                      variant="outlined"
                       color={service.isBlocked ? "success" : "error"}
                       onClick={() =>
                         handleBlockUnblock(service._id, service.isBlocked)
                       }
-                      className="mr-2"
                     >
-                      {service.isBlocked ? "Unblock" : "Block"}
+                      {service.isBlocked ? " List" : "Unlist"}
                     </Button>
                     <Button
-                      variant="contained"
+                      variant="outlined"
                       color="info"
                       onClick={() => handleEdit(service._id)}
+                      sx={{ margin: "0 8px" }}
                     >
                       Edit
                     </Button>
@@ -196,7 +263,7 @@ const Services: React.FC = () => {
           </tbody>
         </table>
       </div>
-
+      {/* create modal  */}
       <AnimatePresence>
         {open && (
           <Modal
@@ -260,7 +327,78 @@ const Services: React.FC = () => {
           </Modal>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {editModalOpen && editingService && (
+          <Modal
+            open={editModalOpen}
+            onClose={() => setEditModalOpen(false)}
+            aria-labelledby="edit-modal-title"
+            aria-describedby="edit-modal-description"
+            closeAfterTransition
+            className="flex items-center justify-center overflow-y-auto"
+          >
+            <MotionBox
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="w-[90%] max-w-md bg-white shadow-lg p-6 rounded-sm"
+            >
+              <Typography
+                id="edit-modal-title"
+                variant="h6"
+                component="h4"
+                className="pb-2 text-center text-custom_navyBlue"
+              >
+                Edit Service
+              </Typography>
+              <StyledTextField
+                fullWidth
+                label="Service Name"
+                variant="outlined"
+                value={editingService.name}
+                onChange={(e) =>
+                  setEditingService({ ...editingService, name: e.target.value })
+                }
+                className="mb-8"
+              />
+              <StyledTextField
+                fullWidth
+                label="Service Description"
+                variant="outlined"
+                multiline
+                rows={2}
+                value={editingService.description}
+                onChange={(e) =>
+                  setEditingService({
+                    ...editingService,
+                    description: e.target.value,
+                  })
+                }
+                className="mb-4"
+              />
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => setEditModalOpen(false)}
+                  color="secondary"
+                  className="mr-2"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleUpdateService}
+                  variant="contained"
+                  color="primary"
+                >
+                  Update
+                </Button>
+              </div>
+            </MotionBox>
+          </Modal>
+        )}
+      </AnimatePresence>
     </div>
+    // edit modal
   );
 };
 

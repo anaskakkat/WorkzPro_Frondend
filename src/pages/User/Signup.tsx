@@ -1,17 +1,25 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
+  Container,
+  Box,
+  Typography,
   TextField,
   Button,
-  Container,
-  Paper,
-  Typography,
+  IconButton,
+  InputAdornment,
   CircularProgress,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { Link, useNavigate } from "react-router-dom";
+import { styled } from "@mui/system";
+import { toast } from "react-hot-toast";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { signUp } from "../../api/user";
-import toast from "react-hot-toast";
-import logo from '../../assets/Logo workzpro.png'
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])\S{8,}$/;
+const phoneRegex = /^[0-9]{10}$/;
+
 const CustomTextField = styled(TextField)(() => ({
   "& .MuiInputBase-root": {
     "&:hover .MuiOutlinedInput-notchedOutline": {
@@ -20,255 +28,321 @@ const CustomTextField = styled(TextField)(() => ({
   },
   "& .MuiOutlinedInput-notchedOutline": {
     borderColor: "#BFDBFE",
-    
   },
 }));
 
-type FormData = {
-  name: string;
-  email: string;
-  mobile: string;
-  password: string;
-  confirmPassword: string;
-};
-
-type FormErrors = {
-  name: string;
-  email: string;
-  mobile: string;
-  password: string;
-  confirmPassword: string;
-};
-
-const SignUp = () => {
+const SignUp: React.FC = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
 
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    mobile: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [errors, setErrors] = useState<FormErrors>({
-    name: "",
-    email: "",
-    mobile: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const validateName = (name: string) => {
+    if (!name.trim()) {
+      return "Name is required";
+    }
+    return "";
   };
 
-  // Define regex patterns
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^\d{10}$/; // Assumes a 10-digit phone number
-  const nameRegex = /^(?!^\s)(?!.*\s$)(?!\s*$)[a-zA-Z\s'-]+$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-  const validateForm = (): FormErrors => {
-    const newErrors: FormErrors = {
-      name: "",
-      email: "",
-      mobile: "",
-      password: "",
-      confirmPassword: "",
-    };
-
-    if (!formData.name) {
-      newErrors.name = "Name is required";
-    } else if (!nameRegex.test(formData.name)) {
-      newErrors.name =
-        "Name must not start or end with spaces and must contain at least one non-space character";
+  const validateEmail = (email: string) => {
+    if (!emailRegex.test(email)) {
+      return "Invalid email format";
     }
-
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Invalid email address";
-    }
-
-    if (!phoneRegex.test(formData.mobile)) {
-      newErrors.mobile = "Invalid mobile number";
-    }
-
-    if (!passwordRegex.test(formData.password)) {
-      newErrors.password =
-        "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character";
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    return newErrors;
+    return "";
   };
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+  const validatePassword = (password: string) => {
+    if (!passwordRegex.test(password)) {
+      return "Password must be at least one letter (uppercase or lowercase)at least one digit at least one special character from the set A minimum length of 8 characters.";
+    }
+    return "";
+  };
 
-    const formErrors = validateForm();
+  const validateConfirmPassword = (confirmPassword: string) => {
+    if (confirmPassword !== password) {
+      return "Passwords do not match.";
+    }
+    return "";
+  };
 
-    if (
-      Object.keys(formErrors).some((key) => formErrors[key as keyof FormErrors])
-    ) {
-      setErrors(formErrors);
-      toast.error("Please fill all fields.");
+  const validatePhoneNumber = (phone: string) => {
+    if (!phoneRegex.test(phone)) {
+      return "Invalid phone number. Must be 10 digits.";
+    }
+    return "";
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newName = e.target.value;
+    setName(newName);
+    setNameError(validateName(newName));
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    setEmailError(validateEmail(newEmail));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    setPasswordError(validatePassword(newPassword));
+  };
+
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const newConfirmPassword = e.target.value;
+    setConfirmPassword(newConfirmPassword);
+    setConfirmPasswordError(validateConfirmPassword(newConfirmPassword));
+  };
+
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPhone = e.target.value;
+    setPhoneNumber(newPhone);
+    setPhoneError(validatePhoneNumber(newPhone));
+  };
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    let isValid = true;
+
+    if (validateName(name)) {
+      setNameError(validateName(name));
+      toast.error("Please enter your name");
+      isValid = false;
+    }
+
+    if (!email.trim()) {
+      setEmailError("Please enter your email");
+      toast.error("Please enter your email");
+      isValid = false;
+    } else if (validateEmail(email)) {
+      setEmailError(validateEmail(email));
+      toast.error("Please enter a valid email");
+      isValid = false;
+    }
+
+    if (!password.trim()) {
+      setPasswordError("Please enter your password");
+      toast.error("Please enter your password");
+      isValid = false;
+    } else if (validatePassword(password)) {
+      setPasswordError(validatePassword(password));
+      toast.error(
+        "Password must be at least 8 characters long and contain no spaces."
+      );
+      isValid = false;
+    }
+
+    if (!confirmPassword.trim()) {
+      setConfirmPasswordError("Please confirm your password");
+      toast.error("Please confirm your password");
+      isValid = false;
+    } else if (validateConfirmPassword(confirmPassword)) {
+      setConfirmPasswordError(validateConfirmPassword(confirmPassword));
+      toast.error("Passwords do not match");
+      isValid = false;
+    }
+
+    if (!phoneNumber.trim()) {
+      setPhoneError("Please enter your phone number");
+      toast.error("Please enter your phone number");
+      isValid = false;
+    } else if (validatePhoneNumber(phoneNumber)) {
+      setPhoneError(validatePhoneNumber(phoneNumber));
+      toast.error("Invalid phone number. Must be 10 digits.");
+      isValid = false;
+    }
+
+    if (!isValid) {
       return;
     }
 
-    try {
-      setLoading(true);
-      const response = await signUp(formData);
+    setIsLoading(true);
 
-      const {message, email } = response.data;
-      console.log("Response:", response.data);
-      if (response.status === 200) {
-        toast.success(message);
+    try {
+      const response = await signUp({
+        name,
+        email,
+        password,
+        phoneNumber,
+      });
+      console.log("response:", response);
+      if (response&&response.message) {
+        toast.success(response.message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        navigate("/otp", { state: { email } });
-      } else {
-        toast.error(message)
-      }
+
+        navigate("/otp", { state: { email: response.email } });
+      } 
     } catch (error) {
-      console.error("Error during signUp:", error);
-      toast.error("An error occurred during sign-up. Please try again.");
+      console.error(error);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="bg-custom_bg_blue min-h-screen">
-        <nav className="bg-white border-b-2 border-custom_lightBlue shadow-custom">
-          <div className="flex items-center justify-center h-16">
-            <Link to="/" aria-label="logo" className="flex items-center">
-              <img src={logo} width={50} height={50} alt="Logo" />
+    <div className="bg-custom_bg_blue">
+      <Container className="min-h-screen flex items-center justify-center pt-8">
+        <Box className="w-full max-w-md p-8 bg-white rounded shadow-lg space-y-4 mx-auto mt-6">
+          <Typography
+            variant="h4"
+            className="text-center text-custom_navyBlue font-bold"
+          >
+            Sign Up
+          </Typography>
+          <Typography
+            variant="body1"
+            className="text-center text-custom_navyBlue"
+          >
+            Create your WorkzPro account
+          </Typography>
+          <Box
+            component="form"
+            className="space-y-4"
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSubmit}
+          >
+            <CustomTextField
+              id="name"
+              name="name"
+              label="Name"
+              required
+              fullWidth
+              variant="outlined"
+              margin="dense"
+              value={name}
+              onChange={handleNameChange}
+              error={!!nameError}
+              helperText={nameError}
+            />
+            <CustomTextField
+              id="email"
+              name="email"
+              label="Email"
+              type="email"
+              autoComplete="off"
+              required
+              fullWidth
+              variant="outlined"
+              margin="dense"
+              value={email}
+              onChange={handleEmailChange}
+              error={!!emailError}
+              helperText={emailError}
+            />{" "}
+            <CustomTextField
+              id="phoneNumber"
+              name="phoneNumber"
+              label="Phone Number"
+              type="text"
+              required
+              fullWidth
+              variant="outlined"
+              margin="dense"
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+              error={!!phoneError}
+              helperText={phoneError}
+            />
+            <CustomTextField
+              id="password"
+              name="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="off"
+              required
+              fullWidth
+              variant="outlined"
+              margin="dense"
+              value={password}
+              onChange={handlePasswordChange}
+              helperText={passwordError}
+              error={!!passwordError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <CustomTextField
+              id="confirmPassword"
+              name="confirmPassword"
+              label="Confirm Password"
+              type={showConfirmPassword ? "text" : "password"}
+              autoComplete="off"
+              required
+              fullWidth
+              variant="outlined"
+              margin="dense"
+              value={confirmPassword}
+              onChange={handleConfirmPasswordChange}
+              error={!!confirmPasswordError}
+              helperText={confirmPasswordError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle confirm password visibility"
+                      onClick={handleClickShowConfirmPassword}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              className="bg-custom_blue text-white"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={isLoading}
+              startIcon={isLoading && <CircularProgress size={24} />}
+            >
+              {isLoading ? "Signing Up..." : "Sign Up"}
+            </Button>
+          </Box>
+          <Typography
+            variant="body2"
+            className="text-center text-custom_navyBlue"
+          >
+            Already have an account?{" "}
+            <Link to="/login" className="text-custom_blue">
+              Log In
             </Link>
-          </div>
-        </nav>
-
-        <div className="flex items-center justify-center pt-6">
-          <Container component="main" maxWidth="sm">
-            <Paper className="py-4 px-10 w-10/12 mx-auto bg-white rounded  " elevation={1}>
-              <Typography
-                variant="h5"
-                component="h6"
-                className="text-center font-bold text-custom_navyBlue"
-              >
-                Sign Up
-              </Typography>
-{/* <hr className="mt-2 w-40 mx-auto" /> */}
-              <form onSubmit={handleSubmit}>
-                <CustomTextField
-                  label="Name"
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  name="name"
-                  InputProps={{
-                    style: { height: 50 },
-                  }}
-                  style={{ marginBottom: "0px" }}
-                  onChange={handleChange}
-                  error={!!errors.name}
-                  helperText={errors.name}
-                />
-
-                <CustomTextField
-                  label="Email"
-                  type="email"
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  name="email"
-                  InputProps={{
-                    style: { height: 50 },
-                  }}
-                  style={{ marginBottom: "0px" }}
-                  onChange={handleChange}
-                  error={!!errors.email}
-                  helperText={errors.email}
-                />
-
-                <CustomTextField
-                  label="Mobile Number"
-                  type="tel"
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  name="mobile"
-                  InputProps={{
-                    style: { height: 50 },
-                  }}
-                  style={{ marginBottom: "0px" }}
-                  onChange={handleChange}
-                  error={!!errors.mobile}
-                  helperText={errors.mobile}
-                />
-
-                <CustomTextField
-                  label="Password"
-                  type="password"
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  name="password"
-                  InputProps={{
-                    style: { height: 50 },
-                  }}
-                  style={{ marginBottom: "0px" }}
-                  onChange={handleChange}
-                  error={!!errors.password}
-                  helperText={errors.password}
-                />
-
-                <CustomTextField
-                  label="Confirm Password"
-                  type="password"
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  name="confirmPassword"
-                  InputProps={{
-                    style: { height: 50 },
-                  }}
-                  style={{ marginBottom: "10px" }}
-                  onChange={handleChange}
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword}
-                />
-
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  style={{ marginTop: "10px" }}
-                  disabled={loading}
-                >
-                  {loading ? <CircularProgress size={24} /> : "Get OTP"}
-                </Button>
-              </form>
-              <div className="text-center mt-4">
-                <Typography variant="body2" className="text-custom_navyBlue">
-                  Already have an account?{" "}
-                  <Link to="/login" className="text-black font-semibold hover:text-custom_buttonColor">
-                    Login Here
-                  </Link>
-                </Typography>
-              </div>
-            </Paper>
-          </Container>
-        </div>
-      </div>
-    </>
+          </Typography>
+        </Box>
+      </Container>
+    </div>
   );
 };
 

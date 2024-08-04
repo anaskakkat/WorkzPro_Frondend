@@ -5,6 +5,10 @@ const adminRoutes = {
   blockUser: (id: number) => `admin/users/${id}/block`,
   unblockUser: (id: number) => `admin/users/${id}/unblock`,
   createServices: "admin/services",
+  getServices: "admin/get_services",
+  blockService: (id: string) => `admin/services/${id}/block`,
+  unblockService: (id: string) => `admin/services/${id}/unblock`,
+  updateService: (id: string) => `admin/services/${id}/edit`,
 };
 
 export default adminRoutes;

@@ -75,11 +75,51 @@ export const createServices = async (name: string, description: string) => {
       description,
     });
 
-    return response
+    return response;
   } catch (error) {
-    console.log('catch');
-    
     handleApiError(error);
-    return 
+    return;
+  }
+};
+export const getServices = async () => {
+  try {
+    const response = await Api.post(adminRoutes.getServices);
+    
+    if (response) {
+      return response.data.service;
+    }
+  } catch (error) {
+    handleApiError(error);
+    return;
+  }
+};
+export const updateService = async (id: string, name: string, desc: string) => {
+  try {
+    const response = await Api.put(adminRoutes.updateService(id), {
+      name,
+      description: desc,
+    });
+    if (response) {
+      return response.data;
+    }
+  } catch (error) {
+    handleApiError(error);
+    return;
+  }
+};
+export const blockService = async (serviceId: string, isBlocked: boolean) => {
+  try {
+    const endpoint = isBlocked
+      ? adminRoutes.unblockService(serviceId)
+      : adminRoutes.blockService(serviceId);
+
+    const response = await Api.patch(endpoint);
+    if (response && response.data) {
+      return response.data;
+    }
+  } catch (error) {
+    console.error("Error in blockService:", error);
+    handleApiError(error);
+    return;
   }
 };

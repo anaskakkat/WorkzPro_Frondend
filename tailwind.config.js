@@ -13,4 +13,9 @@ export default {
     },
   },
   plugins: [],
+  variants: {
+    extend: {
+      animation: ['hover'],
+    },
+  },
 };

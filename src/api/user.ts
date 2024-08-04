@@ -5,7 +5,7 @@ import { handleApiError } from "../config/HandleApiErrors";
 interface FormData {
   name: string;
   email: string;
-  mobile: string;
+  phoneNumber: string;
   password: string;
 }
 interface UserResponse {
@@ -21,14 +21,14 @@ interface Resp {
 
 export const signUp = async (
   user: FormData
-): Promise<AxiosResponse<any> | void> => {
+): Promise<AxiosResponse<any> | any> => {
   try {
-    // console.log("user:",user);
+    console.log("user:",user);
 
     const response = await Api.post(userRoutes.signUp, user);
 
     // console.log("signUp touched response", response);
-    return response;
+    return response.data;
   } catch (error) {
     handleApiError(error);
   }
@@ -37,12 +37,13 @@ export const signUp = async (
 export const verifyotp = async (
   email: string,
   otp: string | number
-): Promise<AxiosResponse<Resp> | void> => {
+): Promise<AxiosResponse<Resp> | any> => {
   try {
     const response: AxiosResponse<Resp> = await Api.post(userRoutes.verifyOtp, {
       email,
       otp,
     });
+    // console.log("verify touched response", response);
     return response;
   } catch (error) {
     handleApiError(error);
@@ -50,11 +51,11 @@ export const verifyotp = async (
 };
 export const resendOtp = async (
   email: string
-): Promise<AxiosResponse<Resp> |undefined> => {
+): Promise<AxiosResponse<Resp> |any> => {
   try {
     const response = await Api.post(userRoutes.resendOtp, { email });
     // console.log("response:", response);
-    return response
+    return response.data
   } catch (error) {
     handleApiError(error);
   }
