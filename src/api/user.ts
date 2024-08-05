@@ -1,5 +1,5 @@
 import Api from "../config/axiosConfig";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 interface FormData {
@@ -88,9 +88,18 @@ export const logoutUser = async () => {
 export const userServices = async () => {
   try {
     const response = await Api.get(userRoutes.getService);
-    // console.log("userServices:--", response);
+    console.log("userServices:--", response);
     return response.data
   } catch (error) {
     handleApiError(error);
+  }
+  
+};
+export const verifyGoogleToken = async (token: string) => {
+  try {
+    const response = await axios.post('/api/auth/google', { token });
+    return response;
+  } catch (error) {
+    throw error;
   }
 };

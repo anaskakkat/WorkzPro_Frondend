@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaUserAlt, FaLocationArrow, FaBars, FaTimes } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
@@ -7,9 +7,10 @@ import { RootState } from "../../../redux/store/store";
 import { removeUserInfo } from "../../../redux/slices/userSlices";
 import { logoutUser } from "../../../api/user";
 import toast from "react-hot-toast";
-
-// Import your logo
 import logo from "/workzpro-high-resolution-logo.jpeg";
+import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
+import { fetchLocationDetails } from "../../../utils/getLocationDetails";
+import { initMapScript, initAutocomplete } from "../../../utils/googleMapUtils";
 
 // Define types
 interface UserInfo {
@@ -22,14 +23,20 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [location, setLocation] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // console.log('',GOOGLE_API);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentLocation = useLocation();
+  const searchInput = useRef<HTMLInputElement>(null);
+
   const userInfo = useSelector<RootState, UserInfo | null>(
     (state) => state.userInfo.userInfo
   );
 
+  const isActive = (path: string): boolean => {
+    return currentLocation.pathname === path;
+  };
   const handleSignout = async (): Promise<void> => {
     try {
       const response = await logoutUser();
@@ -47,14 +54,28 @@ const Navbar: React.FC = () => {
   const toggleDropdown = (): void => setIsDropdownOpen(!isDropdownOpen);
   const toggleMenu = (): void => setIsMenuOpen(!isMenuOpen);
 
-  const getCurrentLocation = (): void => {
-    // ... (keep your existing getCurrentLocation function)
+  const handleGetCurrentLocation = async () => {
+    try {
+      setIsLoading(true);
+      const position = await getCurrentPosition();
+      const { latitude, longitude } = position.coords;
+      const locality = await fetchLocationDetails(latitude, longitude);
+      setLocation(locality);
+    } catch (error: any) {
+      console.error("Error:", error);
+      toast.error(error.message || "Failed to fetch location details.");
+      setLocation("Unknown location");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const isActive = (path: string): boolean => {
-    return currentLocation.pathname === path;
-  };
+  useEffect(() => {
+    initMapScript().then(() => initAutocomplete(searchInput));
+  }, []);
 
+  // console.log('searchInput :',searchInput );
+  
   return (
     <nav className="sticky top-0 h-16 bg-white shadow-md z-50 flex-shrink-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,27 +86,35 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
           <div className="hidden md:flex font-semibold mi flex-1 justify-center items-center space-x-4">
-            <Link 
-              to="/" 
-              className={`${isActive('/') ? 'text-blue-600' : 'text-gray-700'} hover:text-blue-600`}
+            <Link
+              to="/"
+              className={`${
+                isActive("/") ? "text-blue-600" : "text-gray-700"
+              } hover:text-blue-600`}
             >
               Home
             </Link>
-            <Link 
-              to="/services" 
-              className={`${isActive('/services') ? 'text-blue-600' : 'text-gray-700'} hover:text-blue-600`}
+            <Link
+              to="/services"
+              className={`${
+                isActive("/services") ? "text-blue-600" : "text-gray-700"
+              } hover:text-blue-600`}
             >
               Services
             </Link>
-            <Link 
-              to="/about" 
-              className={`${isActive('/about') ? 'text-blue-600' : 'text-gray-700'} hover:text-blue-600`}
+            <Link
+              to="/about"
+              className={`${
+                isActive("/about") ? "text-blue-600" : "text-gray-700"
+              } hover:text-blue-600`}
             >
               About Us
             </Link>
-            <Link 
-              to="/contact" 
-              className={`${isActive('/contact') ? 'text-blue-600' : 'text-gray-700'} hover:text-blue-600`}
+            <Link
+              to="/contact"
+              className={`${
+                isActive("/contact") ? "text-blue-600" : "text-gray-700"
+              } hover:text-blue-600`}
             >
               Contact
             </Link>
@@ -94,16 +123,17 @@ const Navbar: React.FC = () => {
             <div className="relative">
               <input
                 type="text"
+                ref={searchInput}
                 placeholder="Enter location"
                 value={isLoading ? "Loading..." : location}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setLocation(e.target.value)
                 }
                 readOnly={isLoading}
-                className="bg-transparent border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-transparent text-custom_navyBlue border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
-                onClick={getCurrentLocation}
+                onClick={handleGetCurrentLocation}
                 disabled={isLoading}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600"
               >
@@ -132,7 +162,9 @@ const Navbar: React.FC = () => {
                   className="flex items-center space-x-2 text-gray-700 hover:text-blue-600"
                 >
                   <FaUserAlt />
-                  <span className="text-custom_navyBlue">{userInfo.userName}</span>
+                  <span className="text-custom_navyBlue">
+                    {userInfo.userName}
+                  </span>
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
@@ -170,7 +202,9 @@ const Navbar: React.FC = () => {
             <Link
               to="/"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                isActive('/') ? 'text-blue-600 bg-gray-100' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                isActive("/")
+                  ? "text-blue-600 bg-gray-100"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               Home
@@ -178,7 +212,9 @@ const Navbar: React.FC = () => {
             <Link
               to="/services"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                isActive('/services') ? 'text-blue-600 bg-gray-100' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                isActive("/services")
+                  ? "text-blue-600 bg-gray-100"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               Services
@@ -186,7 +222,9 @@ const Navbar: React.FC = () => {
             <Link
               to="/about"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                isActive('/about') ? 'text-blue-600 bg-gray-100' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                isActive("/about")
+                  ? "text-blue-600 bg-gray-100"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               About Us
@@ -194,7 +232,9 @@ const Navbar: React.FC = () => {
             <Link
               to="/contact"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                isActive('/contact') ? 'text-blue-600 bg-gray-100' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                isActive("/contact")
+                  ? "text-blue-600 bg-gray-100"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
               }`}
             >
               Contact
@@ -202,16 +242,17 @@ const Navbar: React.FC = () => {
             <div className="relative mt-3">
               <input
                 type="text"
+                ref={searchInput}
                 placeholder="Enter location"
                 value={isLoading ? "Loading..." : location}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setLocation(e.target.value)
                 }
                 readOnly={isLoading}
-                className="w-full bg-transparent border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-transparent border text-custom_navyBlue border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
-                onClick={getCurrentLocation}
+                onClick={handleGetCurrentLocation}
                 disabled={isLoading}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600"
               >

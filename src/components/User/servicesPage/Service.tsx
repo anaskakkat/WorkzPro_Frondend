@@ -14,14 +14,16 @@ const Service: React.FC = () => {
 
   const fetchServices = async () => {
     try {
-      console.log('fetchServices tousched');
-      
+      // console.log('fetchServices tousched');
+
       const response = await userServices();
       // console.log(response);
-      const filteredServices = response.filter(
-        (service: ServiceType) => service.isBlocked === false
-      );
-      setServices(filteredServices);
+      if (response) {
+        const filteredServices = response.filter(
+          (service: ServiceType) => service.isBlocked === false
+        );
+        setServices(filteredServices);
+      }
     } catch (error) {
       console.error("There was an error fetching the services!", error);
     }

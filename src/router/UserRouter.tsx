@@ -7,26 +7,32 @@ import ProtectedRoute from "../components/protectedRoute.tsx/userProtectedRoute"
 import PublicRoute from "../components/protectedRoute.tsx/PublicRoute";
 import Service from "../components/User/servicesPage/Service";
 import UserLayout from "../pages/User/UserLayout";
+import InterceptorSetup from "../config/axiosInterceptors";
+// import Demo from "../components/Demo";
 
 export const UserRouter = () => {
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<UserLayout />}>
-        <Route element={<PublicRoute />}>
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/otp" element={<Otp />} />
-          <Route path="/login" element={<LoginPage />} />
-        </Route>
+    <InterceptorSetup>
+      <Routes>
+        {/* Public routes */}
 
-        {/* homeRoute */}
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<UserLayout />}>
+          <Route element={<PublicRoute />}>
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/otp" element={<Otp />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Route>
 
-        {/* Protected routes */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/services" element={<Service />} />
+          {/* homeRoute */}
+          <Route path="/" element={<HomePage />} />
+          {/* <Route path="/" element={<Demo />} /> */}
+
+          {/* Protected routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/services" element={<Service />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </InterceptorSetup>
   );
 };

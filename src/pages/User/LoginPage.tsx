@@ -7,6 +7,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { verfylogin } from "../../api/user";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "../../redux/slices/userSlices";
+
+import { jwtDecode } from "jwt-decode";
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=\S)(?=\S{8,})/;
 const CustomTextField = styled(TextField)(() => ({
@@ -19,7 +22,13 @@ const CustomTextField = styled(TextField)(() => ({
     borderColor: "#BFDBFE",
   },
 }));
-
+import { GoogleLogin } from "@react-oauth/google";
+interface GoogleUser {
+  email: string;
+  name: string;
+  picture: string;
+  sub: string;
+}
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -94,18 +103,40 @@ const LoginPage: React.FC = () => {
           dispatch(setUserInfo(user));
           navigate("/");
         } else {
-          toast.error(message || "Unexpected response format.");
+          toast.error(message);
         }
       }
     } catch (error: any) {
-      console.error(error.message || "Login failed. Please try again.");
+      console.error(error.message);
     }
+  };
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    try {
+      console.log("Google credential response:", credentialResponse);
+      const decodedToken: GoogleUser = jwtDecode(credentialResponse.credential);
+      console.log("Decoded Google user:", decodedToken);
+      const googleUser = {
+        email: decodedToken.email,
+        name: decodedToken.name,
+        picture: decodedToken.picture,
+        googleId: decodedToken.sub
+      };
+      toast.success("Google login successful");
+      dispatch(setUserInfo(googleUser));
+      navigate("/");
+
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Google login failed");
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error("Google login failed");
   };
 
   return (
     <div className="bg-custom_bg_blue">
-   
-
       <Container className="min-h-screen flex items-center justify-center">
         <Box className="w-full max-w-md p-8 bg-white rounded shadow-lg space-y-4 mx-auto mt-6">
           <Typography
@@ -192,7 +223,12 @@ const LoginPage: React.FC = () => {
             >
               Or login with
             </Typography>
-         
+            <Box className="flex justify-center mt-4">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
+            </Box>
           </Box>
         </Box>
       </Container>
