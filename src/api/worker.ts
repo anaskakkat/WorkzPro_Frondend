@@ -23,7 +23,7 @@ export const verifyWorkerOtp = async (email: string, otp: string | number) => {
       email,
       otp,
     });
-    return response;
+    return response.data;
   } catch (error) {
     handleApiError(error);
   }
@@ -51,6 +51,14 @@ export const verfyloginWorker = async (email: string, password: string) => {
   }
 };
 export const workerServices = async () => {
+  try {
+    const response = await Api.get(workerRoutes.getService);
+    // console.log("workerServices:--", response.data);
+    return response.data
+  } catch (error) {
+    handleApiError(error);
+  }}
+export const profileData = async () => {
   try {
     const response = await Api.get(workerRoutes.getService);
     // console.log("workerServices:--", response.data);

@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { Card, CardContent, Typography, IconButton } from "@mui/material";
 import { userServices } from "../../../api/user";
 import icon from "../../../assets/maintenance.png";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
+import { setServices } from "../../../redux/slices/ServiceSlice";
 
 interface ServiceType {
   name: string;
@@ -10,19 +14,18 @@ interface ServiceType {
 }
 
 const Service: React.FC = () => {
-  const [services, setServices] = useState<ServiceType[]>([]);
+  const dispatch = useDispatch();
+  const services = useSelector((state: RootState) => state.services.services);
 
   const fetchServices = async () => {
     try {
-      // console.log('fetchServices tousched');
-
       const response = await userServices();
       // console.log(response);
       if (response) {
         const filteredServices = response.filter(
           (service: ServiceType) => service.isBlocked === false
         );
-        setServices(filteredServices);
+        dispatch(setServices(filteredServices));
       }
     } catch (error) {
       console.error("There was an error fetching the services!", error);

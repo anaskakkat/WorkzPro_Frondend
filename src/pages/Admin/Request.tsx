@@ -1,7 +1,7 @@
 import React from "react";
 import Requests from "../../components/Admin/Requests";
 
-const Request = () => {
+const Request: React.FC = () => {
   return <Requests />;
 };
 

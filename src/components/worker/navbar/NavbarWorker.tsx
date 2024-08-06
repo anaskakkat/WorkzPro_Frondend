@@ -5,7 +5,7 @@ import { logoutWorker } from "../../../api/worker";
 import toast from "react-hot-toast";
 import { removeWorkerInfo } from "../../../redux/slices/workerSlice";
 import { useDispatch } from "react-redux";
-
+import icon from '/vecteezy_default-avatar-profile-icon-vector-in-flat-style_27708418.jpg'
 const NavbarWorker: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ const NavbarWorker: React.FC = () => {
             >
               <img
                 className="w-8 h-8 rounded-full"
-                src="/docs/images/people/profile-picture-3.jpg"
+                src={icon}
                 alt="user photo"
               />
             </button>

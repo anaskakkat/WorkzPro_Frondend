@@ -3,33 +3,43 @@ import Swal from "sweetalert2";
 import defaultImage from "/public/user.png";
 import { acceptRequest, getRequests } from "../../api/admin";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import {setWorkerInfo } from "../../redux/slices/workerSlice";
 
-interface Request {
-  _id: string;
-  userName: string;
-  email: string;
-  imageUrl?: string;
+interface AcceptRequestResponse {
+    _id: string;
+    name: string;
+    email: string;
+    phoneNumber: number;
+    role: string;
+    status: string;
+    isProfileSetup: boolean;
+    createdAt: string;
+    updatedAt: string;
+    wallet: number;
+    imageUrl?:string
 }
 
 const Requests: React.FC = () => {
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [requests, setRequests] = useState<AcceptRequestResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
 
+  const fetchRequests = async () => {
+    try {
+      const response: AcceptRequestResponse[] = await getRequests();
+      // console.log('fetchRequests:--',response);
+      const filtered = response.filter((request) => !request.isProfileSetup);
+      setRequests(filtered);
+    } catch (err) {
+      setError("Failed to fetch requests.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await getRequests();
-        // console.log(response);
-
-        setRequests(response.workers);
-      } catch (err) {
-        setError("Failed to fetch requests.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchRequests();
   }, []);
@@ -50,16 +60,29 @@ const Requests: React.FC = () => {
 
       if (result.isConfirmed) {
         if (action === "accept") {
-        const response=  await acceptRequest(requestId);
-          console.log(response);
-          toast.success(response.message)
-        } else {
-          //   await rejectRequest(requestId);
-        }
+          const response = await acceptRequest(requestId);
+          console.log('Accept Request Response:', response);
+          if (response && response.data) {
+          const worker={
+            _id: response.data._id,
+            name: response.data.name,
+            email: response.data.email,
+            phoneNumber: response.data.phoneNumber,
+            role: response.data.role,
+            status: response.data.status,
+            isProfileSetup: response.data.isProfileSetup,
+            createdAt: response.data.createdAt,
+            updatedAt: response.data.updatedAt,
+            wallet: response.data.wallet,
+          }
+          dispatch(setWorkerInfo(worker))
+          fetchRequests()
 
-        setRequests((prevRequests) =>
-          prevRequests.filter((request) => request._id !== requestId)
-        );
+          toast.success(response.message);
+        } else {
+          throw new Error('Response data is missing.');
+        }
+        }
       }
     } catch (err) {
       console.error(`Failed to ${action} request`, err);
@@ -99,11 +122,11 @@ const Requests: React.FC = () => {
                 <img
                   className="w-10 h-10 rounded-full"
                   src={request.imageUrl || defaultImage}
-                  alt={request.userName}
+                  alt={request.name}
                 />
                 <div className="ps-3">
                   <div className="text-base font-semibold">
-                    {request.userName}
+                    {request.name}
                   </div>
                 </div>
               </td>

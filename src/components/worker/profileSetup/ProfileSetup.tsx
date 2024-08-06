@@ -1,22 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  IconButton,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-} from "@mui/material";
+import React, { useState, useEffect} from "react";
+import { Box, TextField, Button, Typography, IconButton, MenuItem, Select, FormControl, InputLabel, OutlinedInput } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { toast } from "react-hot-toast";
 import { workerServices } from "../../../api/worker";
 import axios from "axios";
-// ------------------------------
+
+
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
   padding: theme.spacing(4),
@@ -25,28 +15,21 @@ const StyledBox = styled(Box)(({ theme }) => ({
   maxWidth: "800px",
   margin: "auto",
 }));
-//---------------------------
 const ProfileSetup: React.FC = () => {
-  const [profilePic, setProfilePic] = useState<File | null>(
-    null
-  );
-  const fileInputRef = useRef(null);
-
+  const [profilePic, setProfilePic] = useState<File | null>(null);
   const [experience, setExperience] = useState("");
   const [wageDay, setWageDay] = useState("");
   const [location, setLocation] = useState("");
   const [identityProof, setIdentityProof] = useState<File | null>(null);
-  const [showIdentityProof, setShowIdentityProof] = useState<
-    string | ArrayBuffer | null
-  >(null);
-  // const worker=useSelector((state:any)=>state.workerInfo)
+  const [showIdentityProof, setShowIdentityProof] = useState<string | ArrayBuffer | null>(null);
   const [serviceList, setServiceList] = useState<string[]>([]);
   const [selectedService, setSelectedService] = useState<string>("");
+
   useEffect(() => {
     const fetchServices = async () => {
       try {
         const response = await workerServices();
-        console.log("response:", response);
+        // console.log("response:", response);
         setServiceList(response);
       } catch (error) {
         console.error("Error fetching services:", error);
@@ -56,21 +39,14 @@ const ProfileSetup: React.FC = () => {
     fetchServices();
   }, []);
 
-  const handleProfilePicChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleProfilePicChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setProfilePic(file);
-      reader.readAsDataURL(file);
-
+      setProfilePic(file);
     }
   };
 
-  const handleIdentityProofChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleIdentityProofChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -80,73 +56,65 @@ const ProfileSetup: React.FC = () => {
     }
   };
 
+  const updateWorkerProfile = async (profileData: FormData) => {
+    try {
+      const response = await  profileData()
+// if(response){
+// }
+    } catch (error) {
+      console.error("Error updating worker profile:", error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async () => {
-    if (
-      // !name ||
-      // !email ||
-      !experience ||
-      !wageDay ||
-      !location ||
-      !selectedService ||
-      !identityProof
-    ) {
-      toast.error("Please fill all fields and upload identity proof");
+    // Validation
+    if (!experience || !wageDay || !location || !selectedService || !identityProof || !profilePic) {
+      toast.error("Please fill all fields and upload both profile picture and identity proof");
       return;
     }
-    if (profilePic instanceof File) {
-      try {
-        const formData = new FormData();
-        formData.append("file", profilePic);
-        formData.append("upload_preset", "xyou11gc");
 
-        const response = await axios.post(
-          `https://api.cloudinary.com/v1_1/dvq7oswim/image/upload`,
-          formData
-        );
-        console.log("Profile picture uploaded:", response.data);
-      } catch (error) {
-        console.error("Error uploading profile picture:", error);
-      }
+    const formData = new FormData();
+    formData.append("experience", experience);
+    formData.append("wageDay", wageDay);
+    formData.append("location", location);
+    formData.append("service", selectedService);
+    
+    if (identityProof) {
+      formData.append("identityProof", identityProof);
     }
 
-    console.log(
-      profilePic,
-      "---",
-      experience,
-      "--",
-      wageDay,
-      "--",
-      location,
-      "--",
-      identityProof
-    );
+    if (profilePic) {
+      formData.append("profilePic", profilePic);
+    }
+
+    try {
+      const result = await updateWorkerProfile(formData);
+      console.log("Profile updated successfully:", result);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
+    }
   };
 
   return (
     <div className="p-4 md:p-8">
       <StyledBox>
-        <Typography
-          variant="h5"
-          gutterBottom
-          className="text-lg md:text-xl text-center text-custom_navyBlue"
-        >
+        <Typography variant="h5" gutterBottom className="text-lg md:text-xl text-center text-custom_navyBlue">
           Profile Setup
         </Typography>
 
         <div className="flex items-center mb-4 justify-center">
           <div className="relative">
             <img
-              // src={profilePic}
+              src={profilePic ? URL.createObjectURL(profilePic) : "default-profile-pic.jpg"}
               alt="Profile"
               className="w-24 h-24 rounded-full border-2 border-gray-300 object-cover"
             />
             <label htmlFor="profile-pic" className="text-sm">
               Change
-              <IconButton
-                component="span"
-                className="absolute bottom-0 right-0"
-                color="primary"
-              >
+              <IconButton component="span" className="absolute bottom-0 right-0" color="primary">
                 <PhotoCamera />
               </IconButton>
             </label>
@@ -159,35 +127,6 @@ const ProfileSetup: React.FC = () => {
             />
           </div>
         </div>
-
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-0">
-          <FormControl fullWidth margin="normal">
-            <TextField
-              label="Name"
-              value={worker.name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              sx={{
-                fontSize: "1rem",
-                "& .MuiInputBase-input": { padding: "12px" },
-              }}
-            />
-          </FormControl>
-
-          <FormControl fullWidth margin="normal">
-            <TextField
-              label="Email"
-              type="email"
-              value={worker.email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              sx={{
-                fontSize: "1rem",
-                "& .MuiInputBase-input": { padding: "12px" },
-              }}
-            />
-          </FormControl>
-        </div> */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-1">
           <FormControl fullWidth margin="normal">
@@ -223,7 +162,7 @@ const ProfileSetup: React.FC = () => {
             <InputLabel>Service</InputLabel>
             <Select
               value={selectedService}
-              onChange={(e) => setSelectedService(e.target.value as any)}
+              onChange={(e) => setSelectedService(e.target.value as string)}
               required
               sx={{
                 fontSize: "1rem",
@@ -257,8 +196,6 @@ const ProfileSetup: React.FC = () => {
             />
           </FormControl>
         </div>
-
-        {/* Mapbox Geocoder Component */}
 
         <div className="flex items-center gap-4 mb-4">
           {showIdentityProof && (

@@ -157,7 +157,9 @@ export const unblockWorker = async (userId: string) => {
 export const getRequests = async () => {
   try {
     const response = await Api.get(adminRoutes.getWorkers);
-    return response.data;
+    // console.log("admin-getRequests--",getRequests);
+    
+    return response.data.workers;
   } catch (error) {
     handleApiError(error);
   }

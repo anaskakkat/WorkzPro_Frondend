@@ -69,18 +69,29 @@ const OtpWorker: React.FC = () => {
     setError(null);
     try {
       const response = await verifyWorkerOtp(email, otpCode);
-      if (response && response.status === 200) {
-        // console.log("OTP verified:", response);
-        const user = response.data.user;
-        dispatch(setWorkerInfo(user));
+      console.log("OTP verified:", response);
+      if (response && response.data) {
+        const worker = {
+          _id: response.data._id,
+          name: response.data.name,
+          email: response.data.email,
+          phoneNumber: response.data.phoneNumber,
+          role: response.data.role,
+          status: response.data.status,
+          isProfileSetup: response.data.isProfileSetup,
+          createdAt: response.data.createdAt,
+          updatedAt: response.data.updatedAt,
+          wallet: response.data.wallet,
+        };
+        dispatch(setWorkerInfo(worker));
         navigate("/worker");
+
+        toast.success("OTP verified successfully.");
       } else {
-        console.error("Unexpected response:", response);
-        setError("Failed to verify OTP. Please try again.");
+        toast.error("OTP verification failed.");
       }
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      setError("Invalid OTP. Please try again.");
     } finally {
       setVerifyLoading(false);
     }
@@ -112,14 +123,7 @@ const OtpWorker: React.FC = () => {
 
   return (
     <>
-      <nav className="bg-white border-b-2 border-custom_lightBlue shadow-custom">
-        <div className="flex items-center justify-center h-16">
-          <Link to="/" aria-label="logo" className="flex items-center">
-            <img src={Logo} width={50} height={50} alt="Logo" />
-          </Link>
-        </div>
-      </nav>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-bg_blue p-4 sm:p-6 md:p-8">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-bg_blue py-8 p-4 sm:p-6 md:p-8">
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl">
           <h3 className="text-center text-custom_navyBlue font-bold mb-6">
             Email OTP Verification

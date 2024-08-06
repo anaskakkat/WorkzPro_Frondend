@@ -11,8 +11,8 @@ import Bookings from "../pages/Worker/Bookings";
 import Slots from "../pages/Worker/Slots";
 import Payments from "../pages/Worker/Payments";
 import Reviews from "../pages/Worker/Reviews";
-
 import ProfileSetupPage from "../pages/Worker/ProfileSetupPage";
+import ProfileVerify from "../components/protectedRoute.tsx/worker/ProfileVerify";
 const WorkerRouter = () => {
   return (
     <Routes>
@@ -23,11 +23,12 @@ const WorkerRouter = () => {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/otp" element={<OtpWorker />} />
         </Route>
-
+        <Route element={<ProfileVerify />}>
+          <Route path="profile_setup" element={<ProfileSetupPage />} />
+        </Route>
         {/* Protected routes */}
         <Route element={<WorkerProtectedRoute />}>
           <Route path="/" element={<Dashboard />} /> {/* Default route */}
-          <Route path="profile_setup" element={<ProfileSetupPage />} />
           <Route path="bookings" element={<Bookings />} />
           <Route path="slots" element={<Slots />} />
           <Route path="payments" element={<Payments />} />

@@ -4,6 +4,7 @@ const initialState = {
   workerInfo: localStorage.getItem("workerInfo")
     ? JSON.parse(localStorage.getItem("workerInfo") as string)
     : null,
+  isProfileSetup: false,
 };
 
 const userSlice = createSlice({
@@ -18,8 +19,12 @@ const userSlice = createSlice({
       state.workerInfo = null;
       localStorage.removeItem("workerInfo");
     },
+    setProfileSetup: (state, action) => {
+      state.isProfileSetup = action.payload;
+    },
   },
 });
 
-export const { setWorkerInfo, removeWorkerInfo } = userSlice.actions;
+export const { setWorkerInfo, removeWorkerInfo, setProfileSetup } =
+  userSlice.actions;
 export default userSlice.reducer;

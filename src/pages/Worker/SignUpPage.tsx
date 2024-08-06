@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { toast } from "react-hot-toast";
-import logo from "../../assets/Logo workzpro.png";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { registerWorker } from "../../api/worker";
@@ -205,16 +204,10 @@ const SignUpPage: React.FC = () => {
 
   return (
     <div className="bg-custom_bg_blue">
-      <nav className="bg-white border-b-2 border-custom_lightBlue shadow-custom">
-        <div className="flex items-center justify-center h-16">
-          <Link to="/" aria-label="logo" className="flex items-center">
-            <img src={logo} width={50} height={50} alt="Logo" />
-          </Link>
-        </div>
-      </nav>
+  
 
-      <Container className="min-h-screen flex items-center justify-center">
-        <Box className="w-full max-w-md p-8 bg-white rounded shadow-lg space-y-4 mx-auto mt-6">
+      <Container className="min-h-screen flex items-center justify-center py-8">
+        <Box className="w-full max-w-md p-8 bg-white rounded shadow-lg space-y-4 mx-auto ">
           <Typography
             variant="h4"
             className="text-center text-custom_navyBlue font-bold"

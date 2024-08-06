@@ -82,7 +82,7 @@ const WorkerLogin = () => {
     }
 
     try {
-      console.log("submitting");
+      // console.log("submitting");
 
       const response = await verfyloginWorker(email, password);
       const { worker } = response;
@@ -106,7 +106,7 @@ const WorkerLogin = () => {
         navigate("/worker");
       }
     } catch (error) {
-      toast.error("Failed to login. Please try again.");
+      // toast.error("Failed to login. Please try again.");
       console.error(error);
     }
   };
