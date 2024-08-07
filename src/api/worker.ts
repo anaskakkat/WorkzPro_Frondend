@@ -44,7 +44,7 @@ export const verfyloginWorker = async (email: string, password: string) => {
       password,
     });
     console.log("verfyloginWorker:--", response);
-    
+
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -54,15 +54,18 @@ export const workerServices = async () => {
   try {
     const response = await Api.get(workerRoutes.getService);
     // console.log("workerServices:--", response.data);
-    return response.data
+    return response.data;
   } catch (error) {
     handleApiError(error);
-  }}
-export const profileData = async () => {
+  }
+};
+export const setProfileData = async (profileData: FormData) => {
   try {
-    const response = await Api.get(workerRoutes.getService);
+    
+    const response = await Api.post(workerRoutes.setProfile,profileData);
     // console.log("workerServices:--", response.data);
-    return response.data
+    return response.data;
   } catch (error) {
     handleApiError(error);
-  }}
+  }
+};
