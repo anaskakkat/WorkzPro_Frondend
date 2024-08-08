@@ -1,9 +1,7 @@
-import React from 'react'
+import WorkerSlots from "../../components/worker/slots/WorkerSlots";
 
 const Slots = () => {
-  return (
-    <div>Slots</div>
-  )
-}
+  return <WorkerSlots />;
+};
 
-export default Slots
+export default Slots;

@@ -8,6 +8,7 @@ import PublicRoute from "../components/protectedRoute.tsx/PublicRoute";
 import Service from "../components/User/servicesPage/Service";
 import UserLayout from "../pages/User/UserLayout";
 import InterceptorSetup from "../config/axiosInterceptors";
+import WorkersNearby from "../pages/User/WorkersNearby";
 // import Demo from "../components/Demo";
 
 export const UserRouter = () => {
@@ -30,6 +31,7 @@ export const UserRouter = () => {
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/services" element={<Service />} />
+            <Route path="/workersNearby" element={<WorkersNearby />} />
           </Route>
         </Route>
       </Routes>

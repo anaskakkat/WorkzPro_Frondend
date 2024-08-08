@@ -19,12 +19,10 @@ const userSlice = createSlice({
       state.workerInfo = null;
       localStorage.removeItem("workerInfo");
     },
-    setProfileSetup: (state, action) => {
-      state.isProfileSetup = action.payload;
-    },
+  
   },
 });
 
-export const { setWorkerInfo, removeWorkerInfo, setProfileSetup } =
+export const { setWorkerInfo, removeWorkerInfo } =
   userSlice.actions;
 export default userSlice.reducer;

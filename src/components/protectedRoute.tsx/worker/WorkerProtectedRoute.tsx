@@ -6,11 +6,11 @@ import { RootState } from "../../../redux/store/store";
 
 const WorkerProtectedRoute: React.FC = () => {
   const workerInfo = useSelector((state: RootState) => state.workerInfo);
-  const isProfileSetup = workerInfo.workerInfo.isProfileSetup;
+  const isProfileSetup = workerInfo.workerInfo?.isProfileSetup;
   const isLoggedIn = !!workerInfo;
   // console.log("workerInfo:",workerInfo);
 
-  console.log("worker_protected--", "-isProfileSetup--", isProfileSetup);
+  // console.log("worker_protected--", "-isProfileSetup--", isProfileSetup);
   if (!isProfileSetup) {
     return <Navigate to="/worker/profile_setup" />;
   }

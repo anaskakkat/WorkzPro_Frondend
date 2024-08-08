@@ -6,6 +6,9 @@ const workerRoutes = {
   logoutUser: "worker/logout",
   getService: "worker/services",
   setProfile: "worker/setProfile",
+  setSlots: "worker/slots/setSlots",
+  fetchSlots: (id: string) => `worker/slots/${id}/fetchSlots`,
+
 };
 
 export default workerRoutes;

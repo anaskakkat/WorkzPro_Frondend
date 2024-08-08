@@ -7,6 +7,13 @@ interface IWorker {
   phoneNumber: string | number;
   password: string;
 }
+export interface ISlot {
+  data: {
+    date: string;
+    time: string | "full-day" | "morning" | "afternoon";
+  };
+  workerId: string;
+}
 
 export const registerWorker = async (worker: IWorker) => {
   try {
@@ -61,10 +68,27 @@ export const workerServices = async () => {
 };
 export const setProfileData = async (profileData: FormData) => {
   try {
-    
-    const response = await Api.post(workerRoutes.setProfile,profileData);
+    const response = await Api.post(workerRoutes.setProfile, profileData);
     // console.log("workerServices:--", response.data);
     return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const setSlot = async (slot: ISlot) => {
+  try {
+    const response = await Api.post(workerRoutes.setSlots, slot);
+    // console.log("workerServices:--", response.data);
+    // return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const fetchSlots = async (id: string) => {
+  try {
+    const response = await Api.get(workerRoutes.fetchSlots(id));
+    // console.log("fetchSlots:--", response.data.data);
+    return response.data.data;
   } catch (error) {
     handleApiError(error);
   }

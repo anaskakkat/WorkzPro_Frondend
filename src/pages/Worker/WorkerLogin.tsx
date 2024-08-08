@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Box, Typography, TextField, Button } from "@mui/material";
+import { Container, Box, Typography, TextField, Button, CircularProgress } from "@mui/material";
 import { styled } from "@mui/system";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,6 +10,7 @@ import { verfyloginWorker } from "../../api/worker";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=\S)(?=\S{8,})/;
+
 const CustomTextField = styled(TextField)(() => ({
   "& .MuiInputBase-root": {
     "&:hover .MuiOutlinedInput-notchedOutline": {
@@ -20,13 +21,16 @@ const CustomTextField = styled(TextField)(() => ({
     borderColor: "#BFDBFE",
   },
 }));
+
 const WorkerLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const validateEmail = (email: string) => {
     if (!emailRegex.test(email)) {
       return "Invalid email format";
@@ -40,6 +44,7 @@ const WorkerLogin = () => {
     }
     return "";
   };
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
@@ -81,15 +86,13 @@ const WorkerLogin = () => {
       return;
     }
 
-    try {
-      // console.log("submitting");
+    setLoading(true);
 
+    try {
       const response = await verfyloginWorker(email, password);
       const { worker } = response;
 
       if (response) {
-        // console.log(worker);
-
         toast.success(response.message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         dispatch(
@@ -106,8 +109,9 @@ const WorkerLogin = () => {
         navigate("/worker");
       }
     } catch (error) {
-      // toast.error("Failed to login. Please try again.");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -178,8 +182,13 @@ const WorkerLogin = () => {
               fullWidth
               variant="contained"
               className="w-full px-4 py-2 text-sm font-medium text-white bg-custom_button_Sp rounded"
+              disabled={loading}
             >
-              Login
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Login"
+              )}
             </Button>
             <Typography
               variant="body2"

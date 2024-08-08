@@ -103,12 +103,12 @@ const Navbar: React.FC = () => {
               Services
             </Link>
             <Link
-              to="/about"
+              to="/workersNearby"
               className={`${
-                isActive("/about") ? "text-blue-600" : "text-gray-700"
+                isActive("/workersNearby") ? "text-blue-600" : "text-gray-700"
               } hover:text-blue-600`}
             >
-              About Us
+              Workers
             </Link>
             <Link
               to="/contact"
