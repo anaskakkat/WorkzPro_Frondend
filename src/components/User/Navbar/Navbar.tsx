@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
               <img className="h-14 w-auto" src={logo} alt="Logo" />
             </Link>
           </div>
-          <div className="hidden md:flex font-semibold mi flex-1 justify-center items-center space-x-4">
+          <div className="hidden md:flex font-medium mi flex-1 justify-center items-center space-x-4">
             <Link
               to="/"
               className={`${
@@ -130,7 +130,7 @@ const Navbar: React.FC = () => {
                   setLocation(e.target.value)
                 }
                 readOnly={isLoading}
-                className="bg-transparent text-custom_navyBlue border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="bg-transparent font-light text-custom_navyBlue border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300"
               />
               <button
                 onClick={handleGetCurrentLocation}
@@ -144,13 +144,13 @@ const Navbar: React.FC = () => {
               <>
                 <button
                   onClick={() => navigate("/login")}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  className="bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 rounded"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => navigate("/worker/login")}
-                  className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
+                  className="bg-black hover:bg-gray-800 text-white  py-2 px-4 rounded"
                 >
                   Professionals Login
                 </button>
@@ -263,13 +263,13 @@ const Navbar: React.FC = () => {
               <>
                 <button
                   onClick={() => navigate("/login")}
-                  className="w-full mt-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  className="w-full mt-3 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 rounded"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => navigate("/worker/login")}
-                  className="w-full mt-3 bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
+                  className="w-full mt-3 bg-black hover:bg-gray-800 text-white  py-2 px-4 rounded"
                 >
                   Professionals Login
                 </button>

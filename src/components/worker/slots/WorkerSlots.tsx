@@ -3,13 +3,15 @@ import { Modal, Box, Typography, Button } from "@mui/material";
 import { fetchSlots, ISlot, setSlot } from "../../../api/worker";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
+import moment from "moment";
 
 const WorkerSlots: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date()); // Initialize with today's date
   const [open, setOpen] = useState(false);
   const [slots, setSlots] = useState<ISlot[]>([]);
+  const [filteredSlots, setFilteredSlots] = useState<ISlot[]>([]);
   const [newSlot, setNewSlot] = useState({
-    date: selectedDate || new Date(),
+    date: selectedDate,
     time: "fullDay" as "fullDay" | "morning" | "afternoon",
   });
 
@@ -20,8 +22,6 @@ const WorkerSlots: React.FC = () => {
   const fetchWorkerSlots = async () => {
     try {
       const response = await fetchSlots(workerId);
-      console.log(response);
-      
       setSlots(response.slots);
     } catch (error) {
       console.error("Error fetching slots:", error);
@@ -32,19 +32,13 @@ const WorkerSlots: React.FC = () => {
     fetchWorkerSlots();
   }, []);
 
-  const formatDate = (date: Date): string => {
-    const options: Intl.DateTimeFormatOptions = {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-    };
-
-    const formattedDate = date
-      .toLocaleDateString("en-US", options)
-      .replace(/,/g, "");
-
-    return formattedDate;
-  };
+  useEffect(() => {
+    const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
+    const filtered = slots.filter((slot) =>
+      moment(slot.date).format("YYYY-MM-DD") === formattedDate
+    );
+    setFilteredSlots(filtered);
+  }, [selectedDate, slots]);
 
   const generateWeekDates = () => {
     const today = new Date();
@@ -60,7 +54,7 @@ const WorkerSlots: React.FC = () => {
   };
 
   const weekDates = generateWeekDates();
-  const today = new Date();
+  // const today = new Date();
 
   const getDayName = (date: Date) => {
     return date.toLocaleDateString("en-US", { weekday: "short" });
@@ -72,7 +66,6 @@ const WorkerSlots: React.FC = () => {
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
-    setNewSlot({ ...newSlot, date: date });
   };
 
   const handleOpen = () => {
@@ -85,51 +78,43 @@ const WorkerSlots: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!selectedDate) return;
-
-    const formattedDate = formatDate(selectedDate);
+    const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
 
     const createdSlot: ISlot = {
-      data: {
-        date: formattedDate,
-        time: newSlot.time,
-      },
-      workerId: workerId,
+      date: formattedDate,
+      time: newSlot.time,
     };
 
     try {
-      // const response =
-       await setSlot(createdSlot);
-      // console.log("Slot created:", response);
+      await setSlot(createdSlot, workerId);
       setOpen(false);
-      fetchWorkerSlots(); // Refresh the slots after adding a new one
+      fetchWorkerSlots();
     } catch (error) {
       console.error("Error creating slot:", error);
     }
   };
 
-  const filterSlotsByDate = () => {
-    if (!selectedDate) return [];
-
-    const formattedDate = formatDate(selectedDate);
-    return slots.filter(
-      (slot) => slot.data.date === formattedDate
-    );
-  };
-
-  const availableSlots = filterSlotsByDate();
+  // const handleDeleteSlot = async (slotId: string) => {
+  //   try {
+  //     await deleteSlot(slotId, workerId);
+  //     fetchWorkerSlots();
+  //   } catch (error) {
+  //     console.error("Error deleting slot:", error);
+  //   }
+  // };
 
   return (
-    <div className="container flex justify-center mx-auto border-4 overflow-hidden">
+    <div className="container flex justify-center mx-auto border-2 border-custom_lightBlue overflow-hidden">
       <div className="worker-slots">
-        <h1 className="text-center my-6">Add Work Slots</h1>
+        <h1 className="text-center font-medium text-custom_navyBlue my-6 font">Add Work Slots</h1>
         <div className="flex space-x-2">
           {weekDates.map((date, index) => (
             <div
               key={index}
               className={`flex group ${
-                date.toDateString() === today.toDateString()
-                  ? "bg-purple-700 shadow-lg"
-                  : "hover:bg-purple-500 hover:shadow-lg hover-dark-shadow"
+                date.toDateString() === selectedDate.toDateString()
+                  ? "bg-custom_buttonColor shadow-lg"
+                  : "hover:bg-custom_navyBlue"
               } rounded-full mx-1 transition-all duration-300 cursor-pointer justify-center w-16`}
               onClick={() => handleDateClick(date)}
             >
@@ -137,7 +122,7 @@ const WorkerSlots: React.FC = () => {
                 <div className="text-center">
                   <p
                     className={`text-gray-900 ${
-                      date.toDateString() === today.toDateString()
+                      date.toDateString() === selectedDate.toDateString()
                         ? "text-gray-100 font-semibold"
                         : "group-hover:text-gray-100 text-sm group-hover:font-semibold"
                     } transition-all duration-300`}
@@ -146,7 +131,7 @@ const WorkerSlots: React.FC = () => {
                   </p>
                   <p
                     className={`text-gray-900 ${
-                      date.toDateString() === today.toDateString()
+                      date.toDateString() === selectedDate.toDateString()
                         ? "text-gray-100 mt-3 font-bold"
                         : "mt-3 group-hover:text-gray-100 group-hover:font-bold"
                     } transition-all duration-300`}
@@ -159,26 +144,62 @@ const WorkerSlots: React.FC = () => {
           ))}
         </div>
 
-        <div className="mt-8 border-2 p-8">
-          <h2>Work Slots for {selectedDate?.toLocaleDateString() || ""}</h2>
-          {availableSlots.length > 0 ? (
+        <div className="my-8 border-2 m-20 p-4">
+          <h2 className="text-custom_navyBlue">Work Slots Created For {selectedDate?.toLocaleDateString() || ""}</h2>
+          {filteredSlots.length > 0 ? (
             <ul>
-              {availableSlots.map((slot, index) => (
-                <li key={index}>
-                  {slot.data.time === "fullDay"
-                    ? "Full Day"
-                    : slot.data.time === "morning"
-                    ? "Morning"
-                    : "Afternoon"}
+              {filteredSlots.map((slot, index) => (
+                <li key={index} className="flex justify-between items-center my-2">
+                  <Button className="flex items-center gap-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="currentColor"
+          className="h-5 w-5"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+          />
+        </svg>
+        Add to Bookmark
+      </Button>
+                  <span className="py-2 text-center px-2 bg-blue-500 text-white">{slot.time}</span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      // onClick={() => handleEditSlot(slot)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      // onClick={() => handleDeleteSlot(slot._id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p>No slots available for the selected date.</p>
+            <p className="text-red-800 font-normal">No slots created for the selected date.</p>
           )}
-          <Button variant="contained" color="primary" onClick={handleOpen}>
-            Add
-          </Button>
+{filteredSlots.length > 0?'':
+  <Button
+  variant="contained"
+  color="primary"
+  onClick={handleOpen}
+>
+  Add
+</Button>
+}
+        
         </div>
 
         <Modal

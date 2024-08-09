@@ -8,11 +8,8 @@ interface IWorker {
   password: string;
 }
 export interface ISlot {
-  data: {
     date: string;
-    time: string | "full-day" | "morning" | "afternoon";
-  };
-  workerId: string;
+    time:"fullday" | "morning" | "afternoon"|string
 }
 
 export const registerWorker = async (worker: IWorker) => {
@@ -75,9 +72,9 @@ export const setProfileData = async (profileData: FormData) => {
     handleApiError(error);
   }
 };
-export const setSlot = async (slot: ISlot) => {
+export const setSlot = async (slot: ISlot,id:string) => {
   try {
-    const response = await Api.post(workerRoutes.setSlots, slot);
+    const response = await Api.post(workerRoutes.setSlots(id),slot);
     // console.log("workerServices:--", response.data);
     // return response.data;
   } catch (error) {

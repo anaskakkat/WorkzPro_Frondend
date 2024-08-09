@@ -6,7 +6,7 @@ const workerRoutes = {
   logoutUser: "worker/logout",
   getService: "worker/services",
   setProfile: "worker/setProfile",
-  setSlots: "worker/slots/setSlots",
+  setSlots: (id: string) => `worker/slots/${id}/setSlots`,
   fetchSlots: (id: string) => `worker/slots/${id}/fetchSlots`,
 
 };
