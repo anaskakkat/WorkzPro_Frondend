@@ -5,6 +5,8 @@ const userRoutes = {
   loginVerify: "user/login",
   logoutUser: "user/logout",
   getService: "user/services",
+  fetchWorkers: "user/fetchWorkers",
+  fetchWorkerDatabyId: (id:string) => `user/fetchWorkers/${id}`,
 };
 
 export default userRoutes;

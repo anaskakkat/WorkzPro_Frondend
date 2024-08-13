@@ -8,7 +8,7 @@ export default {
         custom_button_Sp: "#01B7F2",
         custom_navyBlue: "#003383",
         custom_buttonColor: "#3B82F6",
-        custom_bg_blue: "#F4F9FF",
+        custom_bg_blue: "#f2f9ff",
       },
     },
   },
@@ -19,3 +19,8 @@ export default {
     },
   },
 };
+
+
+
+
+

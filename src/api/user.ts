@@ -89,16 +89,33 @@ export const userServices = async () => {
   try {
     const response = await Api.get(userRoutes.getService);
     console.log("userServices:--", response);
-    return response.data
+    return response.data;
   } catch (error) {
     handleApiError(error);
   }
-  
 };
 export const verifyGoogleToken = async (token: string) => {
   try {
-    const response = await axios.post('/api/auth/google', { token });
+    const response = await axios.post("/api/auth/google", { token });
     return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchWorkers = async () => {
+  try {
+    const response = await Api.get(userRoutes.fetchWorkers);
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchWorkerDatabyId = async (id:string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchWorkerDatabyId(id));
+
+    return response.data;
   } catch (error) {
     throw error;
   }

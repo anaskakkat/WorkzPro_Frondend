@@ -9,6 +9,7 @@ const workerRoutes = {
   setSlots: (id: string) => `worker/slots/${id}/setSlots`,
   fetchSlots: (id: string) => `worker/slots/${id}/fetchSlots`,
 
+
 };
 
 export default workerRoutes;

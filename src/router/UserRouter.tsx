@@ -9,6 +9,7 @@ import Service from "../components/User/servicesPage/Service";
 import UserLayout from "../pages/User/UserLayout";
 import InterceptorSetup from "../config/axiosInterceptors";
 import WorkersNearby from "../pages/User/WorkersNearby";
+import DeatilsWorker from "../pages/User/DeatilsWorker";
 // import Demo from "../components/Demo";
 
 export const UserRouter = () => {
@@ -32,6 +33,10 @@ export const UserRouter = () => {
           <Route element={<ProtectedRoute />}>
             <Route path="/services" element={<Service />} />
             <Route path="/workersNearby" element={<WorkersNearby />} />
+            <Route
+              path="/WorkerDetails/:workerId"
+              element={<DeatilsWorker />}
+            />
           </Route>
         </Route>
       </Routes>

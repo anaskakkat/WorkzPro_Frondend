@@ -90,3 +90,4 @@ export const fetchSlots = async (id: string) => {
     handleApiError(error);
   }
 };
+
