@@ -13,43 +13,19 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { fetchWorkers } from "../../../api/user"; // Adjust this import path as needed
 import Loader from "../../loader/Loader";
 import { useNavigate } from "react-router-dom";
+import IWorker from "../../../interface/IWorker";
 
-interface Service {
-  _id: string;
-  name: string;
-  description: string;
-  isBlocked: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
 
-interface Worker {
-  _id: string;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  role: string;
-  wallet: number;
-  isBlocked: boolean;
-  isProfileSetup: boolean;
-  status: string;
-  experience: number;
-  identityProof: string;
-  location: string;
-  profilePicture: string;
-  service: Service;
-  loginAccess: boolean;
-}
 
 const WorkerNearby: React.FC = () => {
-  const [workers, setWorkers] = useState<Worker[]>([]);
+  const [workers, setWorkers] = useState<IWorker[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchWorkerData = async () => {
       setLoading(true);
       try {
-        const response: Worker[] = await fetchWorkers();
+        const response: IWorker[] = await fetchWorkers();
         const filteredWorkers = response.filter((worker) => !worker.isBlocked);
         setWorkers(filteredWorkers);
       } catch (error) {

@@ -11,16 +11,15 @@ export default {
         custom_bg_blue: "#f2f9ff",
       },
     },
+    fontFamily: {
+      montserrat: ["Montserrat", "sans-serif"],
+      oswald: ["Oswald", "sans-serif"],
+    },
   },
   plugins: [],
   variants: {
     extend: {
-      animation: ['hover'],
+      animation: ["hover"],
     },
   },
 };
-
-
-
-
-

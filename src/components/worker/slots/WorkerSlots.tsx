@@ -44,7 +44,7 @@ const WorkerSlots: React.FC = () => {
     const today = new Date();
     const weekDates = [];
 
-    for (let i = 0; i <= 10; i++) {
+    for (let i = 0; i <= 7; i++) {
       const currentDate = new Date(today);
       currentDate.setDate(today.getDate() + i);
       weekDates.push(currentDate);
@@ -104,7 +104,7 @@ const WorkerSlots: React.FC = () => {
   // };
 
   return (
-    <div className="container flex justify-center mx-auto border-2 border-custom_lightBlue overflow-hidden">
+    <div className="container flex justify-center lg:my-8 my-2 sm:py-4 mx-auto border-2 border-custom_lightBlue overflow-hidden">
       <div className="worker-slots">
         <h1 className="text-center font-medium text-custom_navyBlue my-6 font">Add Work Slots</h1>
         <div className="flex space-x-2">
@@ -121,20 +121,20 @@ const WorkerSlots: React.FC = () => {
               <div className="flex items-center px-4 py-4">
                 <div className="text-center">
                   <p
-                    className={`text-gray-900 ${
+                    className={`text-white ${
                       date.toDateString() === selectedDate.toDateString()
-                        ? "text-gray-100 font-semibold"
-                        : "group-hover:text-gray-100 text-sm group-hover:font-semibold"
-                    } transition-all duration-300`}
+                        ? "text-white font-semibold"
+                        : "group-hover:text-white text-sm group-hover:font-semibold"
+                    }`}
                   >
                     {getDayName(date)}
                   </p>
                   <p
                     className={`text-gray-900 ${
                       date.toDateString() === selectedDate.toDateString()
-                        ? "text-gray-100 mt-3 font-bold"
-                        : "mt-3 group-hover:text-gray-100 group-hover:font-bold"
-                    } transition-all duration-300`}
+                        ? "text-white mt-3 font-bold"
+                        : "mt-3 group-hover:text-white group-hover:font-bold"
+                    }`}
                   >
                     {getDayNumber(date)}
                   </p>
@@ -144,13 +144,13 @@ const WorkerSlots: React.FC = () => {
           ))}
         </div>
 
-        <div className="my-8 border-2 m-20 p-4">
-          <h2 className="text-custom_navyBlue">Work Slots Created For {selectedDate?.toLocaleDateString() || ""}</h2>
+        <div className="my-8  border-2 m-20 p-4">
+          <h2 className="text-custom_navyBlue mb-1">Work Slots Created For {selectedDate?.toLocaleDateString() || ""}</h2>
           {filteredSlots.length > 0 ? (
             <ul>
               {filteredSlots.map((slot, index) => (
                 <li key={index} className="flex justify-between items-center my-2">
-                  <Button className="flex items-center gap-3">
+                  <Button aria-readonly className="flex items-center gap-3">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -165,9 +165,9 @@ const WorkerSlots: React.FC = () => {
             d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
           />
         </svg>
-        Add to Bookmark
+        {slot.time}
       </Button>
-                  <span className="py-2 text-center px-2 bg-blue-500 text-white">{slot.time}</span>
+                  {/* <span className="py-2 text-center px-2 bg-blue-500 text-white">{slot.time}</span> */}
                   <div className="flex gap-2">
                     <Button
                       variant="outlined"
@@ -188,7 +188,7 @@ const WorkerSlots: React.FC = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-red-800 font-normal">No slots created for the selected date.</p>
+            <p className="text-red-800 font-normal mb-2">No slots created for the selected date.</p>
           )}
 {filteredSlots.length > 0?'':
   <Button

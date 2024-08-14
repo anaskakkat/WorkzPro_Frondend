@@ -38,6 +38,7 @@ export const UserRouter = () => {
               element={<DeatilsWorker />}
             />
           </Route>
+            {/* <Route path="/WorkerCheckout" element={< WorkerCheck/>} /> */} 
         </Route>
       </Routes>
     </InterceptorSetup>

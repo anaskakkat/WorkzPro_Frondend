@@ -1,3 +1,5 @@
+import IService from "./IService";
+
 interface IWorker {
   _id: string;
   workerId: number;
@@ -5,13 +7,14 @@ interface IWorker {
   email: string;
   phoneNumber: string | number;
   password: string;
-  service: string;
+  service: IService;
   slots: string[];
   experience: number;
   location: string;
   role: "worker";
   identityProof: string;
   wallet: number;
+  serviceCost: number;
   profilePicture: string;
   isBlocked: boolean;
   createdAt: Date;
