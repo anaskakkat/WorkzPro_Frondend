@@ -10,7 +10,8 @@ import UserLayout from "../pages/User/UserLayout";
 import InterceptorSetup from "../config/axiosInterceptors";
 import WorkersNearby from "../pages/User/WorkersNearby";
 import DeatilsWorker from "../pages/User/DeatilsWorker";
-// import Demo from "../components/Demo";
+import WorkerCheckout from "../pages/User/WorkerCheckout";
+import Demo from "../components/Demo"; 
 
 export const UserRouter = () => {
   return (
@@ -27,7 +28,7 @@ export const UserRouter = () => {
 
           {/* homeRoute */}
           <Route path="/" element={<HomePage />} />
-          {/* <Route path="/" element={<Demo />} /> */}
+          <Route path="/demo" element={<Demo />} />
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
@@ -38,7 +39,7 @@ export const UserRouter = () => {
               element={<DeatilsWorker />}
             />
           </Route>
-            {/* <Route path="/WorkerCheckout" element={< WorkerCheck/>} /> */} 
+            <Route path="/workerCheckout/:workerId" element={<WorkerCheckout />} />
         </Route>
       </Routes>
     </InterceptorSetup>

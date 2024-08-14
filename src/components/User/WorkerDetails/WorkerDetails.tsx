@@ -1,5 +1,4 @@
-import { Rating } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchWorkerDatabyId } from "../../../api/user";
 import { useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
@@ -10,7 +9,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 const WorkerDetails = () => {
   const [worker, setWorker] = useState<IWorker | null>(null);
   const { workerId } = useParams();
-
+const navigate =useNavigate() 
   const fetchWorkerData = async () => {
     try {
       const response = await fetchWorkerDatabyId(workerId!);
@@ -94,7 +93,7 @@ const WorkerDetails = () => {
           </div>
           <div className=" justify-center flex">
             {" "}
-            <button className=" bg-custom_buttonColor text-white p-4 py-2 rounded hover:bg-custom_navyBlue ">
+            <button onClick={()=>navigate(`/workerCheckout/${workerId}`)} className=" bg-custom_buttonColor text-white p-4 py-2 rounded hover:bg-custom_navyBlue ">
               <CalendarTodayIcon className="mr-2" />
               Check Availability
             </button>{" "}

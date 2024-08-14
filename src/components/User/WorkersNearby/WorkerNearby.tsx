@@ -145,7 +145,7 @@ const WorkerNearby: React.FC = () => {
                   >
                     Details
                   </Button>
-                  <Button variant="contained" size="small">
+                  <Button variant="contained" size="small" onClick={()=>navigate(`/workerCheckout/${worker._id}`)}>
                     Book
                   </Button>
                 </Box>

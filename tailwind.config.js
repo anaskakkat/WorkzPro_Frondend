@@ -8,7 +8,8 @@ export default {
         custom_button_Sp: "#01B7F2",
         custom_navyBlue: "#003383",
         custom_buttonColor: "#3B82F6",
-        custom_bg_blue: "#f2f9ff",
+        custom_Border: "#f2f9ff",
+        custom_bg_blue: "#eef3f7",
       },
     },
     fontFamily: {
