@@ -16,13 +16,15 @@ const WorkerSlots: React.FC = () => {
   });
 
   const workerId = useSelector(
-    (state: RootState) => state.workerInfo.workerInfo.id
+    (state: RootState) => state.workerInfo.workerInfo._id
   );
+  console.log(workerId);
 
   const fetchWorkerSlots = async () => {
     try {
       const response = await fetchSlots(workerId);
-      setSlots(response.slots);
+      console.log("resp--slot--", response);
+      setSlots(response);
     } catch (error) {
       console.error("Error fetching slots:", error);
     }
@@ -34,8 +36,8 @@ const WorkerSlots: React.FC = () => {
 
   useEffect(() => {
     const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
-    const filtered = slots.filter((slot) =>
-      moment(slot.date).format("YYYY-MM-DD") === formattedDate
+    const filtered = slots.filter(
+      (slot) => moment(slot.date).format("YYYY-MM-DD") === formattedDate
     );
     setFilteredSlots(filtered);
   }, [selectedDate, slots]);
@@ -106,7 +108,9 @@ const WorkerSlots: React.FC = () => {
   return (
     <div className="container flex justify-center lg:my-8 my-2 sm:py-4 mx-auto border-2 border-custom_lightBlue overflow-hidden">
       <div className="worker-slots">
-        <h1 className="text-center font-medium text-custom_navyBlue my-6 font">Add Work Slots</h1>
+        <h1 className="text-center font-medium text-custom_navyBlue my-6 font">
+          Add Work Slots
+        </h1>
         <div className="flex space-x-2">
           {weekDates.map((date, index) => (
             <div
@@ -145,28 +149,33 @@ const WorkerSlots: React.FC = () => {
         </div>
 
         <div className="my-8  border-2 m-20 p-4">
-          <h2 className="text-custom_navyBlue mb-1">Work Slots Created For {selectedDate?.toLocaleDateString() || ""}</h2>
+          <h2 className="text-custom_navyBlue mb-1">
+            Work Slots Created For {selectedDate?.toLocaleDateString() || ""}
+          </h2>
           {filteredSlots.length > 0 ? (
             <ul>
               {filteredSlots.map((slot, index) => (
-                <li key={index} className="flex justify-between items-center my-2">
+                <li
+                  key={index}
+                  className="flex justify-between items-center my-2"
+                >
                   <Button aria-readonly className="flex items-center gap-3">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="h-5 w-5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
-          />
-        </svg>
-        {slot.time}
-      </Button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="h-5 w-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+                      />
+                    </svg>
+                    {slot.time}
+                  </Button>
                   {/* <span className="py-2 text-center px-2 bg-blue-500 text-white">{slot.time}</span> */}
                   <div className="flex gap-2">
                     <Button
@@ -188,18 +197,17 @@ const WorkerSlots: React.FC = () => {
               ))}
             </ul>
           ) : (
-            <p className="text-red-800 font-normal mb-2">No slots created for the selected date.</p>
+            <p className="text-red-800 font-normal mb-2">
+              No slots created for the selected date.
+            </p>
           )}
-{filteredSlots.length > 0?'':
-  <Button
-  variant="contained"
-  color="primary"
-  onClick={handleOpen}
->
-  Add
-</Button>
-}
-        
+          {filteredSlots.length > 0 ? (
+            ""
+          ) : (
+            <Button variant="contained" color="primary" onClick={handleOpen}>
+              Add
+            </Button>
+          )}
         </div>
 
         <Modal

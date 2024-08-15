@@ -18,6 +18,17 @@ interface Resp {
   user?: UserResponse;
   message: string;
 }
+interface BookingData {
+  date?: string;
+  workerId?: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  selectedSlot: string;
+  location: string;
+  comments: string;
+}
 
 export const signUp = async (
   user: FormData
@@ -111,9 +122,27 @@ export const fetchWorkers = async () => {
     throw error;
   }
 };
-export const fetchWorkerDatabyId = async (id:string) => {
+export const fetchWorkerDatabyId = async (id: string) => {
   try {
     const response = await Api.get(userRoutes.fetchWorkerDatabyId(id));
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchSlotById = async (id: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchSlotById(id));
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const submitBooking = async (bookingData: BookingData, id: string) => {
+  try {
+    const response = await Api.post(userRoutes.submitBooking(id), bookingData);
 
     return response.data;
   } catch (error) {

@@ -75,8 +75,7 @@ export const setProfileData = async (profileData: FormData) => {
 export const setSlot = async (slot: ISlot,id:string) => {
   try {
     const response = await Api.post(workerRoutes.setSlots(id),slot);
-    // console.log("workerServices:--", response.data);
-    // return response.data;
+    return response.data;
   } catch (error) {
     handleApiError(error);
   }
@@ -84,7 +83,6 @@ export const setSlot = async (slot: ISlot,id:string) => {
 export const fetchSlots = async (id: string) => {
   try {
     const response = await Api.get(workerRoutes.fetchSlots(id));
-    // console.log("fetchSlots:--", response.data.data);
     return response.data.data;
   } catch (error) {
     handleApiError(error);

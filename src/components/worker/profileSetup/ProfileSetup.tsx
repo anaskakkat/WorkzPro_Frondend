@@ -10,6 +10,7 @@ import {
   FormControl,
   InputLabel,
   OutlinedInput,
+  CircularProgress,
 } from "@mui/material";
 import { Modal, Box as MuiBox } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -20,8 +21,7 @@ import {
   setProfileData,
   workerServices,
 } from "../../../api/worker";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setWorkerInfo } from "../../../redux/slices/workerSlice";
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -45,19 +45,20 @@ const ProfileSetup: React.FC = () => {
   >(null);
   const [serviceList, setServiceList] = useState<string[]>([]);
   const [selectedService, setSelectedService] = useState<string>("");
-  const workerId = useSelector((state: any) => state.workerInfo.workerInfo.id);
-  // console.log("Wid", workerId);
+  const [loading, setLoading] = useState(false); // Add loading state
+
+  const workerId = useSelector((state: any) => state.workerInfo.workerInfo._id);
   const dispatch = useDispatch();
+
   const fetchServices = async () => {
     try {
       const response = await workerServices();
-      // console.log(response);
-
       setServiceList(response);
     } catch (error) {
       console.error("Error fetching services:", error);
     }
   };
+
   useEffect(() => {
     fetchServices();
   }, []);
@@ -70,6 +71,7 @@ const ProfileSetup: React.FC = () => {
       setProfilePic(file);
     }
   };
+
   const handleLogout = async () => {
     try {
       await logoutWorker();
@@ -77,6 +79,7 @@ const ProfileSetup: React.FC = () => {
       console.log(error);
     }
   };
+
   const handleIdentityProofChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -90,7 +93,6 @@ const ProfileSetup: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    // Validation
     if (
       !experience ||
       !wageDay ||
@@ -115,8 +117,8 @@ const ProfileSetup: React.FC = () => {
     formData.append("workerId", workerId!);
 
     try {
+      setLoading(true); 
       const response = await setProfileData(formData);
-      console.log("setProfileData:==", response.data);
       const workerInfo = {
         _id: response.data._id,
         name: response.data.name,
@@ -137,11 +139,12 @@ const ProfileSetup: React.FC = () => {
         updatedAt: response.data.updatedAt,
       };
       dispatch(setWorkerInfo(workerInfo));
-
       setIsModalOpen(true);
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Failed to update profile");
+    } finally {
+      setLoading(false); // Set loading to false
     }
   };
 
@@ -326,8 +329,10 @@ const ProfileSetup: React.FC = () => {
             onClick={handleSubmit}
             className="mt-6 w-full"
             size="large"
+            disabled={loading} // Disable button while loading
+            startIcon={loading ? <CircularProgress size={24} color="inherit" /> : undefined} // Show spinner
           >
-            Update
+            {loading ? "Updating..." : "Update"}
           </Button>
         </StyledBox>
       </div>
