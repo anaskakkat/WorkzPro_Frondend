@@ -8,8 +8,7 @@ const workerRoutes = {
   setProfile: "worker/setProfile",
   setSlots: (id: string) => `worker/slots/${id}/setSlots`,
   fetchSlots: (id: string) => `worker/slots/${id}/fetchSlots`,
-
-
+  deleteSlot: (id: string) => `worker/slots/${id}/deleteSlot`,
 };
 
 export default workerRoutes;

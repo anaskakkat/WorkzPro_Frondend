@@ -22,7 +22,10 @@ import {
   workerServices,
 } from "../../../api/worker";
 import { useSelector, useDispatch } from "react-redux";
-import { setWorkerInfo } from "../../../redux/slices/workerSlice";
+import {
+  removeWorkerInfo,
+  setWorkerInfo,
+} from "../../../redux/slices/workerSlice";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
@@ -74,7 +77,11 @@ const ProfileSetup: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logoutWorker();
+      const response = await logoutWorker();
+      console.log(response);
+      if (response?.status === 200) {
+        dispatch(removeWorkerInfo());
+      }
     } catch (error) {
       console.log(error);
     }
@@ -117,7 +124,7 @@ const ProfileSetup: React.FC = () => {
     formData.append("workerId", workerId!);
 
     try {
-      setLoading(true); 
+      setLoading(true);
       const response = await setProfileData(formData);
       const workerInfo = {
         _id: response.data._id,
@@ -184,6 +191,8 @@ const ProfileSetup: React.FC = () => {
           </Button>
         </MuiBox>
       </Modal>
+
+      {/* //--------------- */}
       <div className="p-4 md:p-8">
         <StyledBox>
           <Typography
@@ -330,7 +339,11 @@ const ProfileSetup: React.FC = () => {
             className="mt-6 w-full"
             size="large"
             disabled={loading} // Disable button while loading
-            startIcon={loading ? <CircularProgress size={24} color="inherit" /> : undefined} // Show spinner
+            startIcon={
+              loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : undefined
+            }
           >
             {loading ? "Updating..." : "Update"}
           </Button>

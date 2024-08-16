@@ -14,6 +14,7 @@ interface IWorker {
   role: "worker";
   identityProof: string;
   wallet: number;
+  wageDay: number;
   serviceCost: number;
   profilePicture: string;
   isBlocked: boolean;

@@ -15,7 +15,7 @@ const InterceptorSetup: React.FC<InterceptorSetupProps> = ({ children }) => {
   useEffect(() => {
     const interceptor = Api.interceptors.response.use(
       (response) => {
-        console.log('interceptor:-response--',response);
+        // console.log('interceptor:-response--',response);
         
         return response;
       },

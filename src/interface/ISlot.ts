@@ -1,9 +1,10 @@
 interface ISlot {
-    _id: string;
-    date: string; 
-    time: string;
-    slots:any[]
-    booked: any[];
-  }
+  _id: string;
+  date: string;
+  time: "fullday" | "morning" | "afternoon" | string;
+  slots: any[];
+  booked: any[];
+}
 
-  export default ISlot
+export default ISlot;
+

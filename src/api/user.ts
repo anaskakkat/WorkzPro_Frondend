@@ -144,7 +144,7 @@ export const submitBooking = async (bookingData: BookingData, id: string) => {
   try {
     const response = await Api.post(userRoutes.submitBooking(id), bookingData);
 
-    return response.data;
+    return response;
   } catch (error) {
     throw error;
   }

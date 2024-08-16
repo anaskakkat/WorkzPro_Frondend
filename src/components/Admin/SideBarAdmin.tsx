@@ -17,7 +17,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Menu from "@mui/material/Menu";
-import logo from "../../assets/Logo workzpro.png";
+import logo from "/workzpro-high-resolution-logo.jpeg";
 import { MenuItem, styled } from "@mui/material";
 
 const StyledMenuItem = styled(MenuItem)(({}) => ({
@@ -160,7 +160,7 @@ export default function SideBarAdmin() {
             src={logo}
             alt="Logo"
             className="mx-auto"
-            style={{ width: "40%", height: "auto" }}
+            style={{ width: "50%", height: "auto" }}
           />
         </Toolbar>
         <Divider />

@@ -97,7 +97,7 @@ const WorkerLogin = () => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         dispatch(
           setWorkerInfo({
-            id: worker._id,
+            _id: worker._id,
             name: worker.name,
             isProfileSetup: worker.isProfileSetup,
             email: worker.email,

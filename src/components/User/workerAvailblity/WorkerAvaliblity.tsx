@@ -10,7 +10,11 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import { fetchSlotById, fetchWorkerDatabyId, submitBooking } from "../../../api/user";
+import {
+  fetchSlotById,
+  fetchWorkerDatabyId,
+  submitBooking,
+} from "../../../api/user";
 import { useParams } from "react-router-dom";
 import IWorker from "../../../interface/IWorker";
 import Loader from "../../loader/Loader";
@@ -22,7 +26,8 @@ import ISlot from "../../../interface/ISlot";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
-
+import { FaTools } from "react-icons/fa";
+import { capitalizeFirstLetter } from "../../../utils/capitalize";
 const StyledTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
     fontSize: "0.875rem",
@@ -112,7 +117,7 @@ const WorkerAvailability: React.FC = () => {
       try {
         setLoading(true);
         const response = await fetchSlotById(workerId);
-      console.log('iam res',response)
+        // console.log("iam res", response);
         setAvailableSlots(response);
       } catch (error) {
         console.error("Error fetching slots data:", error);
@@ -199,7 +204,7 @@ const WorkerAvailability: React.FC = () => {
     if (!date) return false;
     const tomorrow = dayjs().add(1, "day").startOf("day");
     const nextWeek = tomorrow.add(6, "day").endOf("day");
-    return date.isBefore(tomorrow) || date.isAfter(nextWeek);
+    return date.isBefore(tomorrow) || date.isAfter(nextWeek); 
   };
 
   const handleDateChange = (date: Dayjs | null) => {
@@ -224,11 +229,12 @@ const WorkerAvailability: React.FC = () => {
         date: selectedDate?.format("YYYY-MM-DD"),
         workerId: workerId,
       };
-      console.log("bookingData:", bookingData);
+      // console.log("bookingData:", bookingData);
 
-      const response= await submitBooking(bookingData,userId);
+      const response = await submitBooking(bookingData, userId);
+      console.log("resp::--",response);
+      
       // stoast.success("Booking submitted successfully");
-     
     } catch (error) {
       console.error("Error submitting booking:", error);
       toast.error("Failed to submit booking. Please try again.");
@@ -257,9 +263,9 @@ const WorkerAvailability: React.FC = () => {
               />
               <div className="text-center sm:text-left">
                 <h2 className="text-xl font-semibold">{worker.name}</h2>
-                <p className="text-gray-700">
+                {/* <p className="text-gray-700">
                   Expertise: {worker.service.name}
-                </p>
+                </p> */}
                 <p className="text-gray-700">
                   Experience: {worker.experience} years
                 </p>
@@ -290,12 +296,24 @@ const WorkerAvailability: React.FC = () => {
         <div className="mb-8 p-4 border-2 border-custom_lightBlue bg-custom_bg_blue shadow-md rounded-sm">
           <h2 className="text-xl font-semibold mb-4">Service Details</h2>
           {worker ? (
-            <>
-              <p className="text-gray-700">Service: {worker.service.name}</p>
-              <p className="text-gray-700">
-                Description: {worker.service.description}
-              </p>
-            </>
+            <div className="flex items-start">
+              <div className="mr-4">
+                <FaTools className="text-5xl text-custom_buttonColor" />
+              </div>
+              <div>
+                <p className="text-gray-700 ">
+                  <span className="font-semibold ">Service:</span>{" "}
+                  {capitalizeFirstLetter(worker.service.name)}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Description:</span>{" "}
+                  {worker.service.description}
+                </p>
+                <p className="text-gray-700">
+                  {worker.wageDay}/Day
+                </p>
+              </div>
+            </div>
           ) : (
             <p>No service details available.</p>
           )}

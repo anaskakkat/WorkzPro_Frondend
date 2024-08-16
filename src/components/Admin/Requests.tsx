@@ -29,7 +29,7 @@ const Requests: React.FC = () => {
   const fetchRequests = async () => {
     try {
       const response: AcceptRequestResponse[] = await getRequests();
-      // console.log('fetchRequests:--',response);
+      console.log('fetchRequests:--',response);
       const filtered = response.filter((request) => !request.isProfileSetup);
       setRequests(filtered);
     } catch (err) {
@@ -138,12 +138,7 @@ const Requests: React.FC = () => {
                 >
                   Accept
                 </button>
-                {/* <button
-                  onClick={() => handleRequestAction(request._id, 'reject')}
-                  className="font-medium text-red-600 hover:underline mx-2 "
-                >
-                  Reject
-                </button> */}
+              
               </td>
             </tr>
           ))}

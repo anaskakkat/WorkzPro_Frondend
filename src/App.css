@@ -1,24 +1,22 @@
 /* index.css or App.css */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
-
-
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
 
 body {
-    font-family:'Oswald', sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  
+  font-family: "Oswald", sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-  /* otp page styles----------------------------  */
+/* otp page styles----------------------------  */
 
-  .otp-input {
-    width: 50px;
-    height: 50px;
-    margin: 0 5px;
-  }
-  
+.otp-input {
+  width: 50px;
+  height: 50px;
+  margin: 0 5px;
+}
+.capitalize-text {
+  text-transform: capitalize;
+}
 /* ----- card hover--------  */
-

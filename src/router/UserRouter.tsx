@@ -11,7 +11,8 @@ import InterceptorSetup from "../config/axiosInterceptors";
 import WorkersNearby from "../pages/User/WorkersNearby";
 import DeatilsWorker from "../pages/User/DeatilsWorker";
 import WorkerCheckout from "../pages/User/WorkerCheckout";
-import Demo from "../components/Demo"; 
+import Demo from "../components/Demo";
+import BookingSuccess from "../pages/User/BookingSuccess";
 
 export const UserRouter = () => {
   return (
@@ -39,7 +40,11 @@ export const UserRouter = () => {
               element={<DeatilsWorker />}
             />
           </Route>
-            <Route path="/workerCheckout/:workerId" element={<WorkerCheckout />} />
+          <Route
+            path="/workerCheckout/:workerId"
+            element={<WorkerCheckout />}
+          />
+          <Route path="/success" element={<BookingSuccess />} />
         </Route>
       </Routes>
     </InterceptorSetup>

@@ -1,15 +1,12 @@
 import Api from "../config/axiosConfig";
 import workerRoutes from "../endpoints/workerEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
+import ISlot from "../interface/ISlot";
 interface IWorker {
   name: string;
   email: string;
   phoneNumber: string | number;
   password: string;
-}
-export interface ISlot {
-    date: string;
-    time:"fullday" | "morning" | "afternoon"|string
 }
 
 export const registerWorker = async (worker: IWorker) => {
@@ -72,9 +69,9 @@ export const setProfileData = async (profileData: FormData) => {
     handleApiError(error);
   }
 };
-export const setSlot = async (slot: ISlot,id:string) => {
+export const setSlot = async (slot: ISlot, id: string) => {
   try {
-    const response = await Api.post(workerRoutes.setSlots(id),slot);
+    const response = await Api.post(workerRoutes.setSlots(id), slot);
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -88,4 +85,11 @@ export const fetchSlots = async (id: string) => {
     handleApiError(error);
   }
 };
-
+export const deleteSlot = async (id: string) => {
+  try {
+    const response = await Api.delete(workerRoutes.deleteSlot(id));
+    return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
