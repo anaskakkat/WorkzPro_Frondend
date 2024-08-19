@@ -17,7 +17,6 @@ const HomePage: React.FC =() => {
 
       <Cards />
       {/* <FooterCards /> */}
-      <Footer />
     </Suspense>
   );
 };

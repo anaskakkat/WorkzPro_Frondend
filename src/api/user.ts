@@ -2,6 +2,7 @@ import Api from "../config/axiosConfig";
 import axios, { AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
+import { IBooking } from "../interface/Booking";
 interface FormData {
   name: string;
   email: string;
@@ -17,17 +18,6 @@ interface Resp {
   data: string;
   user?: UserResponse;
   message: string;
-}
-interface BookingData {
-  date?: string;
-  workerId?: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  selectedSlot: string;
-  location: string;
-  comments: string;
 }
 
 export const signUp = async (
@@ -140,10 +130,28 @@ export const fetchSlotById = async (id: string) => {
     throw error;
   }
 };
-export const submitBooking = async (bookingData: BookingData, id: string) => {
+export const submitBooking = async (bookingData: IBooking, id: string) => {
   try {
     const response = await Api.post(userRoutes.submitBooking(id), bookingData);
 
+    return response;
+    ``;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchBookings = async (id: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchBookings(id));
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchBookingUser = async (id: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchBookingsByUser(id));
     return response;
   } catch (error) {
     throw error;

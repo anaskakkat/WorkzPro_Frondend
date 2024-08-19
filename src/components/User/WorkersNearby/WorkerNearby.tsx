@@ -1,38 +1,37 @@
 import React, { useEffect, useState } from "react";
 import {
-  Card,
-  CardContent,
-  Typography,
   Grid,
   Avatar,
   Button,
-  Box,
-  Rating,
   TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Typography,
+  Rating,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { fetchWorkers } from "../../../api/user"; // Adjust this import path as needed
+import { fetchWorkers } from "../../../api/user";
 import Loader from "../../loader/Loader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import IWorker from "../../../interface/IWorker";
 
 const WorkerNearby: React.FC = () => {
   const [workers, setWorkers] = useState<IWorker[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filterService, setFilterService] = useState<string>("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Extract the service name from the query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const serviceName = queryParams.get("service") || "";
 
   useEffect(() => {
     const fetchWorkerData = async () => {
       setLoading(true);
       try {
         const response: IWorker[] = await fetchWorkers();
-        const filteredWorkers = response.filter((worker) => !worker.isBlocked);
+        const filteredWorkers = response
+          .filter((worker) => !worker.isBlocked)
+          .filter((worker) => worker.service.name === serviceName);
         setWorkers(filteredWorkers);
       } catch (error) {
         console.error("Failed to fetch workers:", error);
@@ -42,7 +41,7 @@ const WorkerNearby: React.FC = () => {
     };
 
     fetchWorkerData();
-  }, []);
+  }, [serviceName]);
 
   const handleDetails = (workerId: string) => {
     navigate(`/WorkerDetails/${workerId}`);
@@ -50,8 +49,7 @@ const WorkerNearby: React.FC = () => {
 
   const filteredWorkers = workers.filter(
     (worker) =>
-      worker.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (filterService === "" || worker.service.name === filterService)
+      worker.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -70,85 +68,77 @@ const WorkerNearby: React.FC = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           margin="normal"
         />
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Filter by Service</InputLabel>
-          <Select
-            value={filterService}
-            label="Filter by Service"
-            onChange={(e) => setFilterService(e.target.value as string)}
-          >
-            <MenuItem value="">All Services</MenuItem>
-            {/* Add menu items based on your available services */}
-            <MenuItem value="Plumbing">Plumbing</MenuItem>
-            <MenuItem value="Electrician">Electrician</MenuItem>
-            {/* Add more services as needed */}
-          </Select>
-        </FormControl>
       </div>
 
-      {/* Worker Cards  */}
-      <div className="container flex-1  ">
-        <Grid container spacing={4}>
-          {filteredWorkers.map((worker) => (
-            <Grid item xs={12} sm={6} md={3} key={worker._id}>
-              <div className="border-custom_Border border-2 w-fit mx-auto my-5 ">
-                <div className="p-4">
-                  <div className="flex flex-col items-center ">
-                    <Avatar
-                      src={worker.profilePicture}
-                      alt={worker.name}
-                      sx={{
-                        width: 80,
-                        height: 80,
-                        borderRadius: "4px",
-                      }}
-                      variant="square"
-                    />
-                    <div className="flex flex-col text-center items-center">
-                      <div>{worker.name}</div>
-                      <Rating
-                        name="read-only"
-                        value={4}
-                        readOnly
-                        size="small"
+      {/* Worker Cards */}
+      <div className="flex-1 p-4">
+        {filteredWorkers.length === 0 ? (
+          <Typography variant="h6" align="center">
+            No users available for the selected criteria.
+          </Typography>
+        ) : (
+          <Grid container spacing={4}>
+            {filteredWorkers.map((worker) => (
+              <Grid item xs={12} sm={6} md={3} key={worker._id}>
+                <div className="border-custom_Border border-2 w-fit mx-auto my-5">
+                  <div className="p-4">
+                    <div className="flex flex-col items-center">
+                      <Avatar
+                        src={worker.profilePicture}
+                        alt={worker.name}
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          borderRadius: "4px",
+                        }}
+                        variant="square"
                       />
+                      <div className="flex flex-col text-center items-center">
+                        <div>{worker.name}</div>
+                        <Rating
+                          name="read-only"
+                          value={4}
+                          readOnly
+                          size="small"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-row justify-between mt-1">
-                    <div>{worker.service.name}</div>
-                    <div className="flex flex-row">
-                      <LocationOnIcon fontSize="inherit" color="primary" />
-                      <div>{worker.location}</div>
+                    <div className="flex flex-row justify-between mt-1">
+                      <div>{worker.service.name}</div>
+                      <div className="flex flex-row">
+                        <LocationOnIcon fontSize="inherit" color="primary" />
+                        <div>{worker.location}</div>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex flex-row justify-between">
-                    <div className="">{worker.experience}+ yrs</div>
-                    <div className="">{worker.wageDay}/day</div>
-                  </div>
+                    <div className="flex flex-row justify-between">
+                      <div className="">{worker.experience}+ yrs</div>
+                      <div className="">{worker.wageDay}/day</div>
+                    </div>
 
-                  <div className="flex flex-row justify-between gap-5 mt-1 ">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => handleDetails(worker._id)}
-                    >
-                      Details
-                    </Button>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      onClick={() => navigate(`/workerCheckout/${worker._id}`)}
-                    >
-                      Book
-                    </Button>
+                    <div className="flex flex-row justify-between gap-5 mt-1">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleDetails(worker._id)}
+                      >
+                        Details
+                      </Button>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => navigate(`/workerCheckout/${worker._id}`)}
+                      >
+                        Book
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Grid>
-          ))}
-        </Grid>
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </div>
     </div>
   );

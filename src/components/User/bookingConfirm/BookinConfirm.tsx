@@ -1,81 +1,184 @@
-import React from 'react';
-import { Typography, Paper, Button, Box, Divider, Icon } from '@mui/material';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import PersonIcon from '@mui/icons-material/Person';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import {
+  Typography,
+  Paper,
+  Button,
+  Box,
+  Divider,
+  Avatar,
+  useMediaQuery,
+  Theme,
+  Grid,
+} from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import PersonIcon from "@mui/icons-material/Person";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { useNavigate, useParams } from "react-router-dom";
+import { fetchBookings } from "../../../api/user";
+import { Booking } from "../../../interface/Booking";
 
-const BookingConfirm = () => {
+const BookingConfirm: React.FC = () => {
+  const [booking, setBooking] = useState<Booking | undefined>(undefined);
   const navigate = useNavigate();
+  const { id } = useParams<{ id?: string }>();
+  const isAboveMd = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
 
-  // Mock booking details (replace with actual data from your application)
-  const bookingDetails = {
-    workerName: "John Doe",
-    service: "Plumbing",
-    date: "August 20, 2024",
-    time: "2:00 PM - 4:00 PM",
-    bookingId: "BK12345"
+  useEffect(() => {
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetchBookings(id!);
+      if (response.status === 200) {
+        setBooking(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching booking:", error);
+    }
   };
 
+  const BookingDetail: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({ icon, label, value }) => (
+    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+      <Avatar sx={{ bgcolor: 'primary.light', mr: 2, width: 40, height: 40 }}>
+        {icon}
+      </Avatar>
+      <Box>
+        <Typography variant="body2" color="text.secondary">
+          {label}
+        </Typography>
+        <Typography variant="body1" fontWeight="medium">
+          {value}
+        </Typography>
+      </Box>
+    </Box>
+  );
+
   return (
-    <Box sx={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5'
-    }}>
-      <Paper elevation={3} sx={{ p: 4, maxWidth: 500, width: '100%' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
-          <CheckCircleOutlineIcon color="success" sx={{ fontSize: 60, mb: 2 }} />
-          <Typography variant="h4" gutterBottom>
-            Booking Confirmed!
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            Your booking has been successfully placed.
-          </Typography>
-        </Box>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f0f4f8",
+        padding: { xs: 2, sm: 4 },
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          p: { xs: 2, sm: 4 },
+          maxWidth: isAboveMd ? 800 : 500,
+          width: "100%",
+          borderRadius: 4,
+          boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+        }}
+      >
+        <Grid container spacing={4}>
+          {isAboveMd && (
+            <Grid item md={4}>
+              <Box
+                sx={{
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  bgcolor: 'primary.light',
+                  borderRadius: 2,
+                  p: 2,
+                }}
+              >
+                <Avatar
+                  src={booking?.workerId.profilePicture || "/default-avatar.png"}
+                  alt={booking?.workerId.name || "Worker"}
+                  sx={{ width: 150, height: 150, mb: 2 }}
+                />
+                <Typography variant="h6" align="center">
+                  {booking?.workerId.name || "Worker Name"}
+                </Typography>
+              </Box>
+            </Grid>
+          )}
+          <Grid item xs={12} md={8}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mb: 3,
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: 60,
+                  height: 60,
+                  bgcolor: "success.main",
+                  mb: 2,
+                }}
+              >
+                <CheckCircleIcon sx={{ fontSize: 40 }} />
+              </Avatar>
+              <Typography variant="h5" gutterBottom fontWeight="bold" color="primary.main" align="center">
+                Service Booked!
+              </Typography>
+              <Typography variant="subtitle1" color="text.secondary" align="center">
+                Your service request has been successfully placed and is awaiting worker confirmation.
+              </Typography>
+            </Box>
 
-        <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: 3 }} />
 
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Booking Details
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <PersonIcon sx={{ mr: 1 }} />
-            <Typography>
-              <strong>Worker:</strong> {bookingDetails.workerName} ({bookingDetails.service})
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <CalendarTodayIcon sx={{ mr: 1 }} />
-            <Typography>
-              <strong>Date:</strong> {bookingDetails.date}
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <AccessTimeIcon sx={{ mr: 1 }} />
-            <Typography>
-              <strong>Time:</strong> {bookingDetails.time}
-            </Typography>
-          </Box>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Booking ID: {bookingDetails.bookingId}
-          </Typography>
-        </Box>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" gutterBottom fontWeight="bold" color="primary.main">
+                Booking Details
+              </Typography>
+              {booking ? (
+                <>
+                  <BookingDetail icon={<PersonIcon />} label="Worker" value={booking.workerId.name} />
+                  <BookingDetail icon={<CalendarTodayIcon />} label="Date" value={new Date(booking.date).toLocaleDateString()} />
+                  <BookingDetail icon={<AccessTimeIcon />} label="Time" value={booking.selectedSlot.time} />
+                  <BookingDetail icon={<LocationOnIcon />} label="Location" value={booking.location || 'Not specified'} />
+                </>
+              ) : (
+                <Typography>Loading booking details...</Typography>
+              )}
+            </Box>
 
-        <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: 3 }} />
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-          <Button variant="contained" color="primary" onClick={() => navigate('/dashboard')}>
-            Go to Dashboard
-          </Button>
-          <Button variant="outlined" color="primary" onClick={() => navigate('/bookings')}>
-            View All Bookings
-          </Button>
-        </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 2,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/")}
+                sx={{ borderRadius: 2, textTransform: 'none', px: 3, py: 1, flex: { xs: '1 0 100%', sm: '0 1 auto' } }}
+              >
+                Home Page
+              </Button>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => navigate("/bookings")}
+                sx={{ borderRadius: 2, textTransform: 'none', px: 3, py: 1, flex: { xs: '1 0 100%', sm: '0 1 auto' } }}
+              >
+                View All Bookings
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
       </Paper>
     </Box>
   );

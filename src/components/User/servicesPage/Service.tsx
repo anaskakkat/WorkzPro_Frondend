@@ -1,34 +1,42 @@
-// Service.tsx
-import React, { useEffect } from "react";
-import { Card, CardContent, Typography, IconButton } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import { userServices } from "../../../api/user";
 import icon from "../../../assets/maintenance.png";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { setServices } from "../../../redux/slices/ServiceSlice";
-
-interface ServiceType {
-  name: string;
-  description: string;
-  isBlocked: boolean;
-}
+import Loader from "../../loader/Loader";
+import IService from "../../../interface/IService";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Service: React.FC = () => {
   const dispatch = useDispatch();
   const services = useSelector((state: RootState) => state.services.services);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const fetchServices = async () => {
+    setLoading(true);
     try {
       const response = await userServices();
       if (response) {
         const filteredServices = response.filter(
-          (service: ServiceType) => service.isBlocked === false
+          (service: IService) => service.isBlocked === false
         );
         dispatch(setServices(filteredServices));
       }
     } catch (error) {
+      toast.error("There was an error fetching the services!");
       console.error("There was an error fetching the services!", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -38,19 +46,26 @@ const Service: React.FC = () => {
 
   const uppercase = (str: string): string => str.toUpperCase();
 
+  const handleServiceClick = (serviceName: string) => {
+    navigate(`/workersNearby?service=${encodeURIComponent(serviceName)}`);
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex-grow flex items-center justify-center bg-custom_bg_blue px-10 md:px-20">
+      <div className="flex-grow flex items-center justify-center px-10 md:px-20">
         <div className="w-full flex flex-col md:flex-row items-center gap-20">
           <div className="max-w-60 md:w-1/3 mb-6 md:mb-0 flex items-center justify-center">
-            <Typography
-              variant="h4"
-              component="h3"
-              className="min-w-28 text-left md:text-2xl  oswald-font"
-            >
-              <span className="font-semibold">LEARN MORE ABOUT OUR</span> <br />
-              <span className="text-custom_buttonColor font-semibold">SERVICES</span>
-            </Typography>
+            <div className="">
+              <span className="font-semibold text-4xl w-10  ">LEARN MORE ABOUT OUR</span>{" "}
+              <br />
+              <span className="text-custom_buttonColor text-4xl font-semibold">
+                SERVICES
+              </span>
+            </div>
           </div>
 
           <div className="w-full md:w-3/3 grid grid-cols-1 sm:grid-cols-2 mx-auto lg:grid-cols-4 gap-2">
@@ -65,6 +80,7 @@ const Service: React.FC = () => {
                   height: "35vh",
                 }}
                 className="relative h-64 w-full group overflow-hidden text-custom_navyBlue flex flex-col"
+                onClick={() => handleServiceClick(service.name)}
               >
                 <div className="absolute inset-0 bg-custom_navyBlue -translate-y-full duration-700 ease-in-out group-hover:translate-y-0"></div>
                 <CardContent className="flex flex-col h-full justify-end items-center relative z-10 ease-in-out group-hover:justify-center">

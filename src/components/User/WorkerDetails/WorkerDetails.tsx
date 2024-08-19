@@ -31,16 +31,16 @@ const WorkerDetails = () => {
   return (
     <>
       <div className="">
-        <h4 className="text-center mt-4 font-medium text-xl text-custom_navyBlue">
+        <h4 className="text-center my-10 font-medium text-xl text-custom_navyBlue">
           Worker Details
         </h4>
       </div>
-      <div className="container p-8  flex gap-2 mx-auto  rounded-lg overflow-hidden">
-        <div className="p-4 border-2 max-w-full min-w-64 text-custom_navyBlue">
+      <div className="container p-4  flex gap-2 mx-auto  mb-16 rounded-lg overflow-hidden">
+        <div className="p-4 border-2 max-w-full min-w-60 text-custom_navyBlue">
           <div>
             <img
               className="mx-auto border-2  border-custom_lightBlue"
-              width={150}
+              width={100}
               src={worker.profilePicture}
               alt={worker.name}
             />
@@ -61,7 +61,7 @@ const WorkerDetails = () => {
                 <p>{capitalizeFirstLetter(worker.location)}</p>
               </div>
             </div>
-            <div className="flex flex-row justify-between bg-blue-100 p-1 mt-1">
+            <div className="flex flex-row justify-between bg-blue-100 p-2 mt-1">
               <p className="">Exp: {worker.experience} yrs</p>
               <p className="">Rating 4.6</p>
             </div>
@@ -69,23 +69,23 @@ const WorkerDetails = () => {
         </div>
         <div className="border-2 w-full  p-4 ">
           <div className="text-wrap  text-xl ">
-            <p className="text-2xl text-custom_navyBlue ">Service:</p>
-            <div className="m-2">
+            <p className="text-2xl text-custom_navyBlue ">Service</p>
+            <div className="m-1">
               {" "}
-              <p className="text-red-600  ">{worker.service.name}</p>
+              <p className="text-custom_navyBlue  ">{worker.service.name}</p>
               <p
-                className="text-gray-800 text-lg font-normal
+                className="text-gray-800 text-[16px] font-normal
                "
               >
                 {worker.service.description}
               </p>
-              <p className="text-gray-700 text-lg">
-                {worker.wageDay}/Day
-              </p>
+              <p className="text-gray-700 text-[17px]">{worker.wageDay}/Day</p>
             </div>
           </div>
           <div className="">
-            <h4 className="text-xl text-custom_navyBlue">Project Images</h4>
+            <h4 className="text-xl text-custom_navyBlue mt-2">
+              Project Images
+            </h4>
 
             <div className="flex gap-1">
               {worker.images?.length > 0 ? (
@@ -93,7 +93,7 @@ const WorkerDetails = () => {
                   <img key={index} src={image} alt={`Project ${index + 1}`} />
                 ))
               ) : (
-                <p className="text-custom_buttonColor font-montserrat">
+                <p className="text-custom_buttonColor font-montserrat m-1">
                   No project images available.
                 </p>
               )}

@@ -15,7 +15,7 @@ import {
   fetchWorkerDatabyId,
   submitBooking,
 } from "../../../api/user";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import IWorker from "../../../interface/IWorker";
 import Loader from "../../loader/Loader";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -28,6 +28,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { FaTools } from "react-icons/fa";
 import { capitalizeFirstLetter } from "../../../utils/capitalize";
+import { IBooking } from "../../../interface/Booking";
 const StyledTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
     fontSize: "0.875rem",
@@ -91,11 +92,13 @@ const WorkerAvailability: React.FC = () => {
     location: "",
     comments: "",
   });
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [availableSlots, setAvailableSlots] = useState<ISlot[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isFormValid, setIsFormValid] = useState(false);
   const userId = useSelector((state: RootState) => state.userInfo.userInfo._id);
+
   // console.log(userId);
 
   const fetchWorker = async () => {
@@ -204,7 +207,7 @@ const WorkerAvailability: React.FC = () => {
     if (!date) return false;
     const tomorrow = dayjs().add(1, "day").startOf("day");
     const nextWeek = tomorrow.add(6, "day").endOf("day");
-    return date.isBefore(tomorrow) || date.isAfter(nextWeek); 
+    return date.isBefore(tomorrow) || date.isAfter(nextWeek);
   };
 
   const handleDateChange = (date: Dayjs | null) => {
@@ -218,22 +221,25 @@ const WorkerAvailability: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("touched submit", isFormValid);
+    // console.log("touched submit", isFormValid);
     if (!isFormValid) {
       toast.error("Please fill all required fields correctly");
       return;
     }
     try {
-      const bookingData = {
+      const bookingData: IBooking  = { 
         ...bookingInfo,
-        date: selectedDate?.format("YYYY-MM-DD"),
-        workerId: workerId,
+        date: selectedDate ? selectedDate.format("YYYY-MM-DD") : "", 
+        workerId: workerId || "", 
       };
       // console.log("bookingData:", bookingData);
 
       const response = await submitBooking(bookingData, userId);
-      console.log("resp::--",response);
-      
+      if (response.status === 200) {
+        console.log("resp::--", response);
+        navigate(`/success/${response.data._id}`);
+      }
+
       // stoast.success("Booking submitted successfully");
     } catch (error) {
       console.error("Error submitting booking:", error);
@@ -309,9 +315,7 @@ const WorkerAvailability: React.FC = () => {
                   <span className="font-semibold">Description:</span>{" "}
                   {worker.service.description}
                 </p>
-                <p className="text-gray-700">
-                  {worker.wageDay}/Day
-                </p>
+                <p className="text-gray-700">{worker.wageDay}/Day</p>
               </div>
             </div>
           ) : (

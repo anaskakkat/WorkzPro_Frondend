@@ -7,6 +7,7 @@ import { removeWorkerInfo } from "../../../redux/slices/workerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import icon from "/vecteezy_default-avatar-profile-icon-vector-in-flat-style_27708418.jpg";
 import { RootState } from "../../../redux/store/store";
+import { AccountCircle, Logout } from "@mui/icons-material";
 
 const NavbarWorker: React.FC = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -37,9 +38,12 @@ const NavbarWorker: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white border-custom_lightBlue border-b-2">
+    <nav className="px-16 bg-white border-custom_lightBlue border-b-2">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-1">
-        <Link to="/worker" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <Link
+          to="/worker"
+          className="flex items-center space-x-3 rtl:space-x-reverse"
+        >
           <img src={logo} className="h-14" alt="Workzpro Logo" />
         </Link>
         {worker && (
@@ -56,11 +60,15 @@ const NavbarWorker: React.FC = () => {
                 aria-expanded={isDropdownOpen}
                 aria-haspopup="true"
               >
-                <img className="w-8 h-8 rounded-full" src={icon} alt="user photo" />
+                <img
+                  className="w-8 h-8 rounded-full"
+                  src={icon}
+                  alt="user photo"
+                />
               </button>
               {isDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-4 text-center w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  className="absolute right-0 mt-24 text-center w-40 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   role="menu"
                   aria-orientation="vertical"
                   aria-labelledby="user-menu-button"
@@ -69,18 +77,20 @@ const NavbarWorker: React.FC = () => {
                     <li>
                       <Link
                         to="/worker/profile"
-                        className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-custom_lightBlue"
+                        className=" w-full px-4 py-2 text-sm text-gray-700 hover:bg-custom_lightBlue flex items-center"
                         role="menuitem"
                       >
+                        <AccountCircle fontSize="small" className="mr-2" />
                         Profile
                       </Link>
                     </li>
                     <li>
                       <button
                         onClick={handleLogout}
-                        className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-red-600 hover:text-white"
+                        className=" w-full px-4 py-2 text-sm text-gray-700 hover:bg-red-600 hover:text-white flex items-center"
                         role="menuitem"
                       >
+                        <Logout fontSize="small" className="mr-2" />
                         Logout
                       </button>
                     </li>
@@ -94,27 +104,43 @@ const NavbarWorker: React.FC = () => {
             >
               <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 text-navy-900">
                 <li>
-                  <Link to="/worker" className="block py-2 px-3 hover:text-blue-700 md:p-0" aria-current="page">
+                  <Link
+                    to="/worker"
+                    className="block py-2 px-3 hover:text-blue-700 md:p-0"
+                    aria-current="page"
+                  >
                     Dashboard
                   </Link>
                 </li>
                 <li>
-                  <Link to="/worker/bookings" className="block py-2 px-3 hover:text-blue-700 md:p-0">
+                  <Link
+                    to="/worker/bookings"
+                    className="block py-2 px-3 hover:text-blue-700 md:p-0"
+                  >
                     Bookings
                   </Link>
                 </li>
                 <li>
-                  <Link to="/worker/slots" className="block py-2 px-3 hover:text-blue-700 md:p-0">
+                  <Link
+                    to="/worker/slots"
+                    className="block py-2 px-3 hover:text-blue-700 md:p-0"
+                  >
                     Slots
                   </Link>
                 </li>
                 <li>
-                  <Link to="/worker/payments" className="block py-2 px-3 hover:text-blue-700 md:p-0">
+                  <Link
+                    to="/worker/payments"
+                    className="block py-2 px-3 hover:text-blue-700 md:p-0"
+                  >
                     Payments
                   </Link>
                 </li>
                 <li>
-                  <Link to="/worker/reviews" className="block py-2 px-3 hover:text-blue-700 md:p-0">
+                  <Link
+                    to="/worker/reviews"
+                    className="block py-2 px-3 hover:text-blue-700 md:p-0"
+                  >
                     Reviews
                   </Link>
                 </li>

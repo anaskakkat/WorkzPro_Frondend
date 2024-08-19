@@ -180,7 +180,7 @@ const WorkerSlots: React.FC = () => {
       </div>
 
       <div className="worker-slots">
-        <h1 className="text-center font-medium text-custom_navyBlue font">
+        <h1 className="text-center font-medium text-custom_navyBlue font my-4">
           Add Work Slots
         </h1>
         <div className="flex space-x-2">

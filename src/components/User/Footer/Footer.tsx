@@ -1,6 +1,6 @@
 // import React from 'react';
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import logo from "../../../assets/Logo workzpro.png";
+import logo from "/workzpro-high-resolution-logo.jpeg";
 
 const Footer = () => {
   return (

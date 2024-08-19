@@ -37,7 +37,7 @@ const Cards = () => {
                   alt={`${service.title} logo`}
                   className="h-16 mx-auto mb-4"
                 />
-                <h3 className="text-lg font-semibold">{service.title}</h3>
+                <h3 className="text-xl  font-medium">{service.title}</h3>
               </div>
             ))}
           </div>

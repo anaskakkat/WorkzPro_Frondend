@@ -1,9 +1,9 @@
-import React from 'react'
+import BookingsWorker from '../../components/worker/bookings/BookingsWorker'
 
 const Bookings = () => {
   return (
-    <div>Bookings</div>
-  )
+<BookingsWorker/>   
+ )
 }
 
 export default Bookings

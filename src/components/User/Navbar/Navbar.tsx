@@ -23,12 +23,12 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [location, setLocation] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // console.log('',GOOGLE_API);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentLocation = useLocation();
   const searchInput = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const userInfo = useSelector<RootState, UserInfo | null>(
     (state) => state.userInfo.userInfo
@@ -37,6 +37,7 @@ const Navbar: React.FC = () => {
   const isActive = (path: string): boolean => {
     return currentLocation.pathname === path;
   };
+
   const handleSignout = async (): Promise<void> => {
     try {
       const response = await logoutUser();
@@ -70,14 +71,25 @@ const Navbar: React.FC = () => {
     }
   };
 
+  // Close dropdown when clicking outside
   useEffect(() => {
-    initMapScript().then(() => initAutocomplete(searchInput));
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  // console.log('searchInput :',searchInput );
-  
+
+
   return (
-    <nav className="sticky top-0 h-16 bg-white shadow-md z-50 flex-shrink-0">
+    <nav className="sticky top-0 h-16 bg-white shadow-md z-50 px-4 flex-shrink-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex-shrink-0 flex items-center">
@@ -102,21 +114,29 @@ const Navbar: React.FC = () => {
             >
               Services
             </Link>
-            <Link
+            {/* <Link
               to="/workersNearby"
               className={`${
                 isActive("/workersNearby") ? "text-blue-600" : "text-gray-700"
               } hover:text-blue-600`}
             >
               Workers
-            </Link>
+            </Link> */}
             <Link
-              to="/contact"
+              to="/"
               className={`${
-                isActive("/contact") ? "text-blue-600" : "text-gray-700"
+                isActive("") ? "text-blue-600" : "text-gray-700"
               } hover:text-blue-600`}
             >
               Contact
+            </Link>
+            <Link
+              to=""
+              className={`${
+                isActive("") ? "text-blue-600" : "text-gray-700"
+              } hover:text-blue-600`}
+            >
+              About
             </Link>
           </div>
           <div className="hidden md:flex items-center space-x-4">
@@ -144,19 +164,19 @@ const Navbar: React.FC = () => {
               <>
                 <button
                   onClick={() => navigate("/login")}
-                  className="bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 rounded"
+                  className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => navigate("/worker/login")}
-                  className="bg-black hover:bg-gray-800 text-white  py-2 px-4 rounded"
+                  className="bg-black hover:bg-gray-800 text-white py-2 px-4 rounded"
                 >
                   Professionals Login
                 </button>
               </>
             ) : (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={toggleDropdown}
                   className="flex items-center space-x-2 text-gray-700 hover:text-blue-600"
@@ -167,17 +187,17 @@ const Navbar: React.FC = () => {
                   </span>
                 </button>
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <div className="fixed top-16 right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                     <Link
                       to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-200"
+                      >
                       Profile
                     </Link>
                     <button
                       onClick={handleSignout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
+                      className=" w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-500  hover:text-white flex items-center"
+                      >
                       <MdLogout className="inline-block mr-2" />
                       Logout
                     </button>
@@ -197,7 +217,7 @@ const Navbar: React.FC = () => {
         </div>
       </div>
       {isMenuOpen && (
-        <div className="md:hidden">
+        <div className=" inset-0 bg-white z-40">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link
               to="/"
@@ -263,13 +283,13 @@ const Navbar: React.FC = () => {
               <>
                 <button
                   onClick={() => navigate("/login")}
-                  className="w-full mt-3 bg-blue-500 hover:bg-blue-700 text-white  py-2 px-4 rounded"
+                  className="w-full mt-3 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => navigate("/worker/login")}
-                  className="w-full mt-3 bg-black hover:bg-gray-800 text-white  py-2 px-4 rounded"
+                  className="w-full mt-3 bg-black hover:bg-gray-800 text-white py-2 px-4 rounded"
                 >
                   Professionals Login
                 </button>

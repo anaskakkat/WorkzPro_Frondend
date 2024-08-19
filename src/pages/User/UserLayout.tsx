@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../../components/User/Navbar/Navbar";
 import { Outlet } from "react-router-dom";
+import Footer from "../../components/User/Footer/Footer";
 
 const UserLayout: React.FC = () => {
   return (
@@ -9,6 +10,7 @@ const UserLayout: React.FC = () => {
       <main>
         <Outlet />
       </main>
+      <Footer/>
     </>
   );
 };
