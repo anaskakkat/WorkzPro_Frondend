@@ -15,7 +15,9 @@ export const fetchLocationDetails = async (
       (component: { types: string | string[] }) =>
         component.types.includes("locality")
     );
-    const locality = localityComponent?.long_name || "Unknown locality";
+    // console.log("localityComponent:",localityComponent);
+    
+    const locality = localityComponent?.short_name || "Unknown locality";
     return locality;
   } else {
     throw new Error("Failed to fetch location details.");

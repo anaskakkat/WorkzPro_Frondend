@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import logo from "/workzpro-high-resolution-logo.jpeg";
 import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
 import { fetchLocationDetails } from "../../../utils/getLocationDetails";
-import { initMapScript, initAutocomplete } from "../../../utils/googleMapUtils";
+import { initAutocomplete } from "../../../utils/googleMapUtils";
 
 // Define types
 interface UserInfo {
@@ -33,6 +33,13 @@ const Navbar: React.FC = () => {
   const userInfo = useSelector<RootState, UserInfo | null>(
     (state) => state.userInfo.userInfo
   );
+
+  useEffect(() => {
+    initAutocomplete(searchInput);
+  }, [searchInput]);
+  useEffect(() => {
+    // handleGetCurrentLocation();
+  }, []);
 
   const isActive = (path: string): boolean => {
     return currentLocation.pathname === path;
@@ -61,6 +68,8 @@ const Navbar: React.FC = () => {
       const position = await getCurrentPosition();
       const { latitude, longitude } = position.coords;
       const locality = await fetchLocationDetails(latitude, longitude);
+      console.log("locality:-----", locality);
+
       setLocation(locality);
     } catch (error: any) {
       console.error("Error:", error);
@@ -72,21 +81,22 @@ const Navbar: React.FC = () => {
   };
 
   // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (
+  //       dropdownRef.current &&
+  //       !dropdownRef.current.contains(event.target as Node)
+  //     ) {
+  //       setIsDropdownOpen(false);
+  //     }
+  //   };
 
-    document.addEventListener("mousedown", handleClickOutside);
+  //   document.addEventListener("mousedown", handleClickOutside);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   return (
     <nav className="sticky top-0 h-16 bg-white shadow-md z-50 px-4 flex-shrink-0">
@@ -133,7 +143,7 @@ const Navbar: React.FC = () => {
             <Link
               to=""
               className={`${
-                isActive("") ? "text-blue-600" : "text-gray-700"
+                isActive("/") ? "text-blue-600" : "text-gray-700"
               } hover:text-blue-600`}
             >
               About
@@ -191,13 +201,13 @@ const Navbar: React.FC = () => {
                     <Link
                       to="/profile"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-200"
-                      >
+                    >
                       Profile
                     </Link>
                     <button
                       onClick={handleSignout}
                       className=" w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-500  hover:text-white flex items-center"
-                      >
+                    >
                       <MdLogout className="inline-block mr-2" />
                       Logout
                     </button>
