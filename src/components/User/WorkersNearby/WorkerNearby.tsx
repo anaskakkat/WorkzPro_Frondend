@@ -11,7 +11,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { fetchWorkers } from "../../../api/user";
 import Loader from "../../loader/Loader";
 import { useNavigate, useLocation } from "react-router-dom";
-import IWorker from "../../../interface/IWorker";
+import IWorker from "../../../types/IWorker";
 
 const WorkerNearby: React.FC = () => {
   const [workers, setWorkers] = useState<IWorker[]>([]);

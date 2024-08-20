@@ -1,34 +1,21 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Box, Typography, TextField, Button } from "@mui/material";
-import { styled } from "@mui/system";
+import { Box } from "@mui/material";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
-import { verfylogin } from "../../api/user";
+import { googleAuth, verfylogin } from "../../api/user";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "../../redux/slices/userSlices";
-
+import logo from "/workzpro-high-resolution-logo.jpeg";
 import { jwtDecode } from "jwt-decode";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=\S)(?=\S{8,})/;
-const CustomTextField = styled(TextField)(() => ({
-  "& .MuiInputBase-root": {
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#01B7F2",
-    },
-  },
-  "& .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#BFDBFE",
-  },
-}));
+
 import { GoogleLogin } from "@react-oauth/google";
-interface GoogleUser {
-  email: string;
-  name: string;
-  picture: string;
-  sub: string;
-}
+import CustomTextField from "../../components/User/styleComponents/StyledTextField";
+import { IGoogleUser } from "../../types/user";
+
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -112,19 +99,22 @@ const LoginPage: React.FC = () => {
   };
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
-      console.log("Google credential response:", credentialResponse);
-      const decodedToken: GoogleUser = jwtDecode(credentialResponse.credential);
+      const decodedToken: IGoogleUser = jwtDecode(
+        credentialResponse.credential
+      );
       console.log("Decoded Google user:", decodedToken);
       const googleUser = {
         email: decodedToken.email,
         name: decodedToken.name,
         picture: decodedToken.picture,
-        googleId: decodedToken.sub
+        googleId: decodedToken.sub,
       };
+      const response = await googleAuth(googleUser);
+      console.log("response:::", response);
+
       toast.success("Google login successful");
       dispatch(setUserInfo(googleUser));
       navigate("/");
-
     } catch (error) {
       console.error("Google login error:", error);
       toast.error("Google login failed");
@@ -136,21 +126,15 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-custom_bg_blue">
-      <Container className="min-h-screen flex items-center justify-center">
-        <Box className="w-full max-w-md p-8 bg-white rounded shadow-lg space-y-4 mx-auto mt-6">
-          <Typography
-            variant="h4"
-            className="text-center text-custom_navyBlue font-bold"
-          >
-            Login
-          </Typography>
-          <Typography
-            variant="body1"
-            className="text-center text-custom_navyBlue"
-          >
-            Login to access your WorkzPro account
-          </Typography>
+    <div className="flex items-center justify-center h-screen">
+      <div className="bg-white border-2 rounded shadow-lg flex items-center max-w-4xl  mx-4 md:mx-auto w-3/5">
+        {/* Left Side: Logo */}
+        <div className="flex justify-center items-center max-w-xs p-4">
+          <img src={logo} alt="WorkzPro Logo" className="w-auto h-auto" />
+        </div>
+
+        {/* Right Side: Login Form */}
+        <div className=" w-full p-8 rounded-md">
           <Box
             component="form"
             className="space-y-4"
@@ -165,15 +149,14 @@ const LoginPage: React.FC = () => {
               type="email"
               autoComplete="off"
               required
-              fullWidth
               variant="outlined"
               margin="dense"
+              fullWidth
               value={email}
               onChange={handleEmailChange}
-              error={!!emailError}
               helperText={emailError}
+              error={!!emailError}
             />
-
             <CustomTextField
               id="password"
               name="password"
@@ -189,49 +172,41 @@ const LoginPage: React.FC = () => {
               helperText={passwordError}
               error={!!passwordError}
             />
-            <Box className="flex items-center justify-between">
+            <div className="flex items-center  justify-between">
+              <button className=" px-4 py-1 w-2/4 text-sm font-medium text-white bg-custom_buttonColor rounded">
+                Login
+              </button>
               <Link
                 to="#"
-                className="text-sm font-medium text-custom_navyBlue hover:text-custom_buttonColor"
+                className="text-sm font-light  text-custom_navyBlue hover:text-custom_buttonColor"
               >
                 Forgot Password
               </Link>
-            </Box>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              className="w-full px-4 py-2 text-sm font-medium text-white bg-custom_button_Sp rounded"
-            >
-              Login
-            </Button>
-            <Typography
-              variant="body2"
-              className="text-center text-gray-600 mt-4"
-            >
-              Don't have an account?{" "}
-              <Link to="/signup" className="font-medium ">
-                <span className="text-custom_navyBlue font-semibold hover:text-custom_buttonColor">
-                  {" "}
-                  Sign up
-                </span>
-              </Link>
-            </Typography>
-            <Typography
-              variant="body2"
-              className="text-center text-custom_navyBlue mt-4"
-            >
-              Or login with
-            </Typography>
-            <Box className="flex justify-center mt-4">
+            </div>
+            <div className="flex items-center justify-center my-4">
+              <div className="border-t border-gray-300 flex-grow mr-3 "></div>
+              <div className="text-gray-700 text-center text-sm">
+                Or login with
+              </div>
+              <div className="border-t border-gray-300 flex-grow ml-3"></div>
+            </div>{" "}
+            <div className="align-middle flex justify-center">
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
               />
-            </Box>
+            </div>
+            <div className="text-gray-600  text-sm text-center ">
+              Don't have an account?{" "}
+              <Link to="/signup" className="">
+                <span className="text-custom_navyBlue font-semibold hover:text-custom_buttonColor">
+                  Sign up
+                </span>
+              </Link>
+            </div>
           </Box>
-        </Box>
-      </Container>
+        </div>
+      </div>
     </div>
   );
 };

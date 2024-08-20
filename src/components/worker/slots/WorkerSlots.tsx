@@ -4,7 +4,7 @@ import { deleteSlot, fetchSlots, setSlot } from "../../../api/worker";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import moment from "moment";
-import ISlot from "../../../interface/ISlot";
+import ISlot from "../../../types/ISlot";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 

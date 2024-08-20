@@ -6,7 +6,7 @@ export interface IBooking {
   image: string;
   status: string;
   date: string;
-  workerId: string | IBooking;
+  workerId: string
   name: string;
   email: string;
   phone: string;
@@ -29,4 +29,7 @@ export interface Booking {
   phone: string;
   address: string;
   comments?: string;
+  userId:{
+    
+  }
 }

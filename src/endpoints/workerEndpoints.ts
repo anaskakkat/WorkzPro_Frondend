@@ -6,9 +6,10 @@ const workerRoutes = {
   logoutUser: "worker/logout",
   getService: "worker/services",
   setProfile: "worker/setProfile",
-  setSlots: (id: string) => `worker/slots/${id}/setSlots`,
-  fetchSlots: (id: string) => `worker/slots/${id}/fetchSlots`,
-  deleteSlot: (id: string) => `worker/slots/${id}/deleteSlot`,
+  setSlots: (id: string) => `worker/slots/${id}`,
+  fetchSlots: (id: string) => `worker/slots/${id}`,
+  deleteSlot: (id: string) => `worker/slots/${id}`,
+  bookingAccept: (bookingId: string) => `worker/booking/${bookingId}`,
 };
 
 export default workerRoutes;

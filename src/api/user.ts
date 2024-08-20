@@ -2,7 +2,8 @@ import Api from "../config/axiosConfig";
 import axios, { AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
-import { IBooking } from "../interface/Booking";
+import { IBooking } from "../types/Booking";
+import{ IGoogleUser } from "../types/user";
 interface FormData {
   name: string;
   email: string;
@@ -152,6 +153,22 @@ export const fetchBookings = async (id: string) => {
 export const fetchBookingUser = async (id: string) => {
   try {
     const response = await Api.get(userRoutes.fetchBookingsByUser(id));
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const workerBookings = async (id: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchBookingsByWorker(id));
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const googleAuth = async (user: IGoogleUser) => {
+  try {
+    const response = await Api.post(userRoutes.GoogleLogin, user);
     return response;
   } catch (error) {
     throw error;

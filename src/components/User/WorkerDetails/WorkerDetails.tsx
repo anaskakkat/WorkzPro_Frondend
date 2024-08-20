@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { fetchWorkerDatabyId } from "../../../api/user";
 import { useEffect, useState } from "react";
 import Loader from "../../loader/Loader";
-import IWorker from "../../../interface/IWorker";
+import IWorker from "../../../types/IWorker";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { capitalizeFirstLetter } from "../../../utils/capitalize";

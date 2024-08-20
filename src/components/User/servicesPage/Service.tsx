@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { setServices } from "../../../redux/slices/ServiceSlice";
 import Loader from "../../loader/Loader";
-import IService from "../../../interface/IService";
+import IService from "../../../types/IService";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -79,7 +79,7 @@ const Service: React.FC = () => {
                   borderRadius: "0",
                   height: "35vh",
                 }}
-                className="relative h-64 w-full group overflow-hidden text-custom_navyBlue flex flex-col"
+                className="relative h-64 w-full group overflow-hidden text-custom_navyBlue flex flex-col cursor-pointer"
                 onClick={() => handleServiceClick(service.name)}
               >
                 <div className="absolute inset-0 bg-custom_navyBlue -translate-y-full duration-700 ease-in-out group-hover:translate-y-0"></div>

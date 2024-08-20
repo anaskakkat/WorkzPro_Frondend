@@ -17,7 +17,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchBookings } from "../../../api/user";
-import { Booking } from "../../../interface/Booking";
+import { Booking } from "../../../types/Booking";
 
 const BookingConfirm: React.FC = () => {
   const [booking, setBooking] = useState<Booking | undefined>(undefined);

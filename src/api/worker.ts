@@ -1,7 +1,7 @@
 import Api from "../config/axiosConfig";
 import workerRoutes from "../endpoints/workerEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
-import ISlot from "../interface/ISlot";
+import ISlot from "../types/ISlot";
 interface IWorker {
   name: string;
   email: string;
@@ -88,6 +88,14 @@ export const fetchSlots = async (id: string) => {
 export const deleteSlot = async (id: string) => {
   try {
     const response = await Api.delete(workerRoutes.deleteSlot(id));
+    return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const bookingAccept = async (id: string) => {
+  try {
+    const response = await Api.patch(workerRoutes.bookingAccept(id));
     return response;
   } catch (error) {
     handleApiError(error);

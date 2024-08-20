@@ -21,13 +21,13 @@ export const UserRouter = () => {
       <Routes>
         {/* Public routes */}
 
-        <Route path="/" element={<UserLayout />}>
-          <Route element={<PublicRoute />}>
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/otp" element={<Otp />} />
-            <Route path="/login" element={<LoginPage />} />
-          </Route>
+        <Route element={<PublicRoute />}>
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/otp" element={<Otp />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
 
+        <Route path="/" element={<UserLayout />}>
           {/* homeRoute */}
           <Route path="/" element={<HomePage />} />
           <Route path="/demo" element={<Demo />} />

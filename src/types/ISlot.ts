@@ -4,6 +4,8 @@ interface ISlot {
   time: "fullday" | "morning" | "afternoon" | string;
   slots: any[];
   booked: any[];
+  isBooked:boolean
+
 }
 
 export default ISlot;

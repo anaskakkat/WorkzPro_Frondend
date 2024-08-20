@@ -12,10 +12,8 @@ import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
 import { fetchLocationDetails } from "../../../utils/getLocationDetails";
 import { initAutocomplete } from "../../../utils/googleMapUtils";
 
-// Define types
 interface UserInfo {
   userName: string;
-  // Add other user properties as needed
 }
 
 const Navbar: React.FC = () => {
@@ -68,7 +66,7 @@ const Navbar: React.FC = () => {
       const position = await getCurrentPosition();
       const { latitude, longitude } = position.coords;
       const locality = await fetchLocationDetails(latitude, longitude);
-      console.log("locality:-----", locality);
+      // console.log("locality:-----", locality);
 
       setLocation(locality);
     } catch (error: any) {
@@ -81,28 +79,26 @@ const Navbar: React.FC = () => {
   };
 
   // Close dropdown when clicking outside
-  // useEffect(() => {
-  //   const handleClickOutside = (event: MouseEvent) => {
-  //     if (
-  //       dropdownRef.current &&
-  //       !dropdownRef.current.contains(event.target as Node)
-  //     ) {
-  //       setIsDropdownOpen(false);
-  //     }
-  //   };
-
-  //   document.addEventListener("mousedown", handleClickOutside);
-
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className="sticky top-0 h-16 bg-white shadow-md z-50 px-4 flex-shrink-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex-shrink-0 flex items-center">
+        <div className="flex justify-between items-center max-h-16 ">
+          <div className="flex-shrink-0  flex items-center">
             <Link to="/">
               <img className="h-14 w-auto" src={logo} alt="Logo" />
             </Link>
@@ -160,7 +156,7 @@ const Navbar: React.FC = () => {
                   setLocation(e.target.value)
                 }
                 readOnly={isLoading}
-                className="bg-transparent font-light text-custom_navyBlue border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300"
+                className="bg-transparent  text-custom_navyBlue border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-1 focus:ring-blue-300"
               />
               <button
                 onClick={handleGetCurrentLocation}
@@ -197,7 +193,7 @@ const Navbar: React.FC = () => {
                   </span>
                 </button>
                 {isDropdownOpen && (
-                  <div className="fixed top-16 right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                  <div className="fixed top-12 right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                     <Link
                       to="/profile"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-200"

@@ -7,20 +7,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setWorkerInfo } from "../../redux/slices/workerSlice";
 import { verfyloginWorker } from "../../api/worker";
+import CustomTextField from "../../components/User/styleComponents/StyledTextField";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=\S)(?=\S{8,})/;
 
-const CustomTextField = styled(TextField)(() => ({
-  "& .MuiInputBase-root": {
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#01B7F2",
-    },
-  },
-  "& .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#BFDBFE",
-  },
-}));
+
 
 const WorkerLogin = () => {
   const [email, setEmail] = useState("");

@@ -16,19 +16,19 @@ import {
   submitBooking,
 } from "../../../api/user";
 import { useNavigate, useParams } from "react-router-dom";
-import IWorker from "../../../interface/IWorker";
+import IWorker from "../../../types/IWorker";
 import Loader from "../../loader/Loader";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
-import ISlot from "../../../interface/ISlot";
+import ISlot from "../../../types/ISlot";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { FaTools } from "react-icons/fa";
 import { capitalizeFirstLetter } from "../../../utils/capitalize";
-import { IBooking } from "../../../interface/Booking";
+import { IBooking } from "../../../types/Booking";
 const StyledTextField = styled(TextField)({
   "& .MuiOutlinedInput-root": {
     fontSize: "0.875rem",
@@ -99,8 +99,6 @@ const WorkerAvailability: React.FC = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const userId = useSelector((state: RootState) => state.userInfo.userInfo._id);
 
-  // console.log(userId);
-
   const fetchWorker = async () => {
     if (workerId) {
       try {
@@ -120,8 +118,9 @@ const WorkerAvailability: React.FC = () => {
       try {
         setLoading(true);
         const response = await fetchSlotById(workerId);
-        // console.log("iam res", response);
-        setAvailableSlots(response);
+        console.log("iam res", response);
+        const filteredSlots = response.filter((slot: ISlot) => !slot.isBooked);
+        setAvailableSlots(filteredSlots);
       } catch (error) {
         console.error("Error fetching slots data:", error);
       } finally {
@@ -227,10 +226,13 @@ const WorkerAvailability: React.FC = () => {
       return;
     }
     try {
-      const bookingData: IBooking  = { 
+      const bookingData: IBooking = {
         ...bookingInfo,
-        date: selectedDate ? selectedDate.format("YYYY-MM-DD") : "", 
-        workerId: workerId || "", 
+        date: selectedDate ? selectedDate.format("YYYY-MM-DD") : "",
+        workerId: workerId || "",
+        _id: "",
+        image: "",
+        status: "",
       };
       // console.log("bookingData:", bookingData);
 

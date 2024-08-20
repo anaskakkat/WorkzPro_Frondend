@@ -16,21 +16,14 @@ const InterceptorSetup: React.FC<InterceptorSetupProps> = ({ children }) => {
     const interceptor = Api.interceptors.response.use(
       (response) => {
         // console.log('interceptor:-response--',response);
-        
+
         return response;
       },
       (error: any) => {
-        // console.log('interceptor:--- error',error);
+        // console.log("interceptor:--- error", error);
 
         if (error.response.status === 401) {
-          const message = error.response.data;
-          if (
-            message === "You are blocked by admin"
-          ) {
-            // toast.error(message);
-            dispatch(removeUserInfo());
-            navigate("/login");
-          }
+          dispatch(removeUserInfo());
         }
         return Promise.reject(error);
       }
