@@ -23,6 +23,7 @@ const LoginPage: React.FC = () => {
   const [passwordError, setPasswordError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const validateEmail = (email: string) => {
     if (!emailRegex.test(email)) {
       return "Invalid email format";
@@ -36,6 +37,7 @@ const LoginPage: React.FC = () => {
     }
     return "";
   };
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
@@ -79,7 +81,6 @@ const LoginPage: React.FC = () => {
 
     try {
       const response = await verfylogin(email, password);
-      // console.log("response:", response);
 
       if (response) {
         const { user, message } = response.data;
@@ -97,6 +98,7 @@ const LoginPage: React.FC = () => {
       console.error(error.message);
     }
   };
+
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
       const decodedToken: IGoogleUser = jwtDecode(
@@ -126,15 +128,16 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="bg-white border-2 rounded shadow-lg flex items-center max-w-4xl  mx-4 md:mx-auto w-3/5">
+    <div className="flex items-center mx-auto max-w-full justify-center h-screen bg-blue-50">
+      <div className="bg-white border-2 rounded shadow-lg flex flex-col sm:flex-row items-center max-w-4xl  mx-4 md:mx-auto">
         {/* Left Side: Logo */}
-        <div className="flex justify-center items-center max-w-xs p-4">
-          <img src={logo} alt="WorkzPro Logo" className="w-auto h-auto" />
+        <div className="flex justify-center items-center max-w-xs p-4 md:border-r-2">
+          <img src={logo} alt="WorkzPro Logo" className=" sm:w-auto sm:h-auto " />
         </div>
 
         {/* Right Side: Login Form */}
-        <div className=" w-full p-8 rounded-md">
+        <div className="w-full p-8 rounded-md">
+          <h5 className="text-xl">Login</h5>
           <Box
             component="form"
             className="space-y-4"
@@ -172,31 +175,31 @@ const LoginPage: React.FC = () => {
               helperText={passwordError}
               error={!!passwordError}
             />
-            <div className="flex items-center  justify-between">
-              <button className=" px-4 py-1 w-2/4 text-sm font-medium text-white bg-custom_buttonColor rounded">
+            <div className="flex items-center justify-between">
+              <button className="px-4 py-2 w-2/4 text-sm font-medium text-white bg-custom_buttonColor rounded">
                 Login
               </button>
               <Link
                 to="#"
-                className="text-sm font-light  text-custom_navyBlue hover:text-custom_buttonColor"
+                className="text-sm font-light text-custom_navyBlue hover:text-custom_buttonColor"
               >
                 Forgot Password
               </Link>
             </div>
             <div className="flex items-center justify-center my-4">
-              <div className="border-t border-gray-300 flex-grow mr-3 "></div>
+              <div className="border-t border-gray-300 flex-grow mr-3"></div>
               <div className="text-gray-700 text-center text-sm">
                 Or login with
               </div>
               <div className="border-t border-gray-300 flex-grow ml-3"></div>
-            </div>{" "}
-            <div className="align-middle flex justify-center">
+            </div>
+            <div className="flex justify-center">
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
               />
             </div>
-            <div className="text-gray-600  text-sm text-center ">
+            <div className="text-gray-600 text-sm text-center">
               Don't have an account?{" "}
               <Link to="/signup" className="">
                 <span className="text-custom_navyBlue font-semibold hover:text-custom_buttonColor">

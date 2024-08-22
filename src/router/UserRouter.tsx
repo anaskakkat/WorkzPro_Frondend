@@ -7,7 +7,7 @@ import ProtectedRoute from "../components/protectedRoute.tsx/userProtectedRoute"
 import PublicRoute from "../components/protectedRoute.tsx/PublicRoute";
 import Service from "../components/User/servicesPage/Service";
 import UserLayout from "../pages/User/UserLayout";
-import InterceptorSetup from "../config/axiosInterceptors";
+import InterceptorSetup from "../components/axiosInterceptors/axiosInterceptors";
 import WorkersNearby from "../pages/User/WorkersNearby";
 import DeatilsWorker from "../pages/User/DeatilsWorker";
 import WorkerCheckout from "../pages/User/WorkerCheckout";

@@ -13,29 +13,32 @@ import Payments from "../pages/Worker/Payments";
 import Reviews from "../pages/Worker/Reviews";
 import ProfileSetupPage from "../pages/Worker/ProfileSetupPage";
 import ProfileVerify from "../components/protectedRoute.tsx/worker/ProfileVerify";
+import WorkerInterceptor from "../components/axiosInterceptors/workerInterceptor";
 const WorkerRouter = () => {
   return (
-    <Routes>
-      <Route path="/" element={<WorkerLayout />}>
-        {/* Public routes */}
-        <Route element={<WorkerPublicRoute />}>
-          <Route path="/login" element={<WorkerLogin />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/otp" element={<OtpWorker />} />
+    <WorkerInterceptor>
+      <Routes>
+        <Route path="/" element={<WorkerLayout />}>
+          {/* Public routes */}
+          <Route element={<WorkerPublicRoute />}>
+            <Route path="/login" element={<WorkerLogin />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/otp" element={<OtpWorker />} />
+          </Route>
+          <Route element={<ProfileVerify />}>
+            <Route path="profile_setup" element={<ProfileSetupPage />} />
+          </Route>
+          {/* Protected routes */}
+          <Route element={<WorkerProtectedRoute />}>
+            <Route path="/" element={<Dashboard />} /> {/* Default route */}
+            <Route path="bookings" element={<Bookings />} />
+            <Route path="slots" element={<Slots />} />
+            <Route path="payments" element={<Payments />} />
+            <Route path="reviews" element={<Reviews />} />
+          </Route>
         </Route>
-        <Route element={<ProfileVerify />}>
-          <Route path="profile_setup" element={<ProfileSetupPage />} />
-        </Route>
-        {/* Protected routes */}
-        <Route element={<WorkerProtectedRoute />}>
-          <Route path="/" element={<Dashboard />} /> {/* Default route */}
-          <Route path="bookings" element={<Bookings />} />
-          <Route path="slots" element={<Slots />} />
-          <Route path="payments" element={<Payments />} />
-          <Route path="reviews" element={<Reviews />} />
-        </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </WorkerInterceptor>
   );
 };
 

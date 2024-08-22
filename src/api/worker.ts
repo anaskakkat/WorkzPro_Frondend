@@ -2,12 +2,14 @@ import Api from "../config/axiosConfig";
 import workerRoutes from "../endpoints/workerEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 import ISlot from "../types/ISlot";
-interface IWorker {
-  name: string;
-  email: string;
-  phoneNumber: string | number;
-  password: string;
-}
+import IWorker from "../types/IWorker";
+import { IGoogleUser } from "../types/user";
+// interface IWorker {
+//   name: string;
+//   email: string;
+//   phoneNumber: string | number;
+//   password: string;
+// }
 
 export const registerWorker = async (worker: IWorker) => {
   try {
@@ -97,6 +99,14 @@ export const bookingAccept = async (id: string) => {
   try {
     const response = await Api.patch(workerRoutes.bookingAccept(id));
     return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const workerGoogleLogin = async (googleUser: IGoogleUser) => {
+  try {
+    const response = await Api.post(workerRoutes.googleLogin, googleUser);
+    return response.data;
   } catch (error) {
     handleApiError(error);
   }

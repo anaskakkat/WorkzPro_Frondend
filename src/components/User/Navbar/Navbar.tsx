@@ -11,10 +11,7 @@ import logo from "/workzpro-high-resolution-logo.jpeg";
 import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
 import { fetchLocationDetails } from "../../../utils/getLocationDetails";
 import { initAutocomplete } from "../../../utils/googleMapUtils";
-
-interface UserInfo {
-  userName: string;
-}
+import { IUser } from "../../../types/user";
 
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -28,9 +25,10 @@ const Navbar: React.FC = () => {
   const searchInput = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const userInfo = useSelector<RootState, UserInfo | null>(
+  const userInfo = useSelector<RootState, IUser | null>(
     (state) => state.userInfo.userInfo
   );
+  console.log(userInfo);
 
   useEffect(() => {
     initAutocomplete(searchInput);
@@ -188,8 +186,8 @@ const Navbar: React.FC = () => {
                   className="flex items-center space-x-2 text-gray-700 hover:text-blue-600"
                 >
                   <FaUserAlt />
-                  <span className="text-custom_navyBlue">
-                    {userInfo.userName}
+                  <span className="text-custom_navyBlue capitalize">
+                    {userInfo.name}
                   </span>
                 </button>
                 {isDropdownOpen && (

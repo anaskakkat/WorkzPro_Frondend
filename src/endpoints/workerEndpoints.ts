@@ -10,6 +10,7 @@ const workerRoutes = {
   fetchSlots: (id: string) => `worker/slots/${id}`,
   deleteSlot: (id: string) => `worker/slots/${id}`,
   bookingAccept: (bookingId: string) => `worker/booking/${bookingId}`,
+  googleLogin: `worker/googleAuth`,
 };
 
 export default workerRoutes;

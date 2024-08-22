@@ -5,20 +5,23 @@ import AdminPage from "../pages/Admin/AdminPage";
 import AdminLogin from "../pages/Admin/AdminLogin";
 import PublicRouteAdmin from "../components/protectedRoute.tsx/admin/PublicRouteAdmin";
 import ProtectedRouteAdmin from "../components/protectedRoute.tsx/admin/ProtectedRouteAdmin";
+import AdminInterceptor from "../components/axiosInterceptors/AdminInterceptor";
 
 const AdminRouter = () => {
   return (
-    <Routes>
-      {/* Public routes */}
+    <AdminInterceptor>
+      <Routes>
+        {/* Public routes */}
 
-      <Route element={<PublicRouteAdmin />}>
-        <Route path="/login" element={<AdminLogin />} />
-      </Route>
-      {/* Protected routes */}
-      <Route element={<ProtectedRouteAdmin />}>
-        <Route path="/" element={<AdminPage />} />
-      </Route>
-    </Routes>
+        <Route element={<PublicRouteAdmin />}>
+          <Route path="/login" element={<AdminLogin />} />
+        </Route>
+        {/* Protected routes */}
+        <Route element={<ProtectedRouteAdmin />}>
+          <Route path="/" element={<AdminPage />} />
+        </Route>
+      </Routes>
+    </AdminInterceptor>
   );
 };
 

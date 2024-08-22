@@ -1,14 +1,13 @@
 import React, { ReactNode, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { removeUserInfo } from "../redux/slices/userSlices";
-import Api from "./axiosConfig";
+import Api from "../../config/axiosConfig";
+import { removeadminInfo } from "../../redux/slices/adminSlice";
 
 interface InterceptorSetupProps {
   children: ReactNode;
 }
-
-const InterceptorSetup: React.FC<InterceptorSetupProps> = ({ children }) => {
+const AdminInterceptor: React.FC<InterceptorSetupProps> = ({ children }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,7 +22,7 @@ const InterceptorSetup: React.FC<InterceptorSetupProps> = ({ children }) => {
         // console.log("interceptor:--- error", error);
 
         if (error.response.status === 401) {
-          dispatch(removeUserInfo());
+          dispatch(removeadminInfo());
         }
         return Promise.reject(error);
       }
@@ -37,4 +36,4 @@ const InterceptorSetup: React.FC<InterceptorSetupProps> = ({ children }) => {
   return <>{children}</>;
 };
 
-export default InterceptorSetup;
+export default AdminInterceptor;
