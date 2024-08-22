@@ -2,16 +2,10 @@ import Api from "../config/axiosConfig";
 import workerRoutes from "../endpoints/workerEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 import ISlot from "../types/ISlot";
-import IWorker from "../types/IWorker";
+import { IWorkerRegistration } from "../types/IWorker";
 import { IGoogleUser } from "../types/user";
-// interface IWorker {
-//   name: string;
-//   email: string;
-//   phoneNumber: string | number;
-//   password: string;
-// }
 
-export const registerWorker = async (worker: IWorker) => {
+export const registerWorker = async (worker: IWorkerRegistration) => {
   try {
     // console.log("worker:", worker);
     const response = await Api.post(workerRoutes.signUp, worker);

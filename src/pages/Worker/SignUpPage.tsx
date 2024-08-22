@@ -184,16 +184,14 @@ const SignUpPage: React.FC = () => {
         password,
         phoneNumber,
       });
-      console.log("response:", response);
+      // console.log("reg:response:", response);
 
-      if (response) {
+      if (response.email) {
         toast.success(response.message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         navigate("/worker/otp", { state: { email: email } });
-      } else {
-        toast.error(response.message);
-      }
+      } 
     } catch (error) {
       toast.error("Failed to sign up. Please try again.");
       console.error(error);
@@ -334,7 +332,7 @@ const SignUpPage: React.FC = () => {
               disabled={isLoading}
               startIcon={isLoading && <CircularProgress size={24} />}
             >
-              {isLoading ? "Signing Up..." : "Sign Up"}
+              {isLoading ? "Otp Sending..." : "Sign Up"}
             </Button>
           </Box>
           <Typography

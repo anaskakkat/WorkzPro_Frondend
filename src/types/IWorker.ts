@@ -1,6 +1,7 @@
 import IService from "./IService";
 
 interface IWorker {
+  locationName: string;
   _id: string;
   workerId: number;
   name: string;
@@ -28,3 +29,10 @@ interface IWorker {
 }
 
 export default IWorker;
+
+export interface IWorkerRegistration {
+  name: string;
+  email: string;
+  password: string;
+  phoneNumber: string | number;
+}

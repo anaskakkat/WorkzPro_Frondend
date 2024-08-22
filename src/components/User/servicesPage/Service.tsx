@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  IconButton,
-} from "@mui/material";
+import { Card, CardContent, Typography, IconButton } from "@mui/material";
 import { userServices } from "../../../api/user";
 import icon from "../../../assets/maintenance.png";
 import { useDispatch } from "react-redux";
@@ -46,8 +41,10 @@ const Service: React.FC = () => {
 
   const uppercase = (str: string): string => str.toUpperCase();
 
-  const handleServiceClick = (serviceName: string) => {
-    navigate(`/workersNearby?service=${encodeURIComponent(serviceName)}`);
+  const handleServiceClick = (serviceId: string) => {
+    // console.log('serviceid',serviceId);
+
+    navigate(`/workersNearby?service=${encodeURIComponent(serviceId)}`);
   };
 
   if (loading) {
@@ -60,7 +57,9 @@ const Service: React.FC = () => {
         <div className="w-full flex flex-col md:flex-row items-center gap-20">
           <div className="max-w-60 md:w-1/3 mb-6 md:mb-0 flex items-center justify-center">
             <div className="">
-              <span className="font-semibold text-4xl w-10  ">LEARN MORE ABOUT OUR</span>{" "}
+              <span className="font-semibold text-4xl w-10  ">
+                LEARN MORE ABOUT OUR
+              </span>{" "}
               <br />
               <span className="text-custom_buttonColor text-4xl font-semibold">
                 SERVICES
@@ -80,7 +79,7 @@ const Service: React.FC = () => {
                   height: "35vh",
                 }}
                 className="relative h-64 w-full group overflow-hidden text-custom_navyBlue flex flex-col cursor-pointer"
-                onClick={() => handleServiceClick(service.name)}
+                onClick={() => handleServiceClick(service._id)}
               >
                 <div className="absolute inset-0 bg-custom_navyBlue -translate-y-full duration-700 ease-in-out group-hover:translate-y-0"></div>
                 <CardContent className="flex flex-col h-full justify-end items-center relative z-10 ease-in-out group-hover:justify-center">

@@ -13,7 +13,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=\S)(?=\S{8,})/;
 
 import { GoogleLogin } from "@react-oauth/google";
-import CustomTextField from "../../components/User/styleComponents/StyledTextField";
+import CustomTextField from "../../components/styleComponents/StyledTextField";
 import { IGoogleUser } from "../../types/user";
 
 const LoginPage: React.FC = () => {

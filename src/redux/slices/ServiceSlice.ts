@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ServiceType {
+  _id: string;
   name: string;
   description: string;
   isBlocked: boolean;

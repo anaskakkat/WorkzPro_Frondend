@@ -12,6 +12,8 @@ import { fetchWorkers } from "../../../api/user";
 import Loader from "../../loader/Loader";
 import { useNavigate, useLocation } from "react-router-dom";
 import IWorker from "../../../types/IWorker";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
 
 const WorkerNearby: React.FC = () => {
   const [workers, setWorkers] = useState<IWorker[]>([]);
@@ -22,17 +24,19 @@ const WorkerNearby: React.FC = () => {
 
   // Extract the service name from the query parameters
   const queryParams = new URLSearchParams(location.search);
-  const serviceName = queryParams.get("service") || "";
+  const serviceID = queryParams.get("service") || "";
+  // console.log('serviceID',serviceID);
+  const locationData = useSelector((state: RootState) => state.location);
+  console.log(locationData);
 
   useEffect(() => {
     const fetchWorkerData = async () => {
       setLoading(true);
       try {
-        const response: IWorker[] = await fetchWorkers();
-        const filteredWorkers = response
-          .filter((worker) => !worker.isBlocked)
-          .filter((worker) => worker.service.name === serviceName);
-        setWorkers(filteredWorkers);
+        const response = await fetchWorkers(serviceID,locationData);
+        // console.log(response);
+
+        setWorkers(response.data);
       } catch (error) {
         console.error("Failed to fetch workers:", error);
       } finally {
@@ -41,16 +45,17 @@ const WorkerNearby: React.FC = () => {
     };
 
     fetchWorkerData();
-  }, [serviceName]);
+  }, [serviceID]);
 
   const handleDetails = (workerId: string) => {
     navigate(`/WorkerDetails/${workerId}`);
   };
 
-  const filteredWorkers = workers.filter(
-    (worker) =>
-      worker.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredWorkers = workers.filter((worker) => {
+    // console.log(worker);
+
+    return worker.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   if (loading) {
     return <Loader />;
@@ -74,13 +79,13 @@ const WorkerNearby: React.FC = () => {
       <div className="flex-1 p-4">
         {filteredWorkers.length === 0 ? (
           <Typography variant="h6" align="center">
-            No users available for the selected criteria.
+            No users available for the selected service
           </Typography>
         ) : (
           <Grid container spacing={4}>
             {filteredWorkers.map((worker) => (
               <Grid item xs={12} sm={6} md={3} key={worker._id}>
-                <div className="border-custom_Border border-2 w-fit mx-auto my-5">
+                <div className="border-custom_lightBlue border-2 w-fit mx-auto my-5">
                   <div className="p-4">
                     <div className="flex flex-col items-center">
                       <Avatar
@@ -95,28 +100,23 @@ const WorkerNearby: React.FC = () => {
                       />
                       <div className="flex flex-col text-center items-center">
                         <div>{worker.name}</div>
-                        <Rating
-                          name="read-only"
-                          value={4}
-                          readOnly
-                          size="small"
-                        />
                       </div>
                     </div>
-
-                    <div className="flex flex-row justify-between mt-1">
-                      <div>{worker.service.name}</div>
-                      <div className="flex flex-row">
-                        <LocationOnIcon fontSize="inherit" color="primary" />
-                        <div>{worker.location}</div>
-                      </div>
+                    <div className="justify-between mt-1 flex">
+                      <div>{worker.service.name}</div>{" "}
+                      <Rating
+                        name="read-only"
+                        value={4}
+                        readOnly
+                        size="small"
+                      />
                     </div>
-
+                    <span className="text-sm">{worker.locationName}</span>{" "}
+                    <LocationOnIcon fontSize="inherit" color="primary" />
                     <div className="flex flex-row justify-between">
                       <div className="">{worker.experience}+ yrs</div>
                       <div className="">{worker.wageDay}/day</div>
                     </div>
-
                     <div className="flex flex-row justify-between gap-5 mt-1">
                       <Button
                         variant="outlined"
@@ -128,7 +128,9 @@ const WorkerNearby: React.FC = () => {
                       <Button
                         variant="contained"
                         size="small"
-                        onClick={() => navigate(`/workerCheckout/${worker._id}`)}
+                        onClick={() =>
+                          navigate(`/workerCheckout/${worker._id}`)
+                        }
                       >
                         Book
                       </Button>

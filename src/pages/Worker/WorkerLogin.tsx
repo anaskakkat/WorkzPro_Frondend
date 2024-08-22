@@ -12,7 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setWorkerInfo } from "../../redux/slices/workerSlice";
 import { verfyloginWorker, workerGoogleLogin } from "../../api/worker";
-import CustomTextField from "../../components/User/styleComponents/StyledTextField";
+import CustomTextField from "../../components/styleComponents/StyledTextField";
 import { GoogleLogin } from "@react-oauth/google";
 import { IGoogleUser } from "../../types/user";
 import { jwtDecode } from "jwt-decode";
@@ -112,35 +112,35 @@ const WorkerLogin = () => {
       setLoading(false);
     }
   };
-  const handleGoogleSuccess = async (credentialResponse: any) => {
-    try {
-      const decodedToken: IGoogleUser = jwtDecode(
-        credentialResponse.credential
-      );
-      console.log("Decoded Google user:", decodedToken);
-      const googleUser = {
-        email: decodedToken.email,
-        name: decodedToken.name,
-        picture: decodedToken.picture,
-        googleId: decodedToken.sub,
-      };
-      // const response = await googleAuth(googleUser);
-      console.log("googleUser:::", googleUser);
-      const response = await workerGoogleLogin(googleUser);
-      // console.log("response", response);
+  // const handleGoogleSuccess = async (credentialResponse: any) => {
+  //   try {
+  //     const decodedToken: IGoogleUser = jwtDecode(
+  //       credentialResponse.credential
+  //     );
+  //     console.log("Decoded Google user:", decodedToken);
+  //     const googleUser = {
+  //       email: decodedToken.email,
+  //       name: decodedToken.name,
+  //       picture: decodedToken.picture,
+  //       googleId: decodedToken.sub,
+  //     };
+  //     // const response = await googleAuth(googleUser);
+  //     // console.log("googleUser:::", googleUser);
+  //     const response = await workerGoogleLogin(googleUser);
+  //     // console.log("response", response);
 
-      dispatch(setWorkerInfo(response.data));
-      toast.success(response.message);
-      navigate("/");
-    } catch (error) {
-      console.error("Google login error:", error);
-      toast.error("Google login failed");
-    }
-  };
+  //     dispatch(setWorkerInfo(response.data));
+  //     toast.success(response.message);
+  //     navigate("/");
+  //   } catch (error) {
+  //     console.error("Google login error:", error);
+  //     toast.error("Google login failed");
+  //   }
+  // };
 
-  const handleGoogleError = () => {
-    toast.error("Google login failed");
-  };
+  // const handleGoogleError = () => {
+  //   toast.error("Google login failed");
+  // };
 
   return (
     <div className="bg-custom_bg_blue">
@@ -229,12 +229,12 @@ const WorkerLogin = () => {
                 </span>
               </Link>
             </Typography>
-            <Typography
+            {/* <Typography
               variant="body2"
               className="text-center text-custom_navyBlue mt-4"
             >
               Or login with
-            </Typography>
+            </Typography> */}
             {/* <Button
               sx={{
                 "&:hover": {
@@ -279,13 +279,13 @@ const WorkerLogin = () => {
             >
               Sign in with Google
             </Button> */}
-            <div className="flex justify-center">
+            {/* <div className="flex justify-center">
               {" "}
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
               />
-            </div>
+            </div> */}
           </Box>
         </Box>
       </Container>

@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 import { IBooking } from "../types/Booking";
-import{ IGoogleUser } from "../types/user";
+import { IGoogleUser } from "../types/user";
 interface FormData {
   name: string;
   email: string;
@@ -104,11 +104,14 @@ export const verifyGoogleToken = async (token: string) => {
     throw error;
   }
 };
-export const fetchWorkers = async () => {
+export const fetchWorkers = async (serviceId: string, locationData: any) => {
   try {
-    const response = await Api.get(userRoutes.fetchWorkers);
+    const response = await Api.post(userRoutes.fetchWorkers, {
+      serviceId,
+      locationData,
+    });
 
-    return response.data;
+    return response;
   } catch (error) {
     throw error;
   }

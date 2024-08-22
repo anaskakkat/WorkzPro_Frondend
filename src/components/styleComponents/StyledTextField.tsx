@@ -1,13 +1,13 @@
-import React from "react";
+import  { forwardRef } from "react";
 import { TextField, TextFieldProps } from "@mui/material";
 import { styled } from "@mui/system";
 
 const StyledTextField = styled(TextField)(() => ({
   "& .MuiOutlinedInput-root": {
     fontSize: "0.875rem",
-    height: "50px",
+    height: "45px",
     "& fieldset": {
-      borderColor: "#848484",
+      // borderColor: "#848884",
     },
     "&:hover fieldset": {
       borderColor: "#3B82F6",
@@ -17,7 +17,7 @@ const StyledTextField = styled(TextField)(() => ({
     },
   },
   "& .MuiInputLabel-root": {
-    fontSize: "12px",
+    fontSize: "14px",
     color: "#6B7280",
   },
   "& .MuiInputLabel-root.Mui-focused": {
@@ -26,8 +26,8 @@ const StyledTextField = styled(TextField)(() => ({
   },
 }));
 
-const CustomTextField: React.FC<TextFieldProps> = (props) => {
-  return <StyledTextField {...props} />;
-};
+const CustomTextField = forwardRef<HTMLInputElement, TextFieldProps>((props, ref) => {
+  return <StyledTextField {...props} inputRef={ref} />;
+});
 
 export default CustomTextField;

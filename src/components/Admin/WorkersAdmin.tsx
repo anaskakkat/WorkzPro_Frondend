@@ -3,26 +3,35 @@ import { blockWorker, getWorkers, unblockWorker } from "../../api/admin";
 import Swal from "sweetalert2";
 import defaultImage from "/user.png";
 import toast from "react-hot-toast";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+
 interface User {
   _id: string;
   userName: string;
   email: string;
   status: string;
-  imageUrl?: string;
   isBlocked: boolean;
+  experience: number;
+  locationName: string;
+  identityProof: string;
+  profilePicture: string;
+  wageDay: number;
+  workRadius: number;
+  phoneNumber: number;
 }
 
 const WorkersAdmin: React.FC = () => {
   const [workers, setWorkers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedWorker, setSelectedWorker] = useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await getWorkers();
-        // console.log(response);
-
+        
         setWorkers(response);
       } catch (err) {
         setError("Failed to fetch users.");
@@ -71,6 +80,16 @@ const WorkersAdmin: React.FC = () => {
     }
   };
 
+  const handleDetailsClick = (worker: User) => {
+    setSelectedWorker(worker);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedWorker(null);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -106,7 +125,7 @@ const WorkersAdmin: React.FC = () => {
               >
                 <img
                   className="w-10 h-10 rounded-full"
-                  src={user.imageUrl || defaultImage}
+                  src={user.profilePicture || defaultImage}
                   alt={user.userName}
                 />
                 <div className="ps-3">
@@ -130,12 +149,22 @@ const WorkersAdmin: React.FC = () => {
                   </span>
                 </div>
               </td>
+              <td>
+                <button
+                  onClick={() => handleDetailsClick(user)}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded"
+                >
+                  Details
+                </button>{" "}
+              </td>
               <td className="px-6 py-4">
                 <button
                   onClick={() => handleBlockUnblock(user._id, user.isBlocked)}
-                  className={`font-medium text-${
-                    user.isBlocked ? "green" : "red"
-                  }-600`}
+                  className={`font-medium border-2 ${
+                    user.isBlocked
+                      ? "border-green-600 text-green-600 hover:bg-green-500 hover:text-white"
+                      : "border-red-200 text-red-600 hover:bg-red-500 hover:text-white"
+                  } bg-transparent rounded-lg px-4 py-2 transition-colors duration-300`}
                 >
                   {user.isBlocked ? "Unblock" : "Block"}
                 </button>
@@ -144,6 +173,40 @@ const WorkersAdmin: React.FC = () => {
           ))}
         </tbody>
       </table>
+
+      <Dialog open={isModalOpen} fullWidth maxWidth='sm' onClose={handleCloseModal}>
+        <DialogTitle>Worker Details</DialogTitle>
+        <DialogContent>
+          {selectedWorker && (
+            <div>
+              <img
+                src={selectedWorker.profilePicture}
+                alt={selectedWorker.userName}
+                className="w-24 h-24 rounded-full mx-auto mb-4"
+              />
+              <p><strong>Name:</strong> {selectedWorker.userName}</p>
+              <p><strong>Email:</strong> {selectedWorker.email}</p>
+              <p><strong>Phone Number:</strong> {selectedWorker.phoneNumber}</p>
+              <p><strong>Experience:</strong> {selectedWorker.experience} years</p>
+              <p><strong>Location:</strong> {selectedWorker.locationName}</p>
+              <p><strong>Wage per Day:</strong> {selectedWorker.wageDay}</p>
+              <p><strong>Work Radius:</strong> {selectedWorker.workRadius} km</p>
+              <p><strong>Status:</strong> {selectedWorker.status}</p>
+              <p><strong>Identity Proof:</strong></p>
+              <img
+                src={selectedWorker.identityProof}
+                alt="Identity Proof"
+                className="w-88 h-48 mt-2 rounded-lg"
+              />
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

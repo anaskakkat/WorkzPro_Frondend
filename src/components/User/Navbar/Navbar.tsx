@@ -10,8 +10,9 @@ import toast from "react-hot-toast";
 import logo from "/workzpro-high-resolution-logo.jpeg";
 import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
 import { fetchLocationDetails } from "../../../utils/getLocationDetails";
-import { initAutocomplete } from "../../../utils/googleMapUtils";
+// import { initAutocomplete } from "../../../utils/googleMapUtils";
 import { IUser } from "../../../types/user";
+import { setLocationState } from "../../../redux/slices/LocationSlice";
 
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -28,13 +29,14 @@ const Navbar: React.FC = () => {
   const userInfo = useSelector<RootState, IUser | null>(
     (state) => state.userInfo.userInfo
   );
-  console.log(userInfo);
+  // console.log(userInfo);
+
+  // useEffect(() => {
+  //   initAutocomplete(searchInput);
+  // }, [searchInput]);
 
   useEffect(() => {
-    initAutocomplete(searchInput);
-  }, [searchInput]);
-  useEffect(() => {
-    // handleGetCurrentLocation();
+    handleGetCurrentLocation();
   }, []);
 
   const isActive = (path: string): boolean => {
@@ -63,11 +65,16 @@ const Navbar: React.FC = () => {
       setIsLoading(true);
       const position = await getCurrentPosition();
       const { latitude, longitude } = position.coords;
+      const locationData = {
+        type: "Point",
+        coordinates: [longitude, latitude],
+      };
+
       const locality = await fetchLocationDetails(latitude, longitude);
       // console.log("locality:-----", locality);
-
+      dispatch(setLocationState(locationData));
       setLocation(locality);
-    } catch (error: any) {
+    } catch (error: any) { 
       console.error("Error:", error);
       toast.error(error.message || "Failed to fetch location details.");
       setLocation("Unknown location");

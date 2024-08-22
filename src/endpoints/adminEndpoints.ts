@@ -9,7 +9,7 @@ const adminRoutes = {
   blockService: (id: string) => `admin/services/${id}/block`,
   unblockService: (id: string) => `admin/services/${id}/unblock`,
   updateService: (id: string) => `admin/services/${id}`,
-  getWorkers: "admin/get_Workers",
+  getWorkers: "admin/getWorkers",
 
   blockWorker: (id: string) => `admin/workers/${id}/block`,
   unblockWorker: (id: string) => `admin/workers/${id}/unblock`,
