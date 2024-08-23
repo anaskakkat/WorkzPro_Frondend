@@ -8,9 +8,11 @@ const workerRoutes = {
   setProfile: "worker/setProfile",
   setSlots: (id: string) => `worker/slots/${id}`,
   fetchSlots: (id: string) => `worker/slots/${id}`,
+  fetchCommonProblams: (id: string) => `worker/commonProblams/${id}`,
   deleteSlot: (id: string) => `worker/slots/${id}`,
   bookingAccept: (bookingId: string) => `worker/booking/${bookingId}`,
   googleLogin: `worker/googleAuth`,
+  addProblem: "worker/addProblam",
 };
 
 export default workerRoutes;

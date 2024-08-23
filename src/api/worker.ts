@@ -81,6 +81,14 @@ export const fetchSlots = async (id: string) => {
     handleApiError(error);
   }
 };
+export const fetchCommonProblams = async (id: string) => {
+  try {
+    const response = await Api.get(workerRoutes.fetchCommonProblams(id));
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
 export const deleteSlot = async (id: string) => {
   try {
     const response = await Api.delete(workerRoutes.deleteSlot(id));
@@ -100,6 +108,18 @@ export const bookingAccept = async (id: string) => {
 export const workerGoogleLogin = async (googleUser: IGoogleUser) => {
   try {
     const response = await Api.post(workerRoutes.googleLogin, googleUser);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const addProblem = async (data: {
+  problemName: string;
+  estimatedHours: string;
+  workerId: string;
+}) => {
+  try {
+    const response = await Api.post(workerRoutes.addProblem, data);
     return response.data;
   } catch (error) {
     handleApiError(error);
