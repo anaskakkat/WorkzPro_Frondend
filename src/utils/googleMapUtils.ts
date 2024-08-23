@@ -33,7 +33,11 @@ export const initAutocomplete = (
       setLocationCoords({ lat, lng });
 
       if (place.formatted_address) {
-        setLocation(place.formatted_address); 
+        // console.log('place.formatted_address---',place.formatted_address);
+        const addressParts = place.formatted_address.split(',');
+        const cityName = addressParts[0].trim();
+        // console.log('City name:', cityName);
+        setLocation(cityName); 
         searchInput.current!.value = place.formatted_address; 
       }
     }

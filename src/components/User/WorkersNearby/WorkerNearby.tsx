@@ -14,6 +14,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import IWorker from "../../../types/IWorker";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
+import { getDistance } from 'geolib';
 
 const WorkerNearby: React.FC = () => {
   const [workers, setWorkers] = useState<IWorker[]>([]);
@@ -27,16 +28,28 @@ const WorkerNearby: React.FC = () => {
   const serviceID = queryParams.get("service") || "";
   // console.log('serviceID',serviceID);
   const locationData = useSelector((state: RootState) => state.location);
-  console.log(locationData);
+  // console.log(locationData);
 
   useEffect(() => {
     const fetchWorkerData = async () => {
       setLoading(true);
       try {
-        const response = await fetchWorkers(serviceID,locationData);
+        const response = await fetchWorkers(serviceID, locationData);
         // console.log(response);
+        const fetchedWorkers = response.data;
 
-        setWorkers(response.data);
+        const workersWithDistance = fetchedWorkers.map((worker:any) => {
+          const distance = getDistance(
+            { latitude: locationData.coordinates[1], longitude: locationData.coordinates[0] },
+            { latitude: worker.location.coordinates[1], longitude: worker.location.coordinates[0] }
+          );
+
+          return {
+            ...worker,
+            distance: (distance / 1000).toFixed(2), // Convert meters to kilometers and round off
+          };
+        });
+        setWorkers(workersWithDistance);
       } catch (error) {
         console.error("Failed to fetch workers:", error);
       } finally {
@@ -103,7 +116,8 @@ const WorkerNearby: React.FC = () => {
                       </div>
                     </div>
                     <div className="justify-between mt-1 flex">
-                      <div>{worker.service.name}</div>{" "}
+                      <div>{worker.service.name}</div>
+                 
                       <Rating
                         name="read-only"
                         value={4}
@@ -116,6 +130,10 @@ const WorkerNearby: React.FC = () => {
                     <div className="flex flex-row justify-between">
                       <div className="">{worker.experience}+ yrs</div>
                       <div className="">{worker.wageDay}/day</div>
+                    </div>
+                    <div className="flext ">
+                    <p className="text-xs text-custom_buttonColor">{worker.distance} km away</p>
+
                     </div>
                     <div className="flex flex-row justify-between gap-5 mt-1">
                       <Button

@@ -143,6 +143,7 @@ const ProfileSetup: React.FC = () => {
       setIdentityProof(file);
     }
   };
+  console.log("location--",location);
 
   const handleSubmit = async () => {
     if (

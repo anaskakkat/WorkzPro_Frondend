@@ -26,6 +26,8 @@ interface IWorker {
   isProfileSetup: boolean;
   loginAccess: boolean;
   rating: number;
+  distance?: number;
+
 }
 
 export default IWorker;

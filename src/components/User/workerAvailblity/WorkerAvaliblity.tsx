@@ -277,7 +277,7 @@ const WorkerAvailability: React.FC = () => {
                 <p className="text-gray-700">
                   Experience: {worker.experience} years
                 </p>
-                <p className="text-gray-700">Location: {worker.location}</p>
+                <p className="text-gray-700">Location: {worker.locationName}</p>
                 <div className="flex items-center justify-center sm:justify-start">
                   <p className="text-gray-700 mr-2">Rating:</p>
                   <div className="flex items-center">

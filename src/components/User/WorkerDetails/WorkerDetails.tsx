@@ -5,7 +5,6 @@ import Loader from "../../loader/Loader";
 import IWorker from "../../../types/IWorker";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import { capitalizeFirstLetter } from "../../../utils/capitalize";
 
 const WorkerDetails = () => {
   const [worker, setWorker] = useState<IWorker | null>(null);
@@ -14,7 +13,7 @@ const WorkerDetails = () => {
   const fetchWorkerData = async () => {
     try {
       const response = await fetchWorkerDatabyId(workerId!);
-      // console.log(response);
+      console.log(response);
 
       setWorker(response);
     } catch (error) {
@@ -58,7 +57,7 @@ const WorkerDetails = () => {
                   className="text-custom_buttonColor  "
                   style={{ fontSize: "18px", marginTop: "6px" }}
                 />
-                <p>{capitalizeFirstLetter(worker.location)}</p>
+                <p>{worker.locationName}</p>
               </div>
             </div>
             <div className="flex flex-row justify-between bg-blue-100 p-2 mt-1">
@@ -74,7 +73,7 @@ const WorkerDetails = () => {
               {" "}
               <p className="text-custom_navyBlue  ">{worker.service.name}</p>
               <p
-                className="text-gray-800 text-[16px] font-normal
+                className="text-gray-800 text-[16px] font-normal capitalize
                "
               >
                 {worker.service.description}
