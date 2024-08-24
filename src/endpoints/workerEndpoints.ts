@@ -13,6 +13,7 @@ const workerRoutes = {
   bookingAccept: (bookingId: string) => `worker/booking/${bookingId}`,
   googleLogin: `worker/googleAuth`,
   addProblem: "worker/addProblam",
+  fetchWorkerById:(workerId:string)=>`worker/${workerId}`
 };
 
 export default workerRoutes;

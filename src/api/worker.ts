@@ -89,6 +89,14 @@ export const fetchCommonProblams = async (id: string) => {
     handleApiError(error);
   }
 };
+export const fetchWorker = async (workerid: string) => {
+  try {
+    const response = await Api.get(workerRoutes.fetchWorkerById(workerid));
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
 export const deleteSlot = async (id: string) => {
   try {
     const response = await Api.delete(workerRoutes.deleteSlot(id));

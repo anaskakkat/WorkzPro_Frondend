@@ -112,14 +112,14 @@ const NavbarWorker: React.FC = () => {
                     Dashboard
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link
                     to="/worker/bookings"
                     className="block py-2 px-3 hover:text-blue-700 md:p-0"
                   >
                     Bookings
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link
                     to="/worker/slots"

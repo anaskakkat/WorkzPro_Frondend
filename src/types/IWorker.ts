@@ -11,7 +11,6 @@ interface IWorker {
   service: IService;
   slots: string[];
   experience: number;
-  location: string;
   role: "worker";
   identityProof: string;
   wallet: number;
@@ -27,6 +26,11 @@ interface IWorker {
   loginAccess: boolean;
   rating: number;
   distance?: number;
+  configuration?: ConfigurationType;
+  location: {
+    coordinates: [number, number];
+    type: "Point";
+};
 
 }
 
@@ -38,3 +42,37 @@ export interface IWorkerRegistration {
   password: string;
   phoneNumber: string | number;
 }
+export type ConfigurationType = {
+  workingDays: WorkingDayType[];
+  slotSize: number;
+  bufferTime: number;
+  services: ServiceType[];
+  leaves: LeaveType[];
+};
+export type WorkingDayType = {
+  _id: string;
+  start: string;
+  end: string;
+  isWorking: boolean;
+};
+
+export type ServiceType = {
+  _id: string;
+  description: string;
+  amount: number;
+  slots: number;
+
+  
+};
+
+
+export type LeaveType = {
+  _id: string;
+  date: string | Date;
+  reason: string;
+};
+
+export type LocationType = {
+  latitude: number;
+  longitude: number;
+};
