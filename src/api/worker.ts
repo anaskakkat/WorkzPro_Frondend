@@ -40,7 +40,7 @@ export const verfyloginWorker = async (email: string, password: string) => {
       email,
       password,
     });
-    console.log("verfyloginWorker:--", response);
+    // console.log("verfyloginWorker:--", response);
 
     return response.data;
   } catch (error) {

@@ -18,19 +18,19 @@ const WorkerRouter = () => {
   return (
     <WorkerInterceptor>
       <Routes>
+        <Route element={<WorkerPublicRoute />}>
+          <Route path="/login" element={<WorkerLogin />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/otp" element={<OtpWorker />} />
+        </Route>
         <Route path="/" element={<WorkerLayout />}>
           {/* Public routes */}
-          <Route element={<WorkerPublicRoute />}>
-            <Route path="/login" element={<WorkerLogin />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/otp" element={<OtpWorker />} />
-          </Route>
           <Route element={<ProfileVerify />}>
             <Route path="profile_setup" element={<ProfileSetupPage />} />
           </Route>
           {/* Protected routes */}
           <Route element={<WorkerProtectedRoute />}>
-            <Route path="/" element={<Dashboard />} /> {/* Default route */}
+            <Route path="/" element={<Dashboard />} />
             <Route path="bookings" element={<Bookings />} />
             <Route path="slots" element={<Slots />} />
             <Route path="payments" element={<Payments />} />

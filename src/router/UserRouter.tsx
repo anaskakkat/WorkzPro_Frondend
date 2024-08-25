@@ -27,10 +27,10 @@ export const UserRouter = () => {
           <Route path="/login" element={<LoginPage />} />
         </Route>
 
+        <Route path="/demo" element={<Demo />} />
         <Route path="/" element={<UserLayout />}>
           {/* homeRoute */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/demo" element={<Demo />} />
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>

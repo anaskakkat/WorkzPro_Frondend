@@ -102,6 +102,19 @@ const WorkerLogin = () => {
             role: worker.role,
             phoneNumber: worker.phoneNumber,
             status: worker.status,
+            // service: worker.service,
+            experience: worker.experience,
+            location: worker.location,
+            locationName: worker.locationName,
+            workRadius: worker.workRadius,
+            // identityProof: worker.identityProof,
+            // wallet: worker.wallet,
+            // wageDay: worker.wageDay,
+            profilePicture: worker.profilePicture,
+            // isBlocked: worker.isBlocked,
+            // loginAccess: worker.loginAccess,
+            images: worker.images,
+            // configuration: worker.configuration,
           })
         );
         navigate("/worker");
