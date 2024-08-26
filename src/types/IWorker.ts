@@ -30,8 +30,7 @@ interface IWorker {
   location: {
     coordinates: [number, number];
     type: "Point";
-};
-
+  };
 }
 
 export default IWorker;
@@ -61,10 +60,7 @@ export type ServiceType = {
   description: string;
   amount: number;
   slots: number;
-
-  
 };
-
 
 export type LeaveType = {
   _id: string;
@@ -75,4 +71,15 @@ export type LeaveType = {
 export type LocationType = {
   latitude: number;
   longitude: number;
+};
+
+export type ServiceData = {
+  _id?: string;
+  service: string;
+  slot: number;
+  amount: number;
+};
+export type IserviceData = {
+  serviceId: string;
+  workerId: string;
 };

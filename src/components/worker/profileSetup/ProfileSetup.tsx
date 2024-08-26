@@ -16,9 +16,9 @@ import { styled } from "@mui/material/styles";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { toast } from "react-hot-toast";
 import {
+  getWorkerServices,
   logoutWorker,
   setProfileData,
-  workerServices,
 } from "../../../api/worker";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -89,27 +89,29 @@ const ProfileSetup: React.FC = () => {
     initAutocomplete(searchInput, setLocationCoords, setLocation);
   }, [searchInput]);
 
-  const fetchServices = async () => {
-    try {
-      const response = await workerServices();
-      setServiceList(response);
-    } catch (error) {
-      console.error("Error fetching services:", error);
-    }
-  };
-  useEffect(() => {
-    if (profilePic) {
-      const objectUrl = URL.createObjectURL(profilePic);
-      setProfilePicUrl(objectUrl);
-
-      return () => URL.revokeObjectURL(objectUrl);
-    } else {
-      setProfilePicUrl(workerId?.profilePicture || "default-profile-pic.jpg");
-    }
-  }, [profilePic, workerId?.profilePicture]);
   useEffect(() => {
     fetchServices();
   }, []);
+
+  const fetchServices = async () => {
+    try {
+      const response = await getWorkerServices();
+      console.log("--response---", response);
+      setServiceList(response);
+    } catch (error) {
+      console.error("Error workerServices services:", error);
+    }
+  };
+  // useEffect(() => {
+  //   if (profilePic) {
+  //     const objectUrl = URL.createObjectURL(profilePic);
+  //     setProfilePicUrl(objectUrl);
+
+  //     return () => URL.revokeObjectURL(objectUrl);
+  //   } else {
+  //     setProfilePicUrl(workerId?.profilePicture || "default-profile-pic.jpg");
+  //   }
+  // }, [profilePic, workerId?.profilePicture]);
 
   const handleProfilePicChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -143,7 +145,7 @@ const ProfileSetup: React.FC = () => {
       setIdentityProof(file);
     }
   };
-  console.log("location--",location);
+  // console.log("location--",location);
 
   const handleSubmit = async () => {
     if (
@@ -188,7 +190,7 @@ const ProfileSetup: React.FC = () => {
         status: response.data.status,
         profilePicture: response.data.profilePicture,
         identityProof: response.data.identityProof,
-        location: response.data.location, 
+        location: response.data.location,
         experience: response.data.experience,
         service: response.data.service,
         images: response.data.images,
@@ -196,7 +198,6 @@ const ProfileSetup: React.FC = () => {
         updatedAt: response.data.updatedAt,
         workRadius: response.data.workRadius,
         wageDay: response.data.wageDay,
-
       };
       // console.log("--------resp:-------", response);
 
@@ -206,7 +207,7 @@ const ProfileSetup: React.FC = () => {
       console.error("Error updating profile:", error);
       toast.error("Failed to update profile");
     } finally {
-      setLoading(false); // Set loading to false
+      setLoading(false);
     }
   };
   //assign radious

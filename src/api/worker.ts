@@ -2,7 +2,7 @@ import Api from "../config/axiosConfig";
 import workerRoutes from "../endpoints/workerEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 import ISlot from "../types/ISlot";
-import { IWorkerRegistration } from "../types/IWorker";
+import { IWorkerRegistration, ServiceData } from "../types/IWorker";
 import { IGoogleUser } from "../types/user";
 
 export const registerWorker = async (worker: IWorkerRegistration) => {
@@ -47,9 +47,9 @@ export const verfyloginWorker = async (email: string, password: string) => {
     handleApiError(error);
   }
 };
-export const workerServices = async () => {
+export const getWorkerServices = async () => {
   try {
-    const response = await Api.get(workerRoutes.getService);
+    const response = await Api.get(workerRoutes.getServicesData);
     // console.log("workerServices:--", response.data);
     return response.data;
   } catch (error) {
@@ -113,6 +113,17 @@ export const bookingAccept = async (id: string) => {
     handleApiError(error);
   }
 };
+export const editConfigration = async (workerId: string, data: any) => {
+  try {
+    const response = await Api.patch(
+      workerRoutes.editConfigration(workerId),
+      data
+    );
+    return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
 export const workerGoogleLogin = async (googleUser: IGoogleUser) => {
   try {
     const response = await Api.post(workerRoutes.googleLogin, googleUser);
@@ -128,6 +139,50 @@ export const addProblem = async (data: {
 }) => {
   try {
     const response = await Api.post(workerRoutes.addProblem, data);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const saveService = async (workerId: string, data: ServiceData) => {
+  try {
+    const response = await Api.post(
+      workerRoutes.createServices(workerId),
+      data
+    );
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const fecthServices = async (workerId: string) => {
+  try {
+    const response = await Api.get(workerRoutes.fecthServices(workerId));
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const deleteService = async (workerId: string, serviceId: string) => {
+  try {
+    const response = await Api.patch(workerRoutes.deleteService(workerId), {
+      serviceId,
+    });
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const editService = async (
+  workerId: string,
+  data: ServiceData,
+  serviceId: string
+) => {
+  try {
+    const response = await Api.patch(workerRoutes.editService(workerId), {
+      serviceId,
+      data,
+    });
     return response.data;
   } catch (error) {
     handleApiError(error);

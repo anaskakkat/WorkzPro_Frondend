@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Container,
-  Box,
-  Typography,
-  Button,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Container, Typography, Button, CircularProgress } from "@mui/material";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
@@ -16,6 +10,7 @@ import CustomTextField from "../../components/styleComponents/StyledTextField";
 import { GoogleLogin } from "@react-oauth/google";
 import { IGoogleUser } from "../../types/user";
 import { jwtDecode } from "jwt-decode";
+import logo from "/workzpro-high-resolution-logo.jpeg";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=\S)(?=\S{8,})/;
@@ -74,9 +69,7 @@ const WorkerLogin = () => {
       toast.error("Please enter your password");
       isValid = false;
     } else if (validatePassword(password)) {
-      toast.error(
-        "Password must be at least 8 characters long and contain no spaces."
-      );
+      toast.error("Password must be at least 8 characters long and contain no spaces.");
       isValid = false;
     }
 
@@ -93,30 +86,7 @@ const WorkerLogin = () => {
       if (response) {
         toast.success(response.message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        dispatch(
-          setWorkerInfo({
-            _id: worker._id,
-            name: worker.name,
-            isProfileSetup: worker.isProfileSetup,
-            email: worker.email,
-            role: worker.role,
-            phoneNumber: worker.phoneNumber,
-            status: worker.status,
-            // service: worker.service,
-            experience: worker.experience,
-            location: worker.location,
-            locationName: worker.locationName,
-            workRadius: worker.workRadius,
-            // identityProof: worker.identityProof,
-            // wallet: worker.wallet,
-            // wageDay: worker.wageDay,
-            profilePicture: worker.profilePicture,
-            // isBlocked: worker.isBlocked,
-            // loginAccess: worker.loginAccess,
-            images: worker.images,
-            // configuration: worker.configuration,
-          })
-        );
+        dispatch(setWorkerInfo(worker));
         navigate("/worker");
       }
     } catch (error) {
@@ -125,59 +95,45 @@ const WorkerLogin = () => {
       setLoading(false);
     }
   };
-  // const handleGoogleSuccess = async (credentialResponse: any) => {
-  //   try {
-  //     const decodedToken: IGoogleUser = jwtDecode(
-  //       credentialResponse.credential
-  //     );
-  //     console.log("Decoded Google user:", decodedToken);
-  //     const googleUser = {
-  //       email: decodedToken.email,
-  //       name: decodedToken.name,
-  //       picture: decodedToken.picture,
-  //       googleId: decodedToken.sub,
-  //     };
-  //     // const response = await googleAuth(googleUser);
-  //     // console.log("googleUser:::", googleUser);
-  //     const response = await workerGoogleLogin(googleUser);
-  //     // console.log("response", response);
 
-  //     dispatch(setWorkerInfo(response.data));
-  //     toast.success(response.message);
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.error("Google login error:", error);
-  //     toast.error("Google login failed");
-  //   }
-  // };
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    try {
+      const decodedToken: IGoogleUser = jwtDecode(credentialResponse.credential);
+      console.log("Decoded Google user:", decodedToken);
+      const googleUser = {
+        email: decodedToken.email,
+        name: decodedToken.name,
+        picture: decodedToken.picture,
+        googleId: decodedToken.sub,
+      };
+      const response = await workerGoogleLogin(googleUser);
+      dispatch(setWorkerInfo(response.data));
+      toast.success(response.message);
+      navigate("/");
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Google login failed");
+    }
+  };
 
-  // const handleGoogleError = () => {
-  //   toast.error("Google login failed");
-  // };
+  const handleGoogleError = () => {
+    toast.error("Google login failed");
+  };
 
   return (
-    <div className="bg-custom_bg_blue">
-      <Container className="min-h-screen flex items-center justify-center pt-8">
-        <Box className="w-full max-w-md p-8 bg-white rounded shadow-lg space-y-4 mx-auto">
-          <Typography
-            variant="h4"
-            className="text-center text-custom_navyBlue font-bold"
-          >
+    <div className="flex items-center mx-auto max-w-full justify-center h-screen bg-blue-50">
+      <div className="bg-white border-2 rounded shadow-lg flex flex-col sm:flex-row items-center max-w-4xl mx-4 md:mx-auto">
+        {/* Left Side: Logo */}
+        <div className="flex justify-center items-center max-w-xs p-4 md:border-r-2">
+          <img src={logo} alt="WorkzPro Logo" className=" sm:w-auto sm:h-auto" />
+        </div>
+
+        {/* Right Side: Login Form */}
+        <div className="w-full p-8 rounded-md">
+          <Typography variant="h5" className="text-center text-custom_navyBlue font-bold">
             Worker Login
           </Typography>
-          <Typography
-            variant="body1"
-            className="text-center text-custom_navyBlue"
-          >
-            Login to access your WorkzPro Worker account
-          </Typography>
-          <Box
-            component="form"
-            className="space-y-4"
-            noValidate
-            autoComplete="off"
-            onSubmit={handleSubmit}
-          >
+          <Box component="form" className="space-y-4" noValidate autoComplete="off" onSubmit={handleSubmit}>
             <CustomTextField
               id="email"
               name="email"
@@ -193,7 +149,6 @@ const WorkerLogin = () => {
               error={!!emailError}
               helperText={emailError}
             />
-
             <CustomTextField
               id="password"
               name="password"
@@ -206,102 +161,42 @@ const WorkerLogin = () => {
               margin="dense"
               value={password}
               onChange={handlePasswordChange}
-              helperText={passwordError}
               error={!!passwordError}
+              helperText={passwordError}
             />
-            <Box className="flex items-center justify-between">
-              <Link
-                to="#"
-                className="text-sm font-medium text-custom_navyBlue hover:text-custom_buttonColor"
+            <div className="flex items-center justify-between">
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                className="w-full px-4 py-2 text-sm font-medium text-white bg-custom_button_Sp rounded"
+                disabled={loading}
               >
+                {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+              </Button>
+              <Link to="#" className="text-sm font-light text-custom_navyBlue hover:text-custom_buttonColor">
                 Forgot Password
               </Link>
-            </Box>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              className="w-full px-4 py-2 text-sm font-medium text-white bg-custom_button_Sp rounded"
-              disabled={loading}
-            >
-              {loading ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                "Login"
-              )}
-            </Button>
-            <Typography
-              variant="body2"
-              className="text-center text-gray-600 mt-4"
-            >
+            </div>
+            {/* <div className="flex items-center justify-center my-4">
+              <div className="border-t border-gray-300 flex-grow mr-3"></div>
+              <div className="text-gray-700 text-center text-sm">Or login with</div>
+              <div className="border-t border-gray-300 flex-grow ml-3"></div>
+            </div> */}
+            {/* <div className="flex justify-center">
+              <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
+            </div> */}
+            <Typography variant="body2" className="text-center text-gray-600 mt-4">
               Don't have an account?{" "}
-              <Link to="/worker/signup" className="font-medium ">
+              <Link to="/worker/signup" className="font-medium">
                 <span className="text-custom_navyBlue font-semibold hover:text-custom_buttonColor">
-                  {" "}
                   Sign up
                 </span>
               </Link>
             </Typography>
-            {/* <Typography
-              variant="body2"
-              className="text-center text-custom_navyBlue mt-4"
-            >
-              Or login with
-            </Typography> */}
-            {/* <Button
-              sx={{
-                "&:hover": {
-                  backgroundColor: "black",
-                  color: "white",
-                },
-                borderColor: "#4285F4",
-              }}
-              type="button"
-              fullWidth
-              variant="outlined"
-              startIcon={
-                <svg
-                  className="w-5 h-5 mr-2"
-                  aria-hidden="true"
-                  focusable="false"
-                  data-prefix="fab"
-                  data-icon="google"
-                  role="img"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 488 512"
-                >
-                  <path
-                    fill="#4285F4"
-                    d="M488 261.8c0-15.2-1.4-29.9-4-44H250v85.2h133.9c-5.8 29.7-23.5 54.8-49.9 71.4l79.8 62c46.6-42.9 73.2-106 73.2-174.6z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M250 484c64.7 0 118.9-21.5 158.6-57.6l-79.8-62c-22.2 14.9-50.4 23.8-78.8 23.8-61.6 0-113.8-41.6-132.5-97.4H54v61.4C94.3 450.6 167.5 484 250 484z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M117.5 307.8c-8.8-26.4-8.8-54.6 0-81l-79.8-62C7.4 194.4 0 221.2 0 250s7.4 55.6 37.8 81.2l79.8-62.4z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M250 108.4c28.4 0 54.8 10.4 75.3 27.5l55.6-55.6C343.9 48.5 300.1 30 250 30 167.5 30 94.3 63.4 54 117.5l79.8 62c18.7-55.8 70.9-97.4 132.5-97.4z"
-                  />
-                </svg>
-              }
-              onClick={handleGoogleSignIn}
-            >
-              Sign in with Google
-            </Button> */}
-            {/* <div className="flex justify-center">
-              {" "}
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={handleGoogleError}
-              />
-            </div> */}
           </Box>
-        </Box>
-      </Container>
+        </div>
+      </div>
     </div>
   );
 };

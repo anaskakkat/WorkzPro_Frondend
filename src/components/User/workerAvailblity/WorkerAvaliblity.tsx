@@ -1,26 +1,64 @@
 import React, { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-
-import { fetchSlotById, fetchWorkerDatabyId } from "../../../api/user";
-import IWorker from "../../../types/IWorker";
+import {
+  startOfDay,
+  addMinutes,
+  isBefore,
+  format,
+  addDays,
+  addMonths,
+} from "date-fns";
+import { fetchWorkerDatabyId } from "../../../api/user";
+import IWorker, { ServiceData, WorkingDayType } from "../../../types/IWorker";
 import Loader from "../../loader/Loader";
 import { FaTools } from "react-icons/fa";
 import { capitalizeFirstLetter } from "../../../utils/capitalize";
 import { useParams } from "react-router-dom";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import "react-datepicker/dist/react-datepicker.css";
+import BookingForm from "./BookingForm";
 const WorkerAvailability: React.FC = () => {
   const { workerId } = useParams<{ workerId: string }>();
   const [worker, setWorker] = useState<IWorker | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedDate, setSelectedDate] = useState(null);
-
+  const [services, setServices] = useState<ServiceData[]>([]);
+  const [slotCount, setSlotCount] = useState(0);
+  const [selectDate, setSelectDate] = useState<Date | undefined>(undefined);
+  const [workDays, setWorkDays] = useState<WorkingDayType[]>([]);
+  const [bufferTime, setBufferTime] = useState<number>(0);
+  const [slotSize, setSlotSize] = useState<number>(0);
+  const [timeSlots, setTimeSlots] = useState<string[]>([]);
+  const [selectedService, setSelectedService] = useState<string>("");
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    description: "",
+    houseNumber: "",
+    street: "",
+    location: "",
+    city: "",
+    state: "",
+    pinCode: "",
+  });
+  useEffect(() => {
+    fetchWorker();
+    getWorkingHours();
+  }, [workerId]);
+  useEffect(() => {
+    if (selectDate) {
+      generateTimeSlots();
+    }
+  }, [selectDate, workDays, slotSize, bufferTime]);
   const fetchWorker = async () => {
     if (workerId) {
       try {
         setLoading(true);
         const response = await fetchWorkerDatabyId(workerId);
+        // console.log("res--------------", response);
+
+        setSlotSize(response.configuration.slotSize);
+        setBufferTime(response.configuration.bufferTime);
         setWorker(response);
+        setServices(response.configuration.services);
+        setWorkDays(response.configuration.workingDays);
       } catch (error) {
         console.error("Error fetching worker data:", error);
       } finally {
@@ -29,30 +67,70 @@ const WorkerAvailability: React.FC = () => {
     }
   };
 
-  const fetchSlot = async () => {
-    if (workerId) {
-      try {
-        setLoading(true);
-        const response = await fetchSlotById(workerId);
-        console.log("iam res", response);
-        // const filteredSlots = response.filter((slot: ISlot) => !slot.isBooked);
-      } catch (error) {
-        console.error("Error fetching slots data:", error);
-      } finally {
-        setLoading(false);
-      }
+  const getWorkingHours = () => {
+    if (selectDate) {
+      const dayOfWeek = selectDate.getDay();
+      // console.log("dayOfWeek", dayOfWeek,'----',workDays);
+
+      let Workdaysdata = workDays[dayOfWeek];
+      // console.log(Workdaysdata);
+
+      return Workdaysdata;
+    }
+    return null;
+  };
+  const generateTimeSlots = () => {
+    const slots: string[] = [];
+    const workingHours = getWorkingHours();
+    if (!workingHours) return slots;
+
+    let current = addMinutes(
+      startOfDay(selectDate!),
+      parseTime(workingHours.start)
+    );
+    const end = addMinutes(
+      startOfDay(selectDate!),
+      parseTime(workingHours.end)
+    );
+
+    while (isBefore(current, end)) {
+      const start = format(current, "HH:mm");
+      const nextSlot = addMinutes(current, slotSize * 60);
+      if (!isBefore(nextSlot, end)) break;
+      const slotEnd = format(nextSlot, "HH:mm");
+      const slot = `${start} - ${slotEnd}`;
+      slots.push(slot);
+      current = addMinutes(nextSlot, bufferTime);
+    }
+
+    setTimeSlots(slots);
+  };
+
+  const parseTime = (time: string): number => {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dateString = e.target.value;
+    const date = new Date(dateString);
+    if (!isNaN(date.getTime())) {
+      setSelectDate(date);
+    } else {
+      setSelectDate(undefined);
     }
   };
 
-  useEffect(() => {
-    fetchWorker();
-    fetchSlot();
-  }, [workerId]);
+  const handleSlotClick = (slot: string) => {
+    setSelectedSlot(slot);
+  };
 
- 
   if (loading) {
     return <Loader />;
   }
+  // console.log("selectedDAte", selectDate);
+  // const timeSlots = generateTimeSlots();
+  // const minDate = format(addDays(new Date(), 1), "yyyy-MM-dd");
+  // const maxDate = format(addMonths(new Date(), 1), "yyyy-MM-dd");
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -128,19 +206,90 @@ const WorkerAvailability: React.FC = () => {
       </div>
 
       {/* Booking Form */}
-      <div className="p-4 border-2 border-custom_lightBlue shadow-lg rounded-lg">
-        <h2 className="text-xl font-semibold mb-4 text-custom_navyBlue">
-          Book a Service
-        </h2>
-        <DatePicker
-        selected={selectedDate}
-        // onChange={date => setSelectedDate(date)}
-        inline
-        className=""
-      />
+
+      <div className="flex gap-8 p-4">
+        {/* Left Side */}
+        <div className="flex-1 p-4 border-2 border-custom_lightBlue shadow-lg rounded-lg">
+          <h2 className="text-xl font-semibold mb-4 text-custom_navyBlue">
+            Book a Service
+          </h2>
+
+          <div className="flex gap-4 mb-4">
+            <div className="flex-1">
+              <label
+                htmlFor="service"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Select Service
+              </label>
+              <select
+                id="service"
+                name="service"
+                className="w-full mt-1 p-2 border rounded-lg"
+                onChange={(e) => {
+                  /* handle service selection */
+                }}
+              >
+                <option value="">Select a service</option>
+                {services.map((service) => (
+                  <option key={service._id} value={service.amount}>
+                    {service.service}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex-1">
+              <label
+                htmlFor="date"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Select Date
+              </label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                min={new Date().toISOString().split("T")[0]} // Example min date
+                max={
+                  new Date(new Date().setMonth(new Date().getMonth() + 1))
+                    .toISOString()
+                    .split("T")[0]
+                } // Example max date
+                className="w-full mt-1 p-2 border rounded-lg"
+                onChange={handleDateChange}
+              />
+            </div>
+          </div>
+
+          {selectDate && timeSlots.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold mb-2 text-custom_navyBlue">
+                Available Time Slots
+              </h3>
+              <div className="grid grid-cols-6 gap-4">
+                {timeSlots.map((slot, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleSlotClick(slot)}
+                    className={`p-2 border rounded-lg cursor-pointer transition-colors duration-300 hover:bg-blue-200 ${
+                      slot === selectedSlot
+                        ? "bg-blue-500 text-white border-blue-600"
+                        : "bg-white text-gray-800 border-gray-300"
+                    }`}
+                  >
+                    {slot}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Right Side */}
+        <BookingForm />
       </div>
     </div>
   );
 };
-
 export default WorkerAvailability;

@@ -55,7 +55,7 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
     <div className="flex flex-col h-screen">
       {/* Navbar */}
       <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
-        <div className="container mx-auto px-3 py-3 lg:px-5 lg:pl-3 flex items-center justify-between">
+        <div className=" mx-10 px-3 py-3 lg:px-5 lg:pl-3 flex items-center justify-between">
           <button
             className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100"
             onClick={toggleSidebar}

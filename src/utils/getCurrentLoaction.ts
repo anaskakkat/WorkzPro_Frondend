@@ -15,5 +15,5 @@ export const getCurrentPosition = (): Promise<GeolocationPosition> => {
         reject(new Error("Geolocation is not supported by this browser."));
       }
     });
-  };
+  }; 
   

@@ -1,8 +1,7 @@
-import React from "react";
 
 const WorkerDashboard = () => {
   return (
-    <div className="w-full h-screen  bg-red-700">
+    <div className="w-full h-screen">
       <p className="bg-yellow-100text-white">dddashboard</p>
     </div>
   );

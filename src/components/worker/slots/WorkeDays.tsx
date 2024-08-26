@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { WorkingDayType } from "../../../types/ISlot";
 import IWorker from "../../../types/IWorker";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
+import { editConfigration } from "../../../api/worker";
 
 type PropType = {
   workingDaysProp: WorkingDayType[];
@@ -14,7 +17,7 @@ const WorkerDays: React.FC<PropType> = ({
   workingDaysProp,
   slotSizeProp,
   bufferTimeProp,
-  setWorker,
+  // setWorker,
 }) => {
   const [dayOfWeek] = useState([
     "Sunday",
@@ -31,6 +34,10 @@ const WorkerDays: React.FC<PropType> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [slotSize, setSlotSize] = useState(slotSizeProp);
   const [bufferTime, setBufferTime] = useState(bufferTimeProp);
+  const workerId = useSelector(
+    (state: RootState) => state.workerInfo.workerInfo._id
+  );
+  // console.log(workerId);
 
   useEffect(() => {
     setWorkingDays(workingDaysProp);
@@ -75,19 +82,9 @@ const WorkerDays: React.FC<PropType> = ({
     bufferTime: number;
   }) => {
     try {
-      console.log("saveDataToServer------", data);
-
-      const response = await fetch("/api/save-worker-data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to save data");
-      }
-      return await response.json();
+      const response = await editConfigration(workerId, data);
+      // console.log("saveDataToWorker------", response);
+      return response && response.data;
     } catch (error) {
       console.error("Error saving data:", error);
       throw error;
@@ -99,15 +96,9 @@ const WorkerDays: React.FC<PropType> = ({
       if (validateTimes(workingDays)) {
         const dataToSave = { workingDays, slotSize, bufferTime };
         try {
-          const result = await saveDataToServer(dataToSave);
+          const res = await saveDataToServer(dataToSave);
           setIsEditing(false);
-          setWorker((prevWorker) => ({
-            ...prevWorker!,
-            workingDays,
-            slotSize,
-            bufferTime,
-          }));
-          toast.success("Changes saved successfully!");
+          toast.success(res.message);
         } catch (error) {
           toast.error("Failed to save data. Please try again.");
         }
@@ -118,7 +109,7 @@ const WorkerDays: React.FC<PropType> = ({
   };
 
   return (
-    <div className="flex flex-col items-start px-4 bg-white rounded-lg shadow-lg space-y-2">
+    <div className="flex flex-col h-fit w-fit bg-white  items-start p-4  rounded-lg shadow-2xl space-y-2">
       <div className="flex my-2 w-full flex-row justify-between">
         <h4 className="text-lg font-semibold text-custom_navyBlue">
           Working Days
@@ -133,7 +124,7 @@ const WorkerDays: React.FC<PropType> = ({
           {isEditing ? "Save" : "Edit"}
         </button>
       </div>
-      <div className="flex flex-row  w-full justify-between">
+      <div className="flex flex-row  w-full justify-between ">
         <div className="tile flex bg-orange-50 w-fit  h-fit text-custom_navyBlue border border-orange-300 rounded-lg py-2 px-3 gap-3">
           <h3 className="font-semibold ">
             Slot Size<span className="text-sm font-light">(in-Hour)</span>-{" "}
@@ -171,7 +162,7 @@ const WorkerDays: React.FC<PropType> = ({
       {workingDays.map((day, index) => (
         <div
           key={day._id}
-          className="flex items-center p-2 bg-blue-100 rounded-lg justify-between shadow-lg space-x-6 w-full"
+          className="flex items-center p-2 bg-blue-100 rounded-lg justify-between shadow-lg space-x-6 w-full "
         >
           <div className="relative ">
             <label className="inline-flex items-center mr-5 cursor-pointer">
