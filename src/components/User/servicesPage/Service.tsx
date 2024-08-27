@@ -56,12 +56,12 @@ const Service: React.FC = () => {
       <div className="flex-grow flex items-center justify-center px-10 md:px-20">
         <div className="w-full flex flex-col md:flex-row items-center gap-20">
           <div className="max-w-60 md:w-1/3 mb-6 md:mb-0 flex items-center justify-center">
-            <div className="">
-              <span className="font-semibold text-4xl w-10  ">
+            <div className="font-oswald">
+              <span className="font-semibold text-6xl w-10  ">
                 LEARN MORE ABOUT OUR
               </span>{" "}
               <br />
-              <span className="text-custom_buttonColor text-4xl font-semibold">
+              <span className="text-custom_buttonColor text-6xl font-semibold">
                 SERVICES
               </span>
             </div>

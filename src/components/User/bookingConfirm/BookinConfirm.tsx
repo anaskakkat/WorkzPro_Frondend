@@ -23,7 +23,7 @@ const BookingConfirm: React.FC = () => {
   const [booking, setBooking] = useState<Booking | undefined>(undefined);
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
-  const isAboveMd = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'));
+  const isAboveMd = useMediaQuery((theme: Theme) => theme.breakpoints.up("md"));
 
   useEffect(() => {
     if (id) {
@@ -42,9 +42,13 @@ const BookingConfirm: React.FC = () => {
     }
   };
 
-  const BookingDetail: React.FC<{ icon: React.ReactNode; label: string; value: string }> = ({ icon, label, value }) => (
+  const BookingDetail: React.FC<{
+    icon: React.ReactNode;
+    label: string;
+    value: string;
+  }> = ({ icon, label, value }) => (
     <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-      <Avatar sx={{ bgcolor: 'primary.light', mr: 2, width: 40, height: 40 }}>
+      <Avatar sx={{ bgcolor: "primary.light", mr: 2, width: 40, height: 40 }}>
         {icon}
       </Avatar>
       <Box>
@@ -84,18 +88,20 @@ const BookingConfirm: React.FC = () => {
             <Grid item md={4}>
               <Box
                 sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  bgcolor: 'primary.light',
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  bgcolor: "primary.light",
                   borderRadius: 2,
                   p: 2,
                 }}
               >
                 <Avatar
-                  src={booking?.workerId.profilePicture || "/default-avatar.png"}
+                  src={
+                    booking?.workerId.profilePicture || "/default-avatar.png"
+                  }
                   alt={booking?.workerId.name || "Worker"}
                   sx={{ width: 150, height: 150, mb: 2 }}
                 />
@@ -124,26 +130,58 @@ const BookingConfirm: React.FC = () => {
               >
                 <CheckCircleIcon sx={{ fontSize: 40 }} />
               </Avatar>
-              <Typography variant="h5" gutterBottom fontWeight="bold" color="primary.main" align="center">
+              <Typography
+                variant="h5"
+                gutterBottom
+                fontWeight="bold"
+                color="primary.main"
+                align="center"
+              >
                 Service Booked!
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary" align="center">
-                Your service request has been successfully placed and is awaiting worker confirmation.
+              <Typography
+                variant="subtitle1"
+                color="text.secondary"
+                align="center"
+              >
+                Your service request has been successfully placed and is
+                awaiting worker confirmation.
               </Typography>
             </Box>
 
             <Divider sx={{ my: 3 }} />
 
             <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" gutterBottom fontWeight="bold" color="primary.main">
+              <Typography
+                variant="h6"
+                gutterBottom
+                fontWeight="bold"
+                color="primary.main"
+              >
                 Booking Details
               </Typography>
               {booking ? (
                 <>
-                  <BookingDetail icon={<PersonIcon />} label="Worker" value={booking.workerId.name} />
-                  <BookingDetail icon={<CalendarTodayIcon />} label="Date" value={new Date(booking.date).toLocaleDateString()} />
-                  <BookingDetail icon={<AccessTimeIcon />} label="Time" value={booking.selectedSlot.time} />
-                  <BookingDetail icon={<LocationOnIcon />} label="Location" value={booking.location || 'Not specified'} />
+                  <BookingDetail
+                    icon={<PersonIcon />}
+                    label="Worker"
+                    value={booking.workerId.name}
+                  />
+                  <BookingDetail
+                    icon={<CalendarTodayIcon />}
+                    label="Date"
+                    value={new Date(booking.date).toLocaleDateString()}
+                  />
+                  <BookingDetail
+                    icon={<AccessTimeIcon />}
+                    label="Time"
+                    value={booking.selectedSlot.time}
+                  />
+                  <BookingDetail
+                    icon={<LocationOnIcon />}
+                    label="Location"
+                    value={booking.location || "Not specified"}
+                  />
                 </>
               ) : (
                 <Typography>Loading booking details...</Typography>
@@ -164,7 +202,13 @@ const BookingConfirm: React.FC = () => {
                 variant="contained"
                 color="primary"
                 onClick={() => navigate("/")}
-                sx={{ borderRadius: 2, textTransform: 'none', px: 3, py: 1, flex: { xs: '1 0 100%', sm: '0 1 auto' } }}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: "none",
+                  px: 3,
+                  py: 1,
+                  flex: { xs: "1 0 100%", sm: "0 1 auto" },
+                }}
               >
                 Home Page
               </Button>
@@ -172,7 +216,13 @@ const BookingConfirm: React.FC = () => {
                 variant="outlined"
                 color="primary"
                 onClick={() => navigate("/bookings")}
-                sx={{ borderRadius: 2, textTransform: 'none', px: 3, py: 1, flex: { xs: '1 0 100%', sm: '0 1 auto' } }}
+                sx={{
+                  borderRadius: 2,
+                  textTransform: "none",
+                  px: 3,
+                  py: 1,
+                  flex: { xs: "1 0 100%", sm: "0 1 auto" },
+                }}
               >
                 View All Bookings
               </Button>

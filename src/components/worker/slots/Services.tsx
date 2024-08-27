@@ -19,7 +19,7 @@ const Services = () => {
   const [problemName, setProblemName] = useState("");
   const [estimatedSlots, setEstimatedSlots] = useState("");
   const [amount, setAmount] = useState("");
-  const [services, setServices] = useState<ServiceData[]>();
+  const [services, setServices] = useState<ServiceData[] | null>(null);
   const [currentServiceId, setCurrentServiceId] = useState<string | null>(null);
   const workerId = useSelector(
     (state: RootState) => state.workerInfo.workerInfo._id
@@ -86,7 +86,6 @@ const Services = () => {
       handleAddService();
     } catch (error) {
       console.error("Error adding or updating service:", error);
-      toast.error("An error occurred while processing your request.");
     }
   };
 
@@ -113,7 +112,6 @@ const Services = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("An error occurred while deleting the service.");
     }
   };
 
@@ -121,24 +119,24 @@ const Services = () => {
     try {
       const response = await fecthServices(workerId);
       if (response.data.status === 200) {
-        setServices(response.data.services);
+        setServices(response.data.services.length > 0 ? response.data.services : []);
       } else {
         console.log("Error fetching services");
-        toast.error("Error fetching services");
+        setServices([]);
       }
     } catch (error) {
       console.log(error);
-      toast.error("An error occurred while fetching services.");
+      setServices([]);
     }
   };
 
   return (
     <>
-      <div className="w-full h-3/4 flex flex-col  bg-white rounded-lg shadow-2xl">
+      <div className="w-full h-3/4 flex flex-col bg-white rounded-lg shadow-2xl">
         <div className="px-3 flex bg-blue-100 w-full justify-between rounded-t-lg items-center py-2">
           <h3 className="font-semibold text-custom_navyBlue">Services</h3>
           <button
-            className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white font-medium px-4 py-1 border border-blue-500 hover:border-transparent rounded"
+            className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white font-medium px-3 py-1 border border-blue-500 hover:border-transparent rounded-lg"
             onClick={() => {
               setIsModalOpen(true);
               setIsEditMode(false);
@@ -170,7 +168,7 @@ const Services = () => {
               </tr>
             </thead>
             <tbody>
-              {services &&
+              {services && services.length > 0 ? (
                 services.map((service) => (
                   <tr
                     key={service._id}
@@ -194,7 +192,14 @@ const Services = () => {
                       </button>
                     </td>
                   </tr>
-                ))}
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="text-center py-4 text-gray-500">
+                    No service records
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -12,7 +12,7 @@ import { logoutWorker } from "../../api/worker";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { removeWorkerInfo } from "../../redux/slices/workerSlice";
-
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 interface WorkerHomeProps {
   children: ReactNode;
 }
@@ -118,14 +118,32 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
                   <span className="ml-3">Slot</span>
                 </li>
               </Link>
+              <Link to="#">
+                <li
+                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-gray-300 hover:text-blue-900 ${
+                    location.pathname === "/worker/bookings"
+                      ? "bg-blue-600 text-white"
+                      : ""
+                  }`}
+                >
+                  <CalendarMonthIcon
+                    className={`text-gray-500 transition duration-75 ${
+                      location.pathname === "/worker/bookings"
+                        ? "text-white "
+                        : ""
+                    }`}
+                  />
+                  <span className="ml-3">Bookings</span>
+                </li>
+              </Link>
             </ul>
           </div>
           <div className="flex items-center justify-center py-4 px-3 bg-blue-100">
             <button
               onClick={handleLogout}
-              className="flex items-center w-full text-white bg-red-500 hover:bg-red-600 py-2 px-4 rounded"
+              className="flex items-center w-full h-8 outline-2 border text-red-500 border-red-500  hover:bg-red-600 px-4 hover:text-white rounded"
             >
-              <ExitToAppIcon className="mr-2" />{" "}
+              <ExitToAppIcon className="mr-2 " />{" "}
               {/* Add margin-right for spacing */}
               Logout
             </button>

@@ -3,7 +3,8 @@ import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 import Map, { Marker, NavigationControl } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { MAPBOX_ACCESS_TOKEN } from "../../../constants/constant_env";
-
+import MyLocationIcon from "@mui/icons-material/MyLocation";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 const geocodingClient = mbxGeocoding({ accessToken: MAPBOX_ACCESS_TOKEN });
 
 const BookingForm = () => {
@@ -77,8 +78,8 @@ const BookingForm = () => {
   };
 
   return (
-    <div className="flex-1 p-4 border-2 border-custom_lightBlue shadow-lg rounded-lg">
-      <h2 className="text-xl font-semibold mb-4 text-custom_navyBlue">
+    <div className="flex-1 p-4 border-l-2 border-blue-100 shadow-lg rounded-sm">
+      <h2 className=" font-semibold mb-2 text-custom_navyBlue">
         Booking Details
       </h2>
 
@@ -90,7 +91,7 @@ const BookingForm = () => {
         }}
       >
         {/* Form Fields */}
-        <div className="mb-4">
+        <div className="mb-2">
           <input
             type="text"
             id="description"
@@ -102,7 +103,7 @@ const BookingForm = () => {
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-2">
           <input
             type="text"
             id="houseNumber"
@@ -114,7 +115,7 @@ const BookingForm = () => {
           />
         </div>
 
-        <div className="flex mb-4 space-x-4">
+        <div className="flex mb-2 space-x-4">
           <input
             type="text"
             id="street"
@@ -126,15 +127,17 @@ const BookingForm = () => {
           />
           <button
             type="button"
-            className="w-1/2 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
+            className="w-1/2 px-5 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 flex gap-2"
             onClick={openMap}
           >
-            Select Location
+            {" "}
+            <MyLocationIcon />
+            Location
           </button>
         </div>
 
         {/* City and State Fields */}
-        <div className="flex mb-4 space-x-4">
+        <div className="flex mb-2 ">
           <input
             type="text"
             id="city"
@@ -170,8 +173,9 @@ const BookingForm = () => {
 
         <button
           type="submit"
-          className="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
+          className="w-full flex justify-center gap-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
         >
+          <CalendarMonthIcon />
           Book
         </button>
       </form>
@@ -189,7 +193,10 @@ const BookingForm = () => {
             >
               <NavigationControl />
               {coordinates.lat && coordinates.lng && (
-                <Marker latitude={coordinates.lat} longitude={coordinates.lng} />
+                <Marker
+                  latitude={coordinates.lat}
+                  longitude={coordinates.lng}
+                />
               )}
             </Map>
             <button

@@ -8,9 +8,7 @@ const workerRoutes = {
   getServicesData: "worker/allServices",
 
   setProfile: "worker/setProfile",
-  setSlots: (id: string) => `worker/slots/${id}`,
-  fetchSlots: (id: string) => `worker/slots/${id}`,
-  fetchCommonProblams: (id: string) => `worker/commonProblams/${id}`,
+
   deleteSlot: (id: string) => `worker/slots/${id}`,
   bookingAccept: (bookingId: string) => `worker/booking/${bookingId}`,
   editConfigration: (workerId: string) => `worker/workingdays/${workerId}`,
@@ -21,6 +19,9 @@ const workerRoutes = {
   fecthServices: (workerId: string) => `worker/service/${workerId}`,
   deleteService: (workerId: string) => `worker/deleteService/${workerId}`,
   editService: (workerId: string) => `worker/services/${workerId}`,
+  addLeaves: (workerId: string) => `worker/leave/${workerId}`,
+  getLeaves: (workerId: string) => `worker/leave/${workerId}`,
+  deleteLeves: (workerId: string) => `worker/deleteLeave/${workerId}`,
 };
 
 export default workerRoutes;

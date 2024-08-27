@@ -2,7 +2,7 @@ import Api from "../config/axiosConfig";
 import workerRoutes from "../endpoints/workerEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 import ISlot from "../types/ISlot";
-import { IWorkerRegistration, ServiceData } from "../types/IWorker";
+import { IWorkerRegistration, LeaveType, ServiceData } from "../types/IWorker";
 import { IGoogleUser } from "../types/user";
 
 export const registerWorker = async (worker: IWorkerRegistration) => {
@@ -65,30 +65,7 @@ export const setProfileData = async (profileData: FormData) => {
     handleApiError(error);
   }
 };
-export const setSlot = async (slot: ISlot, id: string) => {
-  try {
-    const response = await Api.post(workerRoutes.setSlots(id), slot);
-    return response.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-};
-export const fetchSlots = async (id: string) => {
-  try {
-    const response = await Api.get(workerRoutes.fetchSlots(id));
-    return response.data.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-};
-export const fetchCommonProblams = async (id: string) => {
-  try {
-    const response = await Api.get(workerRoutes.fetchCommonProblams(id));
-    return response.data;
-  } catch (error) {
-    handleApiError(error);
-  }
-};
+
 export const fetchWorker = async (workerid: string) => {
   try {
     const response = await Api.get(workerRoutes.fetchWorkerById(workerid));
@@ -184,6 +161,32 @@ export const editService = async (
       data,
     });
     return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const addLeaves = async (workerId: string, newEntry: LeaveType) => {
+  try {
+    const response = await Api.post(workerRoutes.addLeaves(workerId), newEntry);
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const getLeaves = async (workerId: string) => {
+  try {
+    const response = await Api.get(workerRoutes.getLeaves(workerId));
+    return response.data.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const deleteLeves = async (workerId: string, leaveId: string) => {
+  try {
+    const response = await Api.patch(workerRoutes.deleteLeves(workerId), {
+      leaveId,
+    });
+    return response.data.data;
   } catch (error) {
     handleApiError(error);
   }

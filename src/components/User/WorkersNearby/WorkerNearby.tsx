@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Grid,
-  Avatar,
-  Button,
-  TextField,
-  Typography,
-  Rating,
-} from "@mui/material";
+import { Avatar, Button, TextField, Typography, Rating } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { fetchWorkers } from "../../../api/user";
 import Loader from "../../loader/Loader";
@@ -14,7 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import IWorker from "../../../types/IWorker";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
-import { getDistance } from 'geolib';
+import { getDistance } from "geolib";
 
 const WorkerNearby: React.FC = () => {
   const [workers, setWorkers] = useState<IWorker[]>([]);
@@ -26,22 +19,25 @@ const WorkerNearby: React.FC = () => {
   // Extract the service name from the query parameters
   const queryParams = new URLSearchParams(location.search);
   const serviceID = queryParams.get("service") || "";
-  // console.log('serviceID',serviceID);
   const locationData = useSelector((state: RootState) => state.location);
-  // console.log(locationData);
 
   useEffect(() => {
     const fetchWorkerData = async () => {
       setLoading(true);
       try {
         const response = await fetchWorkers(serviceID, locationData);
-        // console.log(response);
         const fetchedWorkers = response.data;
 
-        const workersWithDistance = fetchedWorkers.map((worker:any) => {
+        const workersWithDistance = fetchedWorkers.map((worker: any) => {
           const distance = getDistance(
-            { latitude: locationData.coordinates[1], longitude: locationData.coordinates[0] },
-            { latitude: worker.location.coordinates[1], longitude: worker.location.coordinates[0] }
+            {
+              latitude: locationData.coordinates[1],
+              longitude: locationData.coordinates[0],
+            },
+            {
+              latitude: worker.location.coordinates[1],
+              longitude: worker.location.coordinates[0],
+            }
           );
 
           return {
@@ -65,8 +61,6 @@ const WorkerNearby: React.FC = () => {
   };
 
   const filteredWorkers = workers.filter((worker) => {
-    // console.log(worker);
-
     return worker.name.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
@@ -89,75 +83,48 @@ const WorkerNearby: React.FC = () => {
       </div>
 
       {/* Worker Cards */}
+
       <div className="flex-1 p-4">
         {filteredWorkers.length === 0 ? (
-          <Typography variant="h6" align="center">
+          <div className="flex min-h-full mx-auto align-middle  justify-center">
             No users available for the selected service
-          </Typography>
+          </div>
         ) : (
-          <Grid container spacing={4}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 capitalize">
             {filteredWorkers.map((worker) => (
-              <Grid item xs={12} sm={6} md={3} key={worker._id}>
-                <div className="border-custom_lightBlue border-2 w-fit mx-auto my-5">
-                  <div className="p-4">
-                    <div className="flex flex-col items-center">
-                      <Avatar
-                        src={worker.profilePicture}
-                        alt={worker.name}
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: "4px",
-                        }}
-                        variant="square"
-                      />
-                      <div className="flex flex-col text-center items-center">
-                        <div>{worker.name}</div>
-                      </div>
-                    </div>
-                    <div className="justify-between mt-1 flex">
-                      <div>{worker.service.name}</div>
-                 
-                      <Rating
-                        name="read-only"
-                        value={4}
-                        readOnly
-                        size="small"
-                      />
-                    </div>
-                    <span className="text-sm">{worker.locationName}</span>{" "}
-                    <LocationOnIcon fontSize="inherit" color="primary" />
-                    <div className="flex flex-row justify-between">
-                      <div className="">{worker.experience}+ yrs</div>
-                      <div className="">{worker.wageDay}/day</div>
-                    </div>
-                    <div className="flext ">
-                    <p className="text-xs text-custom_buttonColor">{worker.distance} km away</p>
-
-                    </div>
-                    <div className="flex flex-row justify-between gap-5 mt-1">
-                      <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={() => handleDetails(worker._id)}
-                      >
-                        Details
-                      </Button>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() =>
-                          navigate(`/workerCheckout/${worker._id}`)
-                        }
-                      >
-                        Book
-                      </Button>
-                    </div>
-                  </div>
+              <div
+                key={worker._id}
+                className="border-blue-200 border w-full py-2 px-3 flex flex-col items-center rounded-xl"
+              >
+                <div className="rounded-lg">
+                  <img
+                    src={worker.profilePicture}
+                    width={180}
+                    alt="profile"
+                    className="rounded-xl  shadow-md shadow-slate-200"
+                  />
                 </div>
-              </Grid>
+                <div className="flex flex-col text-center ">
+                  <div className="text-xl font-bold text-custom_navyBlue mt-4">
+                    {worker.name}
+                  </div>
+                  <div className="font-semibold text-gray-600">
+                    {worker.service.name}
+                  </div>
+
+                  <p className="text-sm font-medium text-blue-950 mb-2">
+                    {worker.distance} km away
+                  </p>
+                  <button
+                    className=" border border-blue-500 px-11  font-semibold py-2 rounded-full w-full bg-blue-700 text-white hover:bg-blue-800"
+                    onClick={() => handleDetails(worker._id)}
+                  >
+                    Details
+                  </button>
+                </div>
+              </div>
             ))}
-          </Grid>
+          </div>
         )}
       </div>
     </div>

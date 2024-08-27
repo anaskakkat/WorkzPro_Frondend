@@ -2,9 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
@@ -18,20 +16,12 @@ import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Menu from "@mui/material/Menu";
 import logo from "/workzpro-high-resolution-logo.jpeg";
-import { MenuItem, styled } from "@mui/material";
 
-const StyledMenuItem = styled(MenuItem)(({}) => ({
-  "&:hover": {
-    backgroundColor: "#e00202",
-    color: "white",
-  },
-}));
 import UsersAdmin from "./UsersAdmin";
 import toast from "react-hot-toast";
 import { removeadminInfo } from "../../redux/slices/adminSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutAdmin } from "../../api/admin";
-import { useSelector } from "react-redux";
 import Services from "./Services";
 import Workers from "../../pages/Admin/Workers";
 import DashboardAdmin from "./DashboardAdmin";
@@ -71,51 +61,47 @@ export default function SideBarAdmin() {
       throw error;
     }
   };
-  const toUppercase = (str: string) => str.toUpperCase();
 
   const renderComponent = () => {
     switch (activeItem) {
       case "Dashboard":
-      return <DashboardAdmin />;
-      case 'Requests':
+        return <DashboardAdmin />;
+      case "Requests":
         return <Request />;
-      case 'Services':
+      case "Services":
         return <Services />;
       case "Users":
         return <UsersAdmin />;
-      case 'Workers':
+      case "Workers":
         return <Workers />;
       default:
-      return <DashboardAdmin />;
+        return <DashboardAdmin />;
     }
   };
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
       <AppBar
         position="fixed"
         sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
         style={{ background: "#003383" }}
       >
-        <Toolbar>
+        <Box sx={{ display: "flex", alignItems: "center", p: 1 }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Admin Panel
           </Typography>
-          <div>
-            <div className="flex items-center">
-              <Typography component="div">{toUppercase(adminName)}</Typography>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-            </div>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography component="div">{adminName.toUpperCase()}</Typography>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
@@ -131,17 +117,17 @@ export default function SideBarAdmin() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <StyledMenuItem
+              <div
                 onClick={() => {
                   handleLogout();
                   handleClose();
                 }}
               >
                 Logout
-              </StyledMenuItem>
+              </div>
             </Menu>
-          </div>
-        </Toolbar>
+          </Box>
+        </Box>
       </AppBar>
       <Drawer
         sx={{
@@ -155,14 +141,9 @@ export default function SideBarAdmin() {
         variant="permanent"
         anchor="left"
       >
-        <Toolbar>
-          <img
-            src={logo}
-            alt="Logo"
-            className="mx-auto"
-            style={{ width: "50%", height: "auto" }}
-          />
-        </Toolbar>
+        <Box sx={{ p: 2, textAlign: "center" }}>
+          <img src={logo} alt="Logo" style={{ width: "50%", height: "auto" }} />
+        </Box>
         <Divider />
         <List>
           {["Dashboard", "Requests", "Services", "Users", "Workers"].map(
@@ -183,11 +164,7 @@ export default function SideBarAdmin() {
         </List>
         <Divider />
       </Drawer>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
-      >
-        <Toolbar />
+      <Box component="main" sx={{ flexGrow: 1, p: 1, mt: 10 }}>
         {renderComponent()}
       </Box>
     </Box>

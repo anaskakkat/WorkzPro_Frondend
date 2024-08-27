@@ -63,8 +63,8 @@ export type ServiceType = {
 };
 
 export type LeaveType = {
-  _id: string;
-  date: string | Date;
+  _id?: string;
+  date: string;
   reason: string;
 };
 

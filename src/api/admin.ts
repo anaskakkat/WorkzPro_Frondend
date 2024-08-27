@@ -158,15 +158,25 @@ export const getRequests = async () => {
   try {
     const response = await Api.get(adminRoutes.getWorkers);
     // console.log("admin-getRequests--",getRequests);
-    
+
     return response.data.workers;
   } catch (error) {
     handleApiError(error);
   }
 };
-export const acceptRequest = async (id:string) => {
+export const acceptRequest = async (id: string) => {
   try {
     const response = await Api.patch(adminRoutes.worker_request(id));
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const rejectRequest = async (workerId: string, reason: string) => {
+  try {
+    const response = await Api.patch(adminRoutes.requestReject(workerId), {
+      reason,
+    });
     return response.data;
   } catch (error) {
     handleApiError(error);

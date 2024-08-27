@@ -14,6 +14,7 @@ const adminRoutes = {
   blockWorker: (id: string) => `admin/workers/${id}/block`,
   unblockWorker: (id: string) => `admin/workers/${id}/unblock`,
   worker_request: (id: string) => `admin/request/${id}`,
+  requestReject: (id: string) => `admin/requestReject/${id}`,
 };
 
 export default adminRoutes;

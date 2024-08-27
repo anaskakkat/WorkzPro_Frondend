@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Box, Container, Typography, Button, CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Typography, Button, CircularProgress } from "@mui/material";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { setWorkerInfo } from "../../redux/slices/workerSlice";
-import { verfyloginWorker, workerGoogleLogin } from "../../api/worker";
 import CustomTextField from "../../components/styleComponents/StyledTextField";
-import { IGoogleUser } from "../../types/user";
-import { jwtDecode } from "jwt-decode";
 import logo from "/workzpro-high-resolution-logo.jpeg"; // Adjusted the logo path for consistency
+import { verifyloginAdmin } from "../../api/admin";
+import { setadminInfo } from "../../redux/slices/adminSlice";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=\S)(?=\S{8,})/;
@@ -68,7 +67,9 @@ const WorkerLogin = () => {
       toast.error("Please enter your password");
       isValid = false;
     } else if (validatePassword(password)) {
-      toast.error("Password must be at least 8 characters long and contain no spaces.");
+      toast.error(
+        "Password must be at least 8 characters long and contain no spaces."
+      );
       isValid = false;
     }
 
@@ -79,14 +80,16 @@ const WorkerLogin = () => {
     setLoading(true);
 
     try {
-      const response = await verfyloginWorker(email, password);
-      const { worker } = response;
+      const response = await verifyloginAdmin(email, password);
+      console.log(response);
+
+      const { admin } = response;
 
       if (response) {
         toast.success(response.message);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        dispatch(setWorkerInfo(worker));
-        navigate("/worker");
+        dispatch(setadminInfo(admin));
+        navigate("/admin");
       }
     } catch (error) {
       console.error(error);
@@ -94,30 +97,6 @@ const WorkerLogin = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleSuccess = async (credentialResponse: any) => {
-    try {
-      const decodedToken: IGoogleUser = jwtDecode(credentialResponse.credential);
-      console.log("Decoded Google user:", decodedToken);
-      const googleUser = {
-        email: decodedToken.email,
-        name: decodedToken.name,
-        picture: decodedToken.picture,
-        googleId: decodedToken.sub,
-      };
-      const response = await workerGoogleLogin(googleUser);
-      dispatch(setWorkerInfo(response.data));
-      toast.success(response.message);
-      navigate("/worker");
-    } catch (error) {
-      console.error("Google login error:", error);
-      toast.error("Google login failed");
-    }
-  };
-
-  const handleGoogleError = () => {
-    toast.error("Google login failed");
   };
 
   return (
@@ -130,8 +109,10 @@ const WorkerLogin = () => {
 
         {/* Right Side: Login Form */}
         <div className="w-full p-8 rounded-md">
-          <Typography variant="h5" className="text-xl mb-4">Admin Login</Typography>
-          
+          <Typography variant="h5" className="text-xl mb-4">
+            Admin Login
+          </Typography>
+
           <Box
             component="form"
             className="space-y-4"
@@ -177,12 +158,13 @@ const WorkerLogin = () => {
                 className="w-full px-4 py-2 text-sm font-medium text-white bg-custom_buttonColor rounded"
                 disabled={loading}
               >
-                {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Login"
+                )}
               </Button>
-        
             </Box>
-            
-        
           </Box>
         </div>
       </div>

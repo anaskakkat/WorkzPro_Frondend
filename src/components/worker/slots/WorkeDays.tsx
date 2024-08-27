@@ -109,8 +109,8 @@ const WorkerDays: React.FC<PropType> = ({
   };
 
   return (
-    <div className="flex flex-col h-fit w-fit bg-white  items-start p-4  rounded-lg shadow-2xl space-y-2">
-      <div className="flex my-2 w-full flex-row justify-between">
+    <div className="flex flex-col h-fit w-fit items-start  rounded-lg shadow-2xl space-y-2">
+      <div className="flex  w-full flex-row justify-between h-fit p-3 rounded-t-lg bg-blue-100">
         <h4 className="text-lg font-semibold text-custom_navyBlue">
           Working Days
         </h4>
@@ -124,7 +124,7 @@ const WorkerDays: React.FC<PropType> = ({
           {isEditing ? "Save" : "Edit"}
         </button>
       </div>
-      <div className="flex flex-row  w-full justify-between ">
+      <div className="flex flex-row  w-full justify-between p-2 ">
         <div className="tile flex bg-orange-50 w-fit  h-fit text-custom_navyBlue border border-orange-300 rounded-lg py-2 px-3 gap-3">
           <h3 className="font-semibold ">
             Slot Size<span className="text-sm font-light">(in-Hour)</span>-{" "}
@@ -159,80 +159,84 @@ const WorkerDays: React.FC<PropType> = ({
           )}
         </div>
       </div>
-      {workingDays.map((day, index) => (
-        <div
-          key={day._id}
-          className="flex items-center p-2 bg-blue-100 rounded-lg justify-between shadow-lg space-x-6 w-full "
-        >
-          <div className="relative ">
-            <label className="inline-flex items-center mr-5 cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={day.isWorking}
-                onChange={() => handleToggleChange(index)}
-                disabled={!isEditing}
-              />
-              <div
-                className={`relative w-11 h-6 rounded-full transition-colors duration-300 ease-in-out ${
-                  day.isWorking ? "bg-blue-500" : "bg-gray-300"
-                } ${!isEditing ? "opacity-50" : ""}`}
-              >
+      <div className="px-2">
+        {workingDays.map((day, index) => (
+          <div
+            key={day._id}
+            className="flex items-center p-2 bg-blue-100 rounded-lg justify-between shadow-lg space-x-6 w-full mb-2 "
+          >
+            <div className="relative">
+              <label className="inline-flex items-center mr-5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={day.isWorking}
+                  onChange={() => handleToggleChange(index)}
+                  disabled={!isEditing}
+                />
                 <div
-                  className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white border border-gray-300 rounded-full transform transition-transform duration-300 ease-in-out ${
-                    day.isWorking ? "translate-x-full" : "translate-x-0"
+                  className={`relative w-11 h-6 rounded-full transition-colors duration-300 ease-in-out ${
+                    day.isWorking ? "bg-blue-500" : "bg-gray-300"
+                  } ${!isEditing ? "opacity-50" : ""}`}
+                >
+                  <div
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white border border-gray-300 rounded-full transform transition-transform duration-300 ease-in-out ${
+                      day.isWorking ? "translate-x-full" : "translate-x-0"
+                    }`}
+                  ></div>
+                </div>
+                <span className="ml-3 text-sm text-gray-900">
+                  {dayOfWeek[index]}
+                </span>
+              </label>
+            </div>
+
+            <div className="flex flex-row gap-1">
+              <div className="flex items-center justify-start">
+                <label
+                  htmlFor={`fromTime-${index}`}
+                  className="mr-1 text-gray-700 text-sm"
+                >
+                  From:
+                </label>
+                <input
+                  type="time"
+                  id={`fromTime-${index}`}
+                  value={day.start}
+                  onChange={(e) =>
+                    handleTimeChange(index, "start", e.target.value)
+                  }
+                  className={`border  max-h-8 text-sm font-light border-gray-300 rounded-md px-1 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    !isEditing || !day.isWorking ? "bg-gray-100" : ""
                   }`}
-                ></div>
+                  disabled={!isEditing || !day.isWorking}
+                />
               </div>
-              <span className="ml-3 text-sm text-gray-900">
-                {dayOfWeek[index]}
-              </span>
-            </label>
-          </div>
 
-          <div className="flex flex-row gap-1">
-            <div className="flex items-center justify-start">
-              <label
-                htmlFor={`fromTime-${index}`}
-                className="mr-1 text-gray-700 text-sm"
-              >
-                From:
-              </label>
-              <input
-                type="time"
-                id={`fromTime-${index}`}
-                value={day.start}
-                onChange={(e) =>
-                  handleTimeChange(index, "start", e.target.value)
-                }
-                className={`border  max-h-8 text-sm font-light border-gray-300 rounded-md px-1 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  !isEditing || !day.isWorking ? "bg-gray-100" : ""
-                }`}
-                disabled={!isEditing || !day.isWorking}
-              />
-            </div>
-
-            <div className="flex items-center">
-              <label
-                htmlFor={`toTime-${index}`}
-                className="mr-1 text-gray-700 text-sm"
-              >
-                To:
-              </label>
-              <input
-                type="time"
-                id={`toTime-${index}`}
-                value={day.end}
-                onChange={(e) => handleTimeChange(index, "end", e.target.value)}
-                className={`border font-light max-h-8 text-sm border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  !isEditing || !day.isWorking ? "bg-gray-100" : ""
-                }`}
-                disabled={!isEditing || !day.isWorking}
-              />
+              <div className="flex items-center">
+                <label
+                  htmlFor={`toTime-${index}`}
+                  className="mr-1 text-gray-700 text-sm"
+                >
+                  To:
+                </label>
+                <input
+                  type="time"
+                  id={`toTime-${index}`}
+                  value={day.end}
+                  onChange={(e) =>
+                    handleTimeChange(index, "end", e.target.value)
+                  }
+                  className={`border font-light max-h-8 text-sm border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    !isEditing || !day.isWorking ? "bg-gray-100" : ""
+                  }`}
+                  disabled={!isEditing || !day.isWorking}
+                />
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
