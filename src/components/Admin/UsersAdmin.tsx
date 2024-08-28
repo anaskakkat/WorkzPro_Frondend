@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getUsers, blockUser, unblockUser } from "../../api/admin";
 import Swal from 'sweetalert2';
-import defaultImage from '/public/user.png'
+import defaultImage from '/user.png'
 interface User {
   _id: number;
   userName: string;

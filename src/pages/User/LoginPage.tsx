@@ -131,9 +131,15 @@ const LoginPage: React.FC = () => {
     <div className="flex items-center mx-auto max-w-full justify-center h-screen bg-blue-50">
       <div className="bg-white border-2 rounded shadow-lg flex flex-col sm:flex-row items-center max-w-4xl  mx-4 md:mx-auto">
         {/* Left Side: Logo */}
-        <div className="flex justify-center items-center max-w-xs p-4 md:border-r-2">
-          <img src={logo} alt="WorkzPro Logo" className=" sm:w-auto sm:h-auto " />
-        </div>
+        <Link to={'/'}>
+          <div className="flex justify-center items-center max-w-xs p-4 md:border-r-2">
+            <img
+              src={logo}
+              alt="WorkzPro Logo"
+              className=" sm:w-auto sm:h-auto "
+            />
+          </div>
+        </Link>
 
         {/* Right Side: Login Form */}
         <div className="w-full p-8 rounded-md">

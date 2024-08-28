@@ -4,6 +4,7 @@ import workerSlice from "../slices/workerSlice";
 import adminSlice from "../slices/adminSlice";
 import ServiceSlice from "../slices/ServiceSlice";
 import LocationSlice from "../slices/LocationSlice";
+import userBookingSlotReducer from "../slices/userBookingSlot";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     adminInfo: adminSlice,
     services: ServiceSlice,
     location: LocationSlice,
+    userBookingSlot: userBookingSlotReducer,
   },
 });
 

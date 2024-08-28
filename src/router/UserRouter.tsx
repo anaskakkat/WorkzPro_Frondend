@@ -27,8 +27,8 @@ export const UserRouter = () => {
           <Route path="/login" element={<LoginPage />} />
         </Route>
 
-        <Route path="/demo" element={<Demo />} />
         <Route path="/" element={<UserLayout />}>
+        <Route path="/demo" element={<Demo />} />
           {/* homeRoute */}
           <Route path="/" element={<HomePage />} />
 

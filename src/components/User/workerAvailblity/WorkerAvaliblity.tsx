@@ -1,42 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { startOfDay, addMinutes, isBefore, format } from "date-fns";
 import { fetchWorkerDatabyId } from "../../../api/user";
-import { ServiceData, WorkingDayType } from "../../../types/IWorker";
+import { LeaveType, ServiceData, WorkingDayType } from "../../../types/IWorker";
 import Loader from "../../loader/Loader";
 import { useParams } from "react-router-dom";
-import "react-datepicker/dist/react-datepicker.css";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import { format, addMinutes, isBefore, startOfDay } from "date-fns";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import {
+  setSelectedServicesUser,
+  setSelectedSlotsUser,
+  setTimeSlotsUser,
+} from "../../../redux/slices/userBookingSlot";
+
 const WorkerAvailability: React.FC = () => {
   const { workerId } = useParams<{ workerId: string }>();
-  // const [worker, setWorker] = useState<IWorker | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [services, setServices] = useState<ServiceData[]>([]);
-  const [selectDate, setSelectDate] = useState<Date | undefined>(undefined);
+  const [selectDate, setSelectDate] = useState<Date | null>(null);
   const [workDays, setWorkDays] = useState<WorkingDayType[]>([]);
   const [bufferTime, setBufferTime] = useState<number>(0);
-  const [slotSize, setSlotSize] = useState<number>(0);
   const [timeSlots, setTimeSlots] = useState<string[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-
-  // const [slotCount, setSlotCount] = useState(0);
+  const [leaves, setLeaves] = useState<LeaveType[]>([]);
+  const [value, setValue] = useState<Dayjs | null>(dayjs());
+  const [selectedService, setSelectedService] = useState<ServiceData | null>(
+    null
+  );
+  const dispatch = useDispatch();
   useEffect(() => {
     fetchWorker();
-    getWorkingHours();
   }, [workerId]);
+
   useEffect(() => {
     if (selectDate) {
       generateTimeSlots();
     }
-  }, [selectDate, workDays, slotSize, bufferTime]);
+  }, [selectDate, workDays, bufferTime]);
+
   const fetchWorker = async () => {
     if (workerId) {
       try {
         setLoading(true);
         const response = await fetchWorkerDatabyId(workerId);
-        // console.log("res--------------", response);
-
-        setSlotSize(response.configuration.slotSize);
         setBufferTime(response.configuration.bufferTime);
-        // setWorker(response);
+        setLeaves(response.configuration.leaves);
         setServices(response.configuration.services);
         setWorkDays(response.configuration.workingDays);
       } catch (error) {
@@ -50,32 +61,28 @@ const WorkerAvailability: React.FC = () => {
   const getWorkingHours = () => {
     if (selectDate) {
       const dayOfWeek = selectDate.getDay();
-      // console.log("dayOfWeek", dayOfWeek,'----',workDays);
-
-      let Workdaysdata = workDays[dayOfWeek];
-      // console.log(Workdaysdata);
-
-      return Workdaysdata;
+      return workDays[dayOfWeek];
     }
     return null;
   };
+
   const generateTimeSlots = () => {
     const slots: string[] = [];
     const workingHours = getWorkingHours();
-    if (!workingHours) return slots;
+    if (!workingHours || !selectDate || !workingHours.isWorking) return slots;
 
     let current = addMinutes(
-      startOfDay(selectDate!),
+      startOfDay(selectDate),
       parseTime(workingHours.start)
     );
-    const end = addMinutes(
-      startOfDay(selectDate!),
-      parseTime(workingHours.end)
-    );
+    const end = addMinutes(startOfDay(selectDate), parseTime(workingHours.end));
 
     while (isBefore(current, end)) {
       const start = format(current, "HH:mm");
-      const nextSlot = addMinutes(current, slotSize * 60);
+      const slotDuration = selectedService
+        ? selectedService.slot * 60
+        : 30 * 60;
+      const nextSlot = addMinutes(current, slotDuration);
       if (!isBefore(nextSlot, end)) break;
       const slotEnd = format(nextSlot, "HH:mm");
       const slot = `${start} - ${slotEnd}`;
@@ -90,32 +97,84 @@ const WorkerAvailability: React.FC = () => {
     const [hours, minutes] = time.split(":").map(Number);
     return hours * 60 + minutes;
   };
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const dateString = e.target.value;
-    const date = new Date(dateString);
-    if (!isNaN(date.getTime())) {
-      setSelectDate(date);
-    } else {
-      setSelectDate(undefined);
-    }
-  };
 
   const handleSlotClick = (slot: string) => {
     setSelectedSlot(slot);
+    console.log("slot----", typeof slot);
+
+    dispatch(setTimeSlotsUser(slot));
   };
 
+  const handleDateChange = (newValue: Dayjs | null) => {
+    if (!selectedService) {
+      toast.error("Select a Service");
+      return;
+    }
+    if (newValue) {
+      setSelectDate(newValue.toDate());
+      setValue(newValue);
+      dispatch(setSelectedSlotsUser(newValue.format("YYYY-MM-DD")));
+    }
+  };
+
+  const handleServiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedServiceId = e.target.value;
+    const service = services.find((s) => s._id === selectedServiceId);
+    setSelectedService(service || null);
+    setSelectedSlot(null);
+    setTimeSlots([]);
+    dispatch(setSelectedServicesUser(service || null));
+  };
+
+  const isDateDisabled = (date: Dayjs) => {
+    const isLeaveDay = leaves.some((leave) =>
+      dayjs(leave.date).isSame(date, "day")
+    );
+
+    const dayOfWeek = date.day();
+    const isNonWorkingDay = !workDays[dayOfWeek]?.isWorking;
+
+    return isLeaveDay || isNonWorkingDay;
+  };
+  const formatTimeSlot = (slot: string) => {
+    const [start, end] = slot.split(" - ");
+    const formatTime = (time: string) => {
+      const [hours, minutes] = time.split(":").map(Number);
+      const period = hours >= 12 ? "PM" : "AM";
+      const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+      return `${formattedHours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
+    };
+    return `${formatTime(start)} - ${formatTime(end)}`;
+  };
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="min-w-full">
+        <Loader />
+      </div>
+    );
   }
+  // console.log(
+  //   "full data----",
+  //   selectedService,
+  //   typeof selectedService,
+  //   "--",
+  //   selectDate,
+  //   typeof selectDate,
+  //   "---",
+  //   selectedSlot,
+  //   typeof selectedSlot
+  // );
+
+  const minDate = dayjs().add(1, "day");
+  const maxDate = dayjs().add(7, "day");
 
   return (
-    <div className=" flex flex-col px-7 min-w-96">
-      {/* Left Side */}
-      <h2 className=" font-semibold mt-4 text-custom_navyBlue">
+    <div className="flex flex-col px-7 min-w-96">
+      <h2 className="font-semibold mt-4 text-custom_navyBlue">
         Book a Service
       </h2>
       <hr />
-      <div className="flex flex-col mt-2 ">
+      <div className="flex flex-col mt-2">
         <div className="">
           <label
             htmlFor="service"
@@ -127,46 +186,38 @@ const WorkerAvailability: React.FC = () => {
             id="service"
             name="service"
             className="w-full mt-1 p-2 border rounded-lg border-blue-400"
-            onChange={(_e) => {}}
+            onChange={handleServiceChange}
+            value={selectedService?._id || ""}
           >
             <option value="">Select a service</option>
             {services.map((service) => (
-              <option key={service._id} value={service.amount}>
-                {service.service}
+              <option key={service._id} value={service._id}>
+                {service.service} ({service.slot} hours {service.amount})
               </option>
             ))}
           </select>
         </div>
 
-        <div className="">
-          <label
-            htmlFor="date"
-            className="block text-sm font-medium mt-1 text-blue-700"
-          >
-            Select Date
-          </label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            min={new Date().toISOString().split("T")[0]}
-            max={
-              new Date(new Date().setMonth(new Date().getMonth() + 1))
-                .toISOString()
-                .split("T")[0]
-            } // Example max date
-            className="w-full mt-1 p-2 border rounded-lg border-blue-400"
-            onChange={handleDateChange}
-          />
+        <div className=" mt-4">
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              minDate={minDate}
+              maxDate={maxDate}
+              label="Select a date"
+              value={value}
+              onChange={handleDateChange}
+              shouldDisableDate={isDateDisabled}
+            />
+          </LocalizationProvider>
         </div>
       </div>
 
       {selectDate && timeSlots.length > 0 && (
         <div className="mt-4">
-          <h3 className=" font-semibold mb-2 text-custom_navyBlue">
+          <h3 className="font-semibold mb-2 text-custom_navyBlue">
             Available Time Slots
           </h3>
-          <div className="grid grid-cols-2 gap-2 ">
+          <div className="grid grid-cols-2 gap-2">
             {timeSlots.map((slot, index) => (
               <div
                 key={index}
@@ -177,7 +228,7 @@ const WorkerAvailability: React.FC = () => {
                     : "bg-white text-gray-800 border-gray-300"
                 }`}
               >
-                {slot}
+                {formatTimeSlot(slot)}{" "}
               </div>
             ))}
           </div>
@@ -186,4 +237,5 @@ const WorkerAvailability: React.FC = () => {
     </div>
   );
 };
+
 export default WorkerAvailability;

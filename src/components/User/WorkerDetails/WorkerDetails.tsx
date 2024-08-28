@@ -12,7 +12,7 @@ const WorkerDetails = () => {
   const fetchWorkerData = async () => {
     try {
       const response = await fetchWorkerDatabyId(workerId!);
-      console.log(response);
+      // console.log(response);
 
       setWorker(response);
     } catch (error) {
@@ -33,9 +33,9 @@ const WorkerDetails = () => {
           Worker Details
         </h4>
       </div>
-      <div className=" container mx-auto flex gap-2 my-2 rounded-lg overflow-hidden  ">
-        <div className=" ">
-          <div className="py-2 px-6 border-2 max-w-full ">
+      <div className=" container mx-auto  flex gap-8 my-2 rounded-lg overflow-hidden  ">
+        <div className=" border rounded-lg border-blue-200">
+          <div className="py-2 px-6 max-w-full  ">
             <div>
               <img
                 className="rounded-xl  shadow-md shadow-slate-200"

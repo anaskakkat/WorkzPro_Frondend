@@ -11,7 +11,6 @@ import logo from "/workzpro-high-resolution-logo.jpeg";
 import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
 import { fetchLocationDetails } from "../../../utils/getLocationDetails";
 // import { initAutocomplete } from "../../../utils/googleMapUtils";
-import { IUser } from "../../../types/user";
 import { setLocationState } from "../../../redux/slices/LocationSlice";
 
 const Navbar: React.FC = () => {
@@ -26,9 +25,7 @@ const Navbar: React.FC = () => {
   const searchInput = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const userInfo = useSelector<RootState, IUser | null>(
-    (state) => state.userInfo.userInfo
-  );
+  const userInfo = useSelector((state: RootState) => state.userInfo.userInfo);
   // console.log(userInfo);
 
   // useEffect(() => {
@@ -71,10 +68,10 @@ const Navbar: React.FC = () => {
       };
 
       const locality = await fetchLocationDetails(latitude, longitude);
-      // console.log("locality:-----", locality);
+      // console.log("locationData:-----", locationData);
       dispatch(setLocationState(locationData));
       setLocation(locality);
-    } catch (error: any) { 
+    } catch (error: any) {
       console.error("Error:", error);
       toast.error(error.message || "Failed to fetch location details.");
       setLocation("Unknown location");

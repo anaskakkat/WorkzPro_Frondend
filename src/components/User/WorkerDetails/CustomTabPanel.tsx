@@ -21,22 +21,27 @@ export default function CustomTabPanel() {
   };
 
   return (
-    <div className="border-2 border-blue-100 rounded-lg min-w-full ">
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        textColor="primary"
-        indicatorColor="primary"
-        aria-label="secondary tabs example"
-      >
-        <Tab value="one" label="Details" />
-        <Tab value="two" label="Booking" />
-        {/* Add more tabs if needed */}
-      </Tabs>
+    <div className="border-2 border-blue-100 rounded-lg w-full md:w-3/4 lg:w-full mx-auto p-4">
+      <div className="flex justify-center mb-4">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          textColor="primary"
+          indicatorColor="primary"
+          aria-label="secondary tabs example"
+          className="w-full"
+        >
+          <Tab value="one" label="Details" className="flex text-center" />
+          <Tab value="two" label="Booking" className="flex text-center" />
+          {/* Add more tabs if needed */}
+        </Tabs>
+      </div>
 
       {/* Conditionally render content based on the selected tab */}
-      {value === "one" && <DetailsTabContent />}
-      {value === "two" && <BookingTabContent />}
+      <div className="">
+        {value === "one" && <DetailsTabContent />}
+        {value === "two" && <BookingTabContent />}
+      </div>
     </div>
   );
 }
