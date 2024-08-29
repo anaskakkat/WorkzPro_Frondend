@@ -14,8 +14,15 @@ import { MAPBOX_ACCESS_TOKEN } from "../../../constants/constant_env";
 import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
 import validateForm from "../../../utils/bookingValidation";
 import toast from "react-hot-toast";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store/store";
+
+import {
+  useSelectedService,
+  useSelectedSlot,
+  useTimeSlots,
+  useUserId,
+} from "../../../redux/hooks/userSelectors";
+import { useNavigate, useParams } from "react-router-dom";
+import { bookingData } from "../../../api/user";
 
 const BookingForm = () => {
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -23,16 +30,14 @@ const BookingForm = () => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [markerLongitude, setMarkerLongitude] = useState<number | null>(null);
   const [markerLatitude, setMarkerLatitude] = useState<number | null>(null);
-  const timeSlots = useSelector(
-    (state: RootState) => state.userBookingSlot.timeSlots
-  );
-  const selectedSlot = useSelector(
-    (state: RootState) => state.userBookingSlot.selectedSlot
-  );
-  const selectedService = useSelector(
-    (state: RootState) => state.userBookingSlot.selectedService
-  );
+  const timeSlots = useTimeSlots();
+  const selectedSlot = useSelectedSlot();
+  const selectedService = useSelectedService();
+  const userId = useUserId();
+  const { workerId } = useParams();
+  const [isBookingSuccessful, setIsBookingSuccessful] = useState(false);
 
+  const navigate = useNavigate();
   useEffect(() => {
     getCurrentPosition()
       .then((position: { coords: { latitude: any; longitude: any } }) => {
@@ -109,7 +114,7 @@ const BookingForm = () => {
     }
     setIsMapOpen(false);
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!timeSlots) {
       toast.error("Select a Slot");
@@ -126,23 +131,38 @@ const BookingForm = () => {
       address: {
         city: formData.city,
         houseNumber: formData.houseNumber,
-        pinCode: formData.pinCode,
+        pincode: formData.pinCode,
         state: formData.state,
         street: formData.street,
         location: {
-          type: "Point", 
-          // coordinates: [formData.longitude, formData.latitude],
+          type: "Point",
+          coordinates: [
+            markerLongitude ?? longitude,
+            markerLatitude ?? latitude,
+          ],
         },
       },
       description: formData.description,
       service: selectedService,
-      slot: selectedSlot,
-      availableSlots: timeSlots,
+      bookingDate: selectedSlot,
+      slots: timeSlots,
+      workerId,
     };
-    console.log("data---", data);
+    // console.log("data---", data);
+    try {
+      const response = await bookingData(userId, data);
+      if (response.status === 200) {
+        // console.log("resp-----", response);
+        toast.success(response.data.message);
+        setIsBookingSuccessful(true);
 
-    // if (slot) toast.success("Form submitted successfully!");
-    // console.log("Form submitted successfully:", formData);
+        navigate(`/success/${response.data.bookingId}`, {
+          state: { bookingSuccess: true },
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   if (longitude === null || latitude === null) {
     return <div>Loading map...</div>;

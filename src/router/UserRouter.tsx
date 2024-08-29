@@ -14,6 +14,7 @@ import WorkerCheckout from "../pages/User/WorkerCheckout";
 import Demo from "../components/Demo";
 import BookingSuccess from "../pages/User/BookingSuccess";
 import UserProfile from "../pages/User/UserProfile";
+import ErrorComponent from "../components/ErrorComponent";
 
 export const UserRouter = () => {
   return (
@@ -48,6 +49,7 @@ export const UserRouter = () => {
           <Route path="/success/:id" element={<BookingSuccess />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/bookings" element={<UserProfile />} />
+          <Route path="*" element={<ErrorComponent />} />
         </Route>
       </Routes>
     </InterceptorSetup>

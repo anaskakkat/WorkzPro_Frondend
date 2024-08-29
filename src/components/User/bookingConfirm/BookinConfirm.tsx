@@ -15,16 +15,26 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import PersonIcon from "@mui/icons-material/Person";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { useNavigate, useParams } from "react-router-dom";
-import { fetchBookings } from "../../../api/user";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Booking } from "../../../types/Booking";
+import { fetchBookings } from "../../../api/user";
+import Loader from "../../loader/Loader";
 
 const BookingConfirm: React.FC = () => {
-  const [booking, setBooking] = useState<Booking | undefined>(undefined);
+  const [booking, setBooking] = useState<Booking>();
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
   const isAboveMd = useMediaQuery((theme: Theme) => theme.breakpoints.up("md"));
+  const location = useLocation();
+  const { bookingId } = useParams();
 
+  useEffect(() => {
+    console.log("successpage----");
+
+    if (!location.state || (!location.state.bookingSuccess && !bookingId)) {
+      navigate("/");
+    }
+  }, [location, navigate]);
   useEffect(() => {
     if (id) {
       fetchData();
@@ -34,8 +44,10 @@ const BookingConfirm: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetchBookings(id!);
+
       if (response.status === 200) {
-        setBooking(response.data);
+        // console.log("resp---", response.data);
+        setBooking(response.data.booking);
       }
     } catch (error) {
       console.error("Error fetching booking:", error);
@@ -61,6 +73,7 @@ const BookingConfirm: React.FC = () => {
       </Box>
     </Box>
   );
+  console.log("bokking----", booking);
 
   return (
     <Box
@@ -105,7 +118,7 @@ const BookingConfirm: React.FC = () => {
                   alt={booking?.workerId.name || "Worker"}
                   sx={{ width: 150, height: 150, mb: 2 }}
                 />
-                <Typography variant="h6" align="center">
+                <Typography variant="h6" align="center" color={'white'}>
                   {booking?.workerId.name || "Worker Name"}
                 </Typography>
               </Box>
@@ -170,21 +183,23 @@ const BookingConfirm: React.FC = () => {
                   <BookingDetail
                     icon={<CalendarTodayIcon />}
                     label="Date"
-                    value={new Date(booking.date).toLocaleDateString()}
+                    value={new Date(booking.bookingDate).toLocaleDateString()}
                   />
                   <BookingDetail
                     icon={<AccessTimeIcon />}
                     label="Time"
-                    value={booking.selectedSlot.time}
+                    value={booking.slots}
                   />
                   <BookingDetail
                     icon={<LocationOnIcon />}
                     label="Location"
-                    value={booking.location || "Not specified"}
+                    value={booking.workerId.locationName || "Not specified"}
                   />
                 </>
               ) : (
-                <Typography>Loading booking details...</Typography>
+                <Typography>
+                  <Loader />
+                </Typography>
               )}
             </Box>
 

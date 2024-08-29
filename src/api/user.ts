@@ -2,7 +2,6 @@ import Api from "../config/axiosConfig";
 import axios, { AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
-import { IBooking } from "../types/Booking";
 import { IGoogleUser } from "../types/user";
 interface FormData {
   name: string;
@@ -125,53 +124,37 @@ export const fetchWorkerDatabyId = async (id: string) => {
     throw error;
   }
 };
-export const fetchSlotById = async (id: string) => {
-  try {
-    const response = await Api.get(userRoutes.fetchSlotById(id));
 
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-export const submitBooking = async (bookingData: IBooking, id: string) => {
-  try {
-    const response = await Api.post(userRoutes.submitBooking(id), bookingData);
-
-    return response;
-    ``;
-  } catch (error) {
-    throw error;
-  }
-};
-export const fetchBookings = async (id: string) => {
-  try {
-    const response = await Api.get(userRoutes.fetchBookings(id));
-
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
-export const fetchBookingUser = async (id: string) => {
-  try {
-    const response = await Api.get(userRoutes.fetchBookingsByUser(id));
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
-export const workerBookings = async (id: string) => {
-  try {
-    const response = await Api.get(userRoutes.fetchBookingsByWorker(id));
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
 export const googleAuth = async (user: IGoogleUser) => {
   try {
     const response = await Api.post(userRoutes.GoogleLogin, user);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const bookingData = async (userId: string, bookingData: any) => {
+  try {
+    const response = await Api.post(
+      userRoutes.bookingData(userId),
+      bookingData
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchBookings = async (userId: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchBookings(userId));
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getBookingsUser = async (userId: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchBookingsByUser(userId));
     return response;
   } catch (error) {
     throw error;
