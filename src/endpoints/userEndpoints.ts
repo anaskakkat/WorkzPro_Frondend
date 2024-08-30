@@ -11,7 +11,7 @@ const userRoutes = {
   // fetchSlotById: (id: string) => `user/fetchSlot/${id}`,
   // submitBooking: (id: string) => `user/booking/${id}`,
   fetchBookings: (id: string) => `user/booking/${id}`,
-  fetchBookingsByUser: (id: string) => `user/bookings/user/${id}`,
+  fetchBookingsByUser: (id: string) => `user/booking/user/${id}`,
   // fetchBookingsByWorker: (id: string) => `booking/${id}/WorkerID`,
   bookingData: (userId: string) => `user/booking/${userId}`,
 };
