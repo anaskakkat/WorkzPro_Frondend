@@ -76,15 +76,17 @@ const BookingConfirm: React.FC = () => {
   console.log("bokking----", booking);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#f0f4f8",
-        padding: { xs: 2, sm: 4 },
-      }}
+    <div
+      className="flex justify-center items-center min-h-screen  bg-white p-2 sm:p-4"
+      // sx={{
+      //   display: "flex",
+      //   justifyContent: "center",
+      //   alignItems: "center",
+      //   minHeight: "100vh",
+      //   backgroundColor: "#f0f4f8",
+      //   padding: { xs: 2, sm: 4 },
+
+      // }}
     >
       <Paper
         elevation={3}
@@ -118,7 +120,7 @@ const BookingConfirm: React.FC = () => {
                   alt={booking?.workerId.name || "Worker"}
                   sx={{ width: 150, height: 150, mb: 2 }}
                 />
-                <Typography variant="h6" align="center" color={'white'}>
+                <Typography variant="h6" align="center" color={"white"}>
                   {booking?.workerId.name || "Worker Name"}
                 </Typography>
               </Box>
@@ -245,7 +247,7 @@ const BookingConfirm: React.FC = () => {
           </Grid>
         </Grid>
       </Paper>
-    </Box>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ReactNode } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SlotIcon from "@mui/icons-material/AccessTime";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -76,24 +76,24 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
 
       <div className="flex flex-1 overflow-hidden">
         <aside
-          className={`fixed lg:static top-0 left-0 w-60 h-full transition-transform border-r border-gray-200 ${
+          className={`fixed lg:static top-0 left-0 w-60 h-full transition-transform border-r  hover:bg-blue-600 hover:text-white ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } lg:translate-x-0 flex flex-col`}
           aria-label="Sidebar"
         >
-          <div className="flex-1 py-8 px-2 pb-4 overflow-y-auto  bg-blue-50">
-            <ul className="space-y-2 font-medium ">
+          <div className="flex-1 py-8 px-2 pb-4 overflow-y-auto bg-blue-100">
+            <ul className="space-y-2 font-medium text-custom_navyBlue ">
               {/* Dashboard Tab */}
               <Link to="/worker">
                 <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-gray-300 hover:text-blue-900 ${
+                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-blue-600 hover:text-white  ${
                     location.pathname === "/worker"
                       ? "bg-blue-600 text-white"
                       : ""
                   }`}
                 >
                   <DashboardIcon
-                    className={`text-gray-500 transition duration-75 hover:text-blue-900 ${
+                    className={`text-gray-500 transition duration-75 hover:bg-blue-600 hover:text-white ${
                       location.pathname === "/worker" ? "text-white " : ""
                     }`}
                   />
@@ -104,7 +104,7 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
               {/* Slot Tab */}
               <Link to="/worker/slots">
                 <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-gray-300 hover:text-blue-900 ${
+                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-blue-600  hover:text-white ${
                     location.pathname === "/worker/slots"
                       ? "bg-blue-600 text-white"
                       : ""
@@ -118,9 +118,9 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
                   <span className="ml-3">Slot</span>
                 </li>
               </Link>
-              <Link to="#">
+              <Link to="/worker/bookings">
                 <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-gray-300 hover:text-blue-900 ${
+                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2  hover:bg-blue-600 hover:text-white ${
                     location.pathname === "/worker/bookings"
                       ? "bg-blue-600 text-white"
                       : ""
@@ -130,7 +130,7 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
                     className={`text-gray-500 transition duration-75 ${
                       location.pathname === "/worker/bookings"
                         ? "text-white "
-                        : ""
+                        : " "
                     }`}
                   />
                   <span className="ml-3">Bookings</span>
@@ -138,10 +138,10 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
               </Link>
             </ul>
           </div>
-          <div className="flex items-center justify-center py-4 px-3 bg-blue-100">
+          <div className="flex items-center justify-center py-4 px-3 :hover bg-white ">
             <button
               onClick={handleLogout}
-              className="flex items-center w-full h-8 outline-2 border text-red-500 border-red-500  hover:bg-red-600 px-4 hover:text-white rounded"
+              className="flex items-center w-full h-8 outline-2 border text-red-600 border-red-400  hover:bg-red-600 px-4  hover:text-white rounded"
             >
               <ExitToAppIcon className="mr-2 " />{" "}
               {/* Add margin-right for spacing */}

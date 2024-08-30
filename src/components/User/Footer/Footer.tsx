@@ -4,7 +4,7 @@ import logo from "/workzpro-high-resolution-logo.jpeg";
 
 const Footer = () => {
   return (
-    <footer className="bg-white-800 py-8 border-b-2 border-t-2 border-custom_lightBlue  text-custom_navyBlue">
+    <footer className="bg-white bottom-0 bg-white-800 py-8 border-b-2 border-t-2 border-custom_lightBlue  text-custom_navyBlue">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
         <div className="mb-4 md:mb-0 text-center md:text-left lg:flex flex-col items-center">
           <img src={logo} alt="Logo" className="h-16 mx-auto md:mx-0 " />
@@ -17,7 +17,9 @@ const Footer = () => {
           <p className="text-xs">
             Contact Email: support@yourcompany.com
             <br />
-            Contact Phone: (123) 456-7891 <br />Location: calicut <br />Pincode: 676301
+            Contact Phone: (123) 456-7891 <br />
+            Location: calicut <br />
+            Pincode: 676301
           </p>
         </div>
         <div className="mb-4 md:mb-0 text-center md:text-left">
@@ -55,8 +57,6 @@ const Footer = () => {
           &copy; {new Date().getFullYear()} WorkzPro. All rights reserved.
         </p>
       </div>
-      
-    
     </footer>
   );
 };

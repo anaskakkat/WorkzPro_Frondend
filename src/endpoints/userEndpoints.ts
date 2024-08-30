@@ -8,12 +8,9 @@ const userRoutes = {
   getService: "user/services",
   fetchWorkers: "user/workers",
   fetchWorkerDatabyId: (id: string) => `user/workers/${id}`,
-  // fetchSlotById: (id: string) => `user/fetchSlot/${id}`,
-  // submitBooking: (id: string) => `user/booking/${id}`,
+  bookingData: (userId: string) => `user/booking/${userId}`,
   fetchBookings: (id: string) => `user/booking/${id}`,
   fetchBookingsByUser: (id: string) => `user/booking/user/${id}`,
-  // fetchBookingsByWorker: (id: string) => `booking/${id}/WorkerID`,
-  bookingData: (userId: string) => `user/booking/${userId}`,
 };
 
 export default userRoutes;

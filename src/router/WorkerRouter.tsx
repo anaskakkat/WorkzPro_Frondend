@@ -14,6 +14,7 @@ import Reviews from "../pages/Worker/Reviews";
 import ProfileSetupPage from "../pages/Worker/ProfileSetupPage";
 import ProfileVerify from "../components/protectedRoute.tsx/worker/ProfileVerify";
 import WorkerInterceptor from "../components/axiosInterceptors/workerInterceptor";
+import ErrorComponent from "../components/ErrorComponent";
 const WorkerRouter = () => {
   return (
     <WorkerInterceptor>
@@ -35,6 +36,8 @@ const WorkerRouter = () => {
             <Route path="slots" element={<Slots />} />
             <Route path="payments" element={<Payments />} />
             <Route path="reviews" element={<Reviews />} />
+
+            <Route path="*" element={<ErrorComponent />} />
           </Route>
         </Route>
       </Routes>

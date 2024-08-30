@@ -6,6 +6,7 @@ import AdminLogin from "../pages/Admin/AdminLogin";
 import PublicRouteAdmin from "../components/protectedRoute.tsx/admin/PublicRouteAdmin";
 import ProtectedRouteAdmin from "../components/protectedRoute.tsx/admin/ProtectedRouteAdmin";
 import AdminInterceptor from "../components/axiosInterceptors/AdminInterceptor";
+import ErrorComponent from "../components/ErrorComponent";
 
 const AdminRouter = () => {
   return (
@@ -19,6 +20,9 @@ const AdminRouter = () => {
         {/* Protected routes */}
         <Route element={<ProtectedRouteAdmin />}>
           <Route path="/" element={<AdminPage />} />
+
+          <Route path="*" element={<ErrorComponent />} />
+
         </Route>
       </Routes>
     </AdminInterceptor>

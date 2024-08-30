@@ -1,4 +1,3 @@
-import ISlot from "./ISlot";
 import IWorker from "./IWorker";
 import { IUser } from "./user";
 
@@ -24,7 +23,7 @@ export interface Booking {
   status: string;
   bookingNumber: string | number;
   description: string;
-  bookingDate: Date;
+  bookingDate: string;
   slots: string;
   service: {
     _id?: string;
@@ -41,7 +40,7 @@ export interface Booking {
     street: string;
     city: string;
     state: string;
-    pincode: string | Number;
+    pincode: number;
     location: {
       coordinates: [number, number];
       type: "Point";

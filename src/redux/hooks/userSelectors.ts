@@ -4,6 +4,9 @@ import { RootState } from "../store/store";
 export const useUserId = () => {
   return useSelector((state: RootState) => state.userInfo.userInfo._id);
 };
+export const useWorkerId = () => {
+  return useSelector((state: RootState) => state.workerInfo.workerInfo._id);
+};
 export const useTimeSlots = () => {
   return useSelector((state: RootState) => state.userBookingSlot.timeSlots);
 };

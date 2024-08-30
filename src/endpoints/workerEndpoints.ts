@@ -22,6 +22,8 @@ const workerRoutes = {
   addLeaves: (workerId: string) => `worker/leave/${workerId}`,
   getLeaves: (workerId: string) => `worker/leave/${workerId}`,
   deleteLeves: (workerId: string) => `worker/deleteLeave/${workerId}`,
+  fetchBookingsWorkerId: (workerId: string) => `worker/bookings/${workerId}`,
+  bookingConfirmation: (bookingId: string) => `worker/bookings/${bookingId}`,
 };
 
 export default workerRoutes;

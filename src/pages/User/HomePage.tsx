@@ -7,7 +7,6 @@ import Loader from "../../components/loader/Loader";
 const HomePage: React.FC =() => {
   const Banner = lazy(() => import("../../components/User/Banner/Banner"));
   const Cards = lazy(() => import("../../components/User/Cards/Cards"));
-  const Footer = lazy(() => import("../../components/User/Footer/Footer"));
   
   return (
     <Suspense fallback={<Loader />}>

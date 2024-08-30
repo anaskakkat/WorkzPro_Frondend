@@ -191,3 +191,23 @@ export const deleteLeves = async (workerId: string, leaveId: string) => {
     handleApiError(error);
   }
 };
+export const getWorkerBooking = async (workerId: string) => {
+  try {
+    const response = await Api.get(
+      workerRoutes.fetchBookingsWorkerId(workerId)
+    );
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const confirmBooking = async (workerId: string) => {
+  try {
+    const response = await Api.patch(
+      workerRoutes.fetchBookingsWorkerId(workerId)
+    );
+    return response.data;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
