@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal, TextField, Box, Typography } from "@mui/material";
+import {
+  Button,
+  Modal,
+  TextField,
+  Box,
+  Typography,
+  Pagination,
+  TableRow,
+} from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { styled } from "@mui/system";
 import toast from "react-hot-toast";
@@ -51,7 +59,8 @@ const Services: React.FC = () => {
   });
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [editingService, setEditingService] = useState<IService | null>(null);
-
+  const [page, setPage] = useState(1);
+  const [itemsPerPage] = useState(2);
   const fetchServices = async () => {
     try {
       const response = await getServices();
@@ -184,9 +193,18 @@ const Services: React.FC = () => {
       toast.error("Failed to update service");
     }
   };
-
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+  };
   if (loading) return <div className="text-center p-4">Loading...</div>;
   if (error) return <div className="text-center p-4 text-red-500">{error}</div>;
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedServices = services.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(services.length / itemsPerPage);
 
   return (
     <div className="container align-middle mx-auto p-4">
@@ -219,14 +237,9 @@ const Services: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            <AnimatePresence>
-              {services.map((service, index) => (
-                <MotionTableRow
+              {paginatedServices.map((service, index) => (
+                <TableRow
                   key={service._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
                   className="bg-white border-b hover:bg-custom_bg_blue"
                 >
                   <td className="px-6 py-4">{index + 1}</td>
@@ -257,12 +270,20 @@ const Services: React.FC = () => {
                       Edit
                     </Button>
                   </td>
-                </MotionTableRow>
+                </TableRow>
               ))}
-            </AnimatePresence>
           </tbody>
         </table>
+        <div className="flex justify-center my-4">
+          <Pagination
+            count={totalPages}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+          />
+        </div>
       </div>
+
       {/* create modal  */}
       <AnimatePresence>
         {open && (

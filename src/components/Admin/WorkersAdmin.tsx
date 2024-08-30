@@ -3,7 +3,15 @@ import { blockWorker, getWorkers, unblockWorker } from "../../api/admin";
 import Swal from "sweetalert2";
 import defaultImage from "/user.png";
 import toast from "react-hot-toast";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Pagination,
+} from "@mui/material";
+import Loader from "../loader/Loader";
 
 interface User {
   _id: string;
@@ -26,12 +34,13 @@ const WorkersAdmin: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedWorker, setSelectedWorker] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
+  const [page, setPage] = useState(1);
+  const [workersPerPage] = useState(10);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await getWorkers();
-        
+
         setWorkers(response);
       } catch (err) {
         setError("Failed to fetch users.");
@@ -89,12 +98,20 @@ const WorkersAdmin: React.FC = () => {
     setIsModalOpen(false);
     setSelectedWorker(null);
   };
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  const handleChangePage = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
+    setPage(value);
+  };
+  if (loading) return <Loader />;
+  const indexOfLastWorker = page * workersPerPage;
+  const indexOfFirstWorker = indexOfLastWorker - workersPerPage;
+  const currentWorkers = workers.slice(indexOfFirstWorker, indexOfLastWorker);
+  const pageCount = Math.ceil(workers.length / workersPerPage);
 
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
@@ -113,7 +130,7 @@ const WorkersAdmin: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {workers.map((user, index) => (
+          {currentWorkers.map((user, index) => (
             <tr
               key={user._id}
               className="bg-white border-b hover:bg-custom_bg_blue"
@@ -174,7 +191,21 @@ const WorkersAdmin: React.FC = () => {
         </tbody>
       </table>
 
-      <Dialog open={isModalOpen} fullWidth maxWidth='sm' onClose={handleCloseModal}>
+      <div className="flex justify-center my-4">
+        <Pagination
+          count={pageCount}
+          page={page}
+          onChange={handleChangePage}
+          color="primary"
+        />
+      </div>
+
+      <Dialog
+        open={isModalOpen}
+        fullWidth
+        maxWidth="sm"
+        onClose={handleCloseModal}
+      >
         <DialogTitle>Worker Details</DialogTitle>
         <DialogContent>
           {selectedWorker && (
@@ -184,15 +215,33 @@ const WorkersAdmin: React.FC = () => {
                 alt={selectedWorker.userName}
                 className="w-24 h-24 rounded-full mx-auto mb-4"
               />
-              <p><strong>Name:</strong> {selectedWorker.userName}</p>
-              <p><strong>Email:</strong> {selectedWorker.email}</p>
-              <p><strong>Phone Number:</strong> {selectedWorker.phoneNumber}</p>
-              <p><strong>Experience:</strong> {selectedWorker.experience} years</p>
-              <p><strong>Location:</strong> {selectedWorker.locationName}</p>
-              <p><strong>Wage per Day:</strong> {selectedWorker.wageDay}</p>
-              <p><strong>Work Radius:</strong> {selectedWorker.workRadius} km</p>
-              <p><strong>Status:</strong> {selectedWorker.status}</p>
-              <p><strong>Identity Proof:</strong></p>
+              <p>
+                <strong>Name:</strong> {selectedWorker.userName}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedWorker.email}
+              </p>
+              <p>
+                <strong>Phone Number:</strong> {selectedWorker.phoneNumber}
+              </p>
+              <p>
+                <strong>Experience:</strong> {selectedWorker.experience} years
+              </p>
+              <p>
+                <strong>Location:</strong> {selectedWorker.locationName}
+              </p>
+              <p>
+                <strong>Wage per Day:</strong> {selectedWorker.wageDay}
+              </p>
+              <p>
+                <strong>Work Radius:</strong> {selectedWorker.workRadius} km
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedWorker.status}
+              </p>
+              <p>
+                <strong>Identity Proof:</strong>
+              </p>
               <img
                 src={selectedWorker.identityProof}
                 alt="Identity Proof"

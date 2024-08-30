@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getUsers, blockUser, unblockUser } from "../../api/admin";
-import Swal from 'sweetalert2';
-import defaultImage from '/user.png'
+import Swal from "sweetalert2";
+import defaultImage from "/user.png";
+import Loader from "../loader/Loader";
+import { Pagination } from "@mui/material";
 interface User {
   _id: number;
   userName: string;
@@ -11,19 +13,18 @@ interface User {
   isBlocked: boolean;
 }
 
-
 const UsersAdmin: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
+  // const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [usersPerPage] = useState(10);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await getUsers();
         setUsers(response.data);
       } catch (err) {
-        setError("Failed to fetch users.");
         console.error(err);
       } finally {
         setLoading(false);
@@ -35,14 +36,14 @@ const UsersAdmin: React.FC = () => {
 
   const handleBlockUnblock = async (userId: number, isBlocked: boolean) => {
     try {
-      const action = isBlocked ? 'unblock' : 'block';
+      const action = isBlocked ? "unblock" : "block";
       const result = await Swal.fire({
         title: `Are you sure?`,
         text: `Do you want to ${action} this user?`,
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Yes, proceed!',
-        cancelButtonText: 'No, cancel!',
+        confirmButtonText: "Yes, proceed!",
+        cancelButtonText: "No, cancel!",
       });
 
       if (result.isConfirmed) {
@@ -62,10 +63,14 @@ const UsersAdmin: React.FC = () => {
       console.error("Failed to update user status", err);
     }
   };
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-
+  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+  if (loading) return <Loader />;
+  const indexOfLastUser = page * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const pageCount = Math.ceil(users.length / usersPerPage);
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -86,8 +91,11 @@ const UsersAdmin: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
-            <tr key={user._id} className="bg-white border-b hover:bg-custom_bg_blue">
+          {currentUsers.map((user, index) => (
+            <tr
+              key={user._id}
+              className="bg-white border-b hover:bg-custom_bg_blue"
+            >
               <td className="px-6 py-4">{index + 1}</td>
               <th
                 scope="row"
@@ -122,7 +130,9 @@ const UsersAdmin: React.FC = () => {
               <td className="px-6 py-4">
                 <button
                   onClick={() => handleBlockUnblock(user._id, user.isBlocked)}
-                  className={`font-medium text-${user.isBlocked ? "green" : "red"}-600`}
+                  className={`font-medium text-${
+                    user.isBlocked ? "green" : "red"
+                  }-600`}
                 >
                   {user.isBlocked ? "Unblock" : "Block"}
                 </button>
@@ -131,6 +141,14 @@ const UsersAdmin: React.FC = () => {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center my-4">
+        <Pagination
+          count={pageCount}
+          page={page}
+          onChange={handleChangePage}
+          color="primary"
+        />
+      </div>
     </div>
   );
 };

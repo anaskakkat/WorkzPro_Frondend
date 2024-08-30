@@ -84,6 +84,7 @@ const WorkerNearby: React.FC = () => {
 
       {/* Worker Cards */}
 
+      
       <div className="flex-1 p-4">
         {filteredWorkers.length === 0 ? (
           <div className="flex min-h-full mx-auto align-middle  justify-center">
