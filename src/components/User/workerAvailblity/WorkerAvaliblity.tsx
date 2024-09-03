@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchWorkerDatabyId } from "../../../api/user";
+import { fetchBookingsByDate, fetchWorkerDatabyId } from "../../../api/user";
 import { LeaveType, ServiceData, WorkingDayType } from "../../../types/IWorker";
 import Loader from "../../loader/Loader";
 import { useParams } from "react-router-dom";
@@ -7,7 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
-import { format, addMinutes, isBefore, startOfDay } from "date-fns";
+import { format, isBefore } from "date-fns";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import {
@@ -15,6 +15,13 @@ import {
   setSelectedSlotsUser,
   setTimeSlotsUser,
 } from "../../../redux/slices/userBookingSlot";
+import {
+  calculateNextSlot,
+  formatTimeSlot,
+  getStartAndEndTimes,
+  isSlotWithinWorkingHours,
+} from "../../../utils/slotesCreationHelper";
+import { Booking } from "../../../types/Booking";
 
 const WorkerAvailability: React.FC = () => {
   const { workerId } = useParams<{ workerId: string }>();
@@ -30,31 +37,58 @@ const WorkerAvailability: React.FC = () => {
   const [selectedService, setSelectedService] = useState<ServiceData | null>(
     null
   );
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+
   const dispatch = useDispatch();
+
   useEffect(() => {
-    fetchWorker();
-  }, [workerId]);
+    if (selectDate && workerId) {
+      fetchBookedSlots(workerId, selectDate);
+    }
+  }, [selectDate, workerId]);
 
   useEffect(() => {
     if (selectDate) {
       generateTimeSlots();
     }
   }, [selectDate, workDays, bufferTime]);
+  useEffect(() => {
+    handleWorkerDataFetch();
+  }, []);
 
-  const fetchWorker = async () => {
-    if (workerId) {
-      try {
-        setLoading(true);
-        const response = await fetchWorkerDatabyId(workerId);
-        setBufferTime(response.configuration.bufferTime);
-        setLeaves(response.configuration.leaves);
-        setServices(response.configuration.services);
-        setWorkDays(response.configuration.workingDays);
-      } catch (error) {
-        console.error("Error fetching worker data:", error);
-      } finally {
-        setLoading(false);
+  const fetchBookedSlots = async (workerId: string, date: Date) => {
+    try {
+      const response = await fetchBookingsByDate(workerId, date);
+      if (response.status === 200) {
+        setBookedSlots(
+          response.booking.map((booking: Booking) => booking.slots)
+        );
       }
+    } catch (error) {
+      console.error("Error fetching booked slots:", error);
+    }
+  };
+  console.log("--booked Slote----", bookedSlots);
+
+  const handleWorkerDataFetch = async () => {
+    if (!workerId) return console.log("no workerId");
+    try {
+      setLoading(true);
+      const response = await fetchWorkerDatabyId(workerId);
+      const { bufferTime, leaves, services, workingDays } =
+        response.configuration;
+
+      setBufferTime(bufferTime);
+      setLeaves(leaves);
+      setServices(services);
+      setWorkDays(workingDays);
+      if (selectDate) {
+        await fetchBookedSlots(workerId, selectDate);
+      }
+    } catch (error) {
+      console.error("Error fetching worker data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,38 +105,35 @@ const WorkerAvailability: React.FC = () => {
     const workingHours = getWorkingHours();
     if (!workingHours || !selectDate || !workingHours.isWorking) return slots;
 
-    let current = addMinutes(
-      startOfDay(selectDate),
-      parseTime(workingHours.start)
-    );
-    const end = addMinutes(startOfDay(selectDate), parseTime(workingHours.end));
+    const { start, end } = getStartAndEndTimes(selectDate, workingHours);
+
+    let current = start;
 
     while (isBefore(current, end)) {
-      const start = format(current, "HH:mm");
+      const startTime = format(current, "HH:mm");
       const slotDuration = selectedService
         ? selectedService.slot * 60
         : 30 * 60;
-      const nextSlot = addMinutes(current, slotDuration);
-      if (!isBefore(nextSlot, end)) break;
-      const slotEnd = format(nextSlot, "HH:mm");
-      const slot = `${start} - ${slotEnd}`;
-      slots.push(slot);
-      current = addMinutes(nextSlot, bufferTime);
+      const { nextSlot, bufferEnd } = calculateNextSlot(
+        current,
+        slotDuration,
+        bufferTime
+      );
+      if (!isSlotWithinWorkingHours(bufferEnd, end)) break;
+      const endTime = format(nextSlot, "HH:mm");
+      slots.push(`${startTime} - ${endTime}`);
+      current = bufferEnd;
+      setTimeSlots(slots);
     }
-
-    setTimeSlots(slots);
-  };
-
-  const parseTime = (time: string): number => {
-    const [hours, minutes] = time.split(":").map(Number);
-    return hours * 60 + minutes;
   };
 
   const handleSlotClick = (slot: string) => {
-    setSelectedSlot(slot);
-    console.log("slot----", typeof slot);
-
-    dispatch(setTimeSlotsUser(slot));
+    if (!isSlotBooked(slot)) {
+      setSelectedSlot(slot);
+      dispatch(setTimeSlotsUser(slot));
+    } else {
+      toast.error("This slot is already booked");
+    }
   };
 
   const handleDateChange = (newValue: Dayjs | null) => {
@@ -136,34 +167,27 @@ const WorkerAvailability: React.FC = () => {
 
     return isLeaveDay || isNonWorkingDay;
   };
-  const formatTimeSlot = (slot: string) => {
-    const [start, end] = slot.split(" - ");
-    const formatTime = (time: string) => {
-      const [hours, minutes] = time.split(":").map(Number);
-      const period = hours >= 12 ? "PM" : "AM";
-      const formattedHours = hours % 12 || 12; // Convert to 12-hour format
-      return `${formattedHours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
-    };
-    return `${formatTime(start)} - ${formatTime(end)}`;
+
+  const isSlotBooked = (slot: string): boolean => {
+    // console.log("Checking slot:----", slot);
+    // console.log("Booked slots:----", bookedSlots);
+    const [slotStart, slotEnd] = slot.split(" - ");
+    return bookedSlots.some((bookedSlot) => {
+      const [bookedStart, bookedEnd] = bookedSlot.split(" - ");
+      return (
+        (slotStart <= bookedStart && slotEnd > bookedStart) ||
+        (slotStart >= bookedStart && slotStart < bookedEnd)
+      );
+    });
   };
+
   if (loading) {
     return (
-      <div className="min-w-full">
+      <div className="">
         <Loader />
       </div>
     );
   }
-  // console.log(
-  //   "full data----",
-  //   selectedService,
-  //   typeof selectedService,
-  //   "--",
-  //   selectDate,
-  //   typeof selectDate,
-  //   "---",
-  //   selectedSlot,
-  //   typeof selectedSlot
-  // );
 
   const minDate = dayjs().add(1, "day");
   const maxDate = dayjs().add(7, "day");
@@ -222,10 +246,12 @@ const WorkerAvailability: React.FC = () => {
               <div
                 key={index}
                 onClick={() => handleSlotClick(slot)}
-                className={`p-2 border border-blue-200 font-medium rounded-lg cursor-pointer transition-colors duration-300 text-center hover:bg-blue-200 ${
-                  slot === selectedSlot
+                className={`p-2 border font-medium rounded-lg cursor-pointer transition-colors duration-300 text-center ${
+                  isSlotBooked(slot)
+                    ? "bg-red-200 text-red-800 border-red-300 cursor-not-allowed"
+                    : slot === selectedSlot
                     ? "bg-blue-500 text-white border-blue-600"
-                    : "bg-white text-gray-800 border-gray-300"
+                    : "bg-white text-gray-800 border-gray-300 hover:bg-blue-200"
                 }`}
               >
                 {formatTimeSlot(slot)}{" "}

@@ -8,7 +8,6 @@ import { RootState } from "../../../redux/store/store";
 import { setServices } from "../../../redux/slices/ServiceSlice";
 import Loader from "../../loader/Loader";
 import IService from "../../../types/IService";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const Service: React.FC = () => {
@@ -28,7 +27,6 @@ const Service: React.FC = () => {
         dispatch(setServices(filteredServices));
       }
     } catch (error) {
-      toast.error("There was an error fetching the services!");
       console.error("There was an error fetching the services!", error);
     } finally {
       setLoading(false);

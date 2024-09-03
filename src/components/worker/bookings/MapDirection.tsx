@@ -1,93 +1,11 @@
-// import React, { useEffect, useState } from "react";
-// import ReactMapGL from "react-map-gl";
-// import mapboxgl from "mapbox-gl";
-// import MapboxDirections from "@mapbox/mapbox-gl-directions";
-// import "mapbox-gl/dist/mapbox-gl.css";
-// import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
-// import { MAPBOX_ACCESS_TOKEN } from "../constants/constant_env";
-// import { getCurrentPosition } from "../utils/getCurrentLoaction";
-
-// const Demo: React.FC = () => {
-//   const [viewport, setViewport] = useState<{
-//     width: string;
-//     height: string;
-//     latitude: number | null;
-//     longitude: number | null;
-//     zoom: number;
-//   }>({
-//     width: "100%",
-//     height: "100vh",
-//     latitude: null,
-//     longitude: null,
-//     zoom: 14,
-//   });
-
-//   // Example worker location
-//   const workerLocation = { latitude: 37.7749, longitude: -122.4194 };
-
-//   useEffect(() => {
-//     getCurrentPosition()
-//       .then((position) => {
-//         const { latitude, longitude } = position.coords;
-//         setViewport({
-//           ...viewport,
-//           latitude,
-//           longitude,
-//         });
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching current location:", error);
-//       });
-//   }, []);
-
-//   useEffect(() => {
-//     if (viewport.latitude && viewport.longitude) {
-//       const map = new mapboxgl.Map({
-//         container: "map",
-//         style: "mapbox://styles/mapbox/streets-v11",
-//         center: [viewport.longitude, viewport.latitude],
-//         zoom: viewport.zoom,
-//         accessToken: MAPBOX_ACCESS_TOKEN,
-//       });
-
-//       const directions = new MapboxDirections({
-//         accessToken: MAPBOX_ACCESS_TOKEN,
-//         unit: "metric",
-//         controls: {
-//           inputs: false,
-//           instructions: true,
-//         },
-//       });
-
-//       map.addControl(directions, "top-left");
-
-//       directions.setOrigin([viewport.longitude, viewport.latitude]); // User location
-//       directions.setDestination([workerLocation.longitude, workerLocation.latitude]); // Worker location
-
-//       map.on("load", () => {
-//         map.resize(); // Ensures the map is properly resized
-//       });
-
-//       return () => map.remove(); // Clean up the map on component unmount
-//     }
-//   }, [viewport]);
-
-//   if (viewport.latitude === null || viewport.longitude === null) {
-//     return <div>Loading map...</div>;
-//   }
-
-//   return (
-//     <div className="w-full h-screen">
-//       <div id="map" style={{ width: "100%", height: "100%" }} />
-//     </div>
-//   );
-// };
-
-// export default Demo;
-
-import React, { useEffect, useState } from "react";
-import Map, { Marker, Source, Layer, NavigationControl } from "react-map-gl";
-import mapboxgl from "mapbox-gl";
+import { useEffect, useState } from "react";
+import Map, {
+  Marker,
+  Source,
+  Layer,
+  NavigationControl,
+  GeolocateControl,
+} from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import mbxDirections, {
@@ -99,13 +17,11 @@ import { FaCar } from "react-icons/fa";
 import { FaPersonWalking } from "react-icons/fa6";
 import { BiCycling } from "react-icons/bi";
 import { GrDirections } from "react-icons/gr";
-import { MAPBOX_ACCESS_TOKEN } from "../constants/constant_env";
+import { MAPBOX_ACCESS_TOKEN } from "../../../constants/constant_env";
+import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
 
 const directionsClient = mbxDirections({ accessToken: MAPBOX_ACCESS_TOKEN });
-const locationState: LocationState = {
-  start: { lng: 75.890503, lat: 11.156362 }, // Example start location
-  end: { lng: 75.944684, lat: 11.140985 }, // Example end location
-};
+
 
 interface LocationState {
   start: { lng: number; lat: number };
@@ -126,17 +42,20 @@ interface ProfileTimes {
   cycling: number;
 }
 
-const Demo = () => {
-  // const location = useLocation();
+const MapDirection = () => {
+  const userLocation = useLocation();
+// console.log("userLocation-------", userLocation);
   const navigate = useNavigate();
-  const { start, end } = locationState as LocationState;
   const [viewState, setViewState] = useState<ViewState>({
-    longitude: (start.lng + end.lng) / 2,
-    latitude: (start.lat + end.lat) / 2,
-    zoom: 14,
+    longitude: 0,
+    latitude: 0,
+    zoom: 12,
     pitch: 0,
     bearing: 0,
   });
+  const [locationState, setLocationState] = useState<LocationState | null>(
+    null
+  );
   const [route, setRoute] = useState<DirectionsResponse<RouteGeometry> | null>(
     null
   );
@@ -150,8 +69,36 @@ const Demo = () => {
     walking: 0,
     cycling: 0,
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Fetch user's current location
+    getCurrentPosition()
+      .then((position: { coords: { latitude: any; longitude: any } }) => {
+        const { latitude, longitude } = position.coords;
+        const start = { lng: longitude, lat: latitude };
+        const end = { lng: userLocation.state[0], lat: userLocation.state[1] };
+
+        setLocationState({ start, end });
+        setViewState({
+          longitude: (start.lng + end.lng) / 2,
+          latitude: (start.lat + end.lat) / 2,
+          zoom: 12,
+          pitch: 0,
+          bearing: 0,
+        });
+      })
+      .catch((error: any) => {
+        setError("Unable to retrieve your location.");
+        console.error("Geolocation error:", error);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!locationState) return; // Wait until locationState is set
+
     const getRoutes = async () => {
       const profiles: ("driving" | "walking" | "cycling")[] = [
         "driving",
@@ -167,13 +114,15 @@ const Demo = () => {
             geometries: "geojson",
             steps: true,
             waypoints: [
-              { coordinates: [start.lng, start.lat] },
-              { coordinates: [end.lng, end.lat] },
+              {
+                coordinates: [locationState.start.lng, locationState.start.lat],
+              },
+              { coordinates: [locationState.end.lng, locationState.end.lat] },
             ],
           })
           .send();
 
-        times[p] = Math.round(response.body.routes[0].duration / 60); // Convert seconds to minutes
+        times[p] = Math.round(response.body.routes[0].duration / 60);
 
         if (p === profile) {
           setRoute(response.body);
@@ -189,7 +138,7 @@ const Demo = () => {
     };
 
     getRoutes();
-  }, [start, end, profile]);
+  }, [locationState, profile]);
 
   const formatTime = (minutes: number) => {
     const hours = Math.floor(minutes / 60);
@@ -197,9 +146,17 @@ const Demo = () => {
     return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
   };
 
+  if (loading) {
+    return <div>Loading map...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
-    <div className="h-screen bg-red-200 ">
-      <div className="relative w-full h-5/6">
+    <div className="h-full">
+      <div className="relative w-full h-full">
         <Map
           {...viewState}
           onMove={(evt) => setViewState(evt.viewState)}
@@ -207,34 +164,48 @@ const Demo = () => {
           mapStyle="mapbox://styles/mapbox/streets-v11"
           mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
         >
-          <Marker longitude={start.lng} latitude={start.lat} color="red" />
-          <Marker longitude={end.lng} latitude={end.lat} color="green" />
-          {route && route.routes[0] && (
-            <Source type="geojson" data={route.routes[0].geometry}>
-              <Layer
-                id="route"
-                type="line"
-                paint={{
-                  "line-color": "#3887be",
-                  "line-width": 5,
-                  "line-opacity": 0.75,
-                }}
+          {locationState && (
+            <>
+              <Marker
+                longitude={locationState.start.lng}
+                latitude={locationState.start.lat}
+                color="blue"
               />
-            </Source>
+              <NavigationControl showCompass showZoom position="bottom-right" />
+              <GeolocateControl position="bottom-right" trackUserLocation />
+
+              <Marker
+                longitude={locationState.end.lng}
+                latitude={locationState.end.lat}
+                color="green"
+              />
+              {route && route.routes[0] && (
+                <Source type="geojson" data={route.routes[0].geometry}>
+                  <Layer
+                    id="route"
+                    type="line"
+                    paint={{
+                      "line-color": "#3887be",
+                      "line-width": 5,
+                      "line-opacity": 0.75,
+                    }}
+                  />
+                </Source>
+              )}
+            </>
           )}
-          <NavigationControl showCompass showZoom position="top-right" />
         </Map>
         <div className="absolute top-4 left-4">
           <button
             onClick={() => navigate(-1)}
-            className=" p-2 flex justify-center rounded-full text-indigo-950 bg-white"
+            className="p-2 flex justify-center rounded-full text-indigo-950 bg-white"
           >
             <IoIosArrowBack size={20} />
           </button>
           <div className="flex flex-col gap-2 mt-2">
             <button
               onClick={() => setProfile("driving")}
-              className={`px-4 py-2 flex  rounded ${
+              className={`px-4 py-2 flex rounded ${
                 profile === "driving" ? "bg-blue-500 text-white" : "bg-white"
               }`}
             >
@@ -295,4 +266,4 @@ const Demo = () => {
   );
 };
 
-export default Demo;
+export default MapDirection;

@@ -5,6 +5,7 @@ import defaultImage from "/user.png";
 import Loader from "../loader/Loader";
 import { Pagination } from "@mui/material";
 interface User {
+  profilePicture: string;
   _id: number;
   userName: string;
   email: string;
@@ -103,7 +104,7 @@ const UsersAdmin: React.FC = () => {
               >
                 <img
                   className="w-10 h-10 rounded-full"
-                  src={user.imageUrl || defaultImage}
+                  src={user.profilePicture || defaultImage}
                   alt={user.userName}
                 />
                 <div className="ps-3">

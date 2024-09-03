@@ -67,13 +67,12 @@ const Navbar: React.FC = () => {
         coordinates: [longitude, latitude],
       };
 
+      // console.log("----location:-----", longitude,latitude);
       const locality = await fetchLocationDetails(latitude, longitude);
-      // console.log("locationData:-----", locationData);
       dispatch(setLocationState(locationData));
       setLocation(locality);
     } catch (error: any) {
-      console.error("Error:", error);
-      toast.error(error.message || "Failed to fetch location details.");
+      console.error("Error location:", error);
       setLocation("Unknown location");
     } finally {
       setIsLoading(false);

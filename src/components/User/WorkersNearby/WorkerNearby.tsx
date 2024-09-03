@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Avatar, Button, TextField, Typography, Rating } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { TextField, } from "@mui/material";
 import { fetchWorkers } from "../../../api/user";
 import Loader from "../../loader/Loader";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -16,7 +15,6 @@ const WorkerNearby: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Extract the service name from the query parameters
   const queryParams = new URLSearchParams(location.search);
   const serviceID = queryParams.get("service") || "";
   const locationData = useSelector((state: RootState) => state.location);

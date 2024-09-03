@@ -14,8 +14,11 @@ import { Booking } from "../../../types/Booking";
 import { useWorkerId } from "../../../redux/hooks/userSelectors";
 import { confirmBooking, getWorkerBooking } from "../../../api/worker";
 import { Button, Popover } from "flowbite-react";
+import MapIcon from "@mui/icons-material/Map";
+import { useNavigate } from "react-router-dom";
 
 const BookingsWorker = () => {
+  const navigate = useNavigate();
   const [openBookingId, setOpenBookingId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const workerId = useWorkerId();
@@ -106,10 +109,11 @@ const BookingsWorker = () => {
                   />
                   {booking.workerId.service.name}
                 </div>
-                <div className="flex items-center max-w-44 ">
+                <div className="flex items-center max-w-48 ">
                   <AssignmentIcon fontSize="inherit" className="mr-2" />
                   <span className="truncate">{booking.service.service}</span>
                 </div>
+                <div className="flex items-center max-w-44 my-1"></div>
               </div>
               <div className="flex flex-col gap-1">
                 <kbd className="py-2 px-3 justify-center text-sm font-medium text-gray-800 bg-gray-100 border border-gray-200 rounded-lg flex items-center">
@@ -122,9 +126,22 @@ const BookingsWorker = () => {
                 </div>
               </div>
               <div className="flex flex-col gap-1 capitalize text-[13px] font-semibold ">
-                <kbd className="px-4 mb-1 w-full text-center py-1 text-[13px] font-semibold text-blue-800 bg-orange-100 border border-orange-400 rounded-lg self-start md:self-center">
+                <kbd
+                  className={`px-4 mb-1 w-full text-center py-1 text-[13px] font-semibold rounded-lg self-start md:self-center ${
+                    booking.status === "confirmed"
+                      ? "text-green-900 bg-green-100 border border-green-400"
+                      : booking.status === "pending"
+                      ? "text-orange-800 bg-orange-100 border border-orange-400"
+                      : booking.status === "completed"
+                      ? "text-blue-800 bg-blue-100 border border-blue-400"
+                      : booking.status === "canceled"
+                      ? "text-red-800 bg-red-100 border border-red-400"
+                      : ""
+                  }`}
+                >
                   {booking.status}
                 </kbd>
+
                 <Popover
                   open={isPopoverVisible && selectedBookingId === booking._id}
                   content={
@@ -164,16 +181,18 @@ const BookingsWorker = () => {
                   )}
                 </Popover>
 
-                {/* {booking.status === "confirmed" ? (
-                  <button
-                    type="button"
-                    className="text-red-500 hover:text-white hover:bg-red-400 border border-red-500 rounded-lg self-start md:self-center w-full text-center py-1 "
-                  >
-                    Reject
-                  </button>
-                ) : (
-                  <></>
-                )} */}
+                <button
+                  type="button"
+                  className="w-full gap-2 bg-white justify-center border-green-700 border text-green-700 hover:bg-green-800 hover:text-white  font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center me-2"
+                  onClick={() => navigate('/worker/direction',{
+                    state:booking.address.location.coordinates})}
+                >
+                  <span className="text-green-900 hover:text-white">
+                    {" "}
+                    <MapIcon fontSize="inherit" />
+                  </span>
+                  Map
+                </button>
               </div>
             </div>
 

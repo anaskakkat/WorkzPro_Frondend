@@ -11,6 +11,8 @@ const userRoutes = {
   bookingData: (userId: string) => `user/booking/${userId}`,
   fetchBookings: (id: string) => `user/booking/${id}`,
   fetchBookingsByUser: (id: string) => `user/booking/user/${id}`,
+  fetchBookingsByDate: (workerId: string, date: Date) =>
+    `user/booking/${workerId}/date/${date.toISOString()}`,
 };
 
 export default userRoutes;

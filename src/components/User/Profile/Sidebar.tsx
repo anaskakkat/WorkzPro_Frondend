@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setActivePage }) => {
   return (
     <>
       {/* Mobile Top Navigation */}
-      <nav className="md:hidden bg-blue-950 text-white p-4 fixed  top- left-0 right-0 z-10">
+      <nav className=" md:hidden bg-blue-950 text-white p-4 fixed  left-0 right-0 z-10">
         <ul className="flex items-center">
           {navItems.map((item) => (
             <li key={item.name}>

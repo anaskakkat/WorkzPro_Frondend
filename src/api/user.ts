@@ -89,7 +89,7 @@ export const logoutUser = async () => {
 export const userServices = async () => {
   try {
     const response = await Api.get(userRoutes.getService);
-    console.log("userServices:--", response);
+    // console.log("userServices:--", response);
     return response.data;
   } catch (error) {
     handleApiError(error);
@@ -156,6 +156,14 @@ export const getBookingsUser = async (userId: string) => {
   try {
     const response = await Api.get(userRoutes.fetchBookingsByUser(userId));
     return response;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchBookingsByDate = async (workerId: string,date: Date) => {
+  try {
+    const response = await Api.get(userRoutes.fetchBookingsByDate(workerId,date));
+    return response.data;
   } catch (error) {
     throw error;
   }
