@@ -148,7 +148,7 @@ const BookingForm = () => {
       slots: timeSlots,
       workerId,
     };
-    // console.log("data---", data);
+    // console.log("data---", data, "------", userId);
     try {
       const response = await bookingData(userId, data);
       if (response.status === 200) {

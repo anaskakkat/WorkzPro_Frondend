@@ -28,7 +28,6 @@ interface IService {
 }
 
 const MotionBox = motion(Box);
-const MotionTableRow = motion.tr;
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   marginBottom: theme.spacing(3),

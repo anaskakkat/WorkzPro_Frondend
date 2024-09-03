@@ -206,7 +206,17 @@ export const confirmBooking = async (workerId: string) => {
     const response = await Api.patch(
       workerRoutes.fetchBookingsWorkerId(workerId)
     );
-    return response.data;
+    return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+export const rejectBooking = async (workerId: string) => {
+  try {
+    const response = await Api.patch(
+      workerRoutes.rejectBookingRequest(workerId)
+    );
+    return response;
   } catch (error) {
     handleApiError(error);
   }

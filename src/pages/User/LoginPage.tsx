@@ -112,10 +112,11 @@ const LoginPage: React.FC = () => {
         googleId: decodedToken.sub,
       };
       const response = await googleAuth(googleUser);
+      console.log("response:::", response.data.user);
       console.log("response:::", response);
 
       toast.success("Google login successful");
-      dispatch(setUserInfo(googleUser));
+      dispatch(setUserInfo(response.data.user));
       navigate("/");
     } catch (error) {
       console.error("Google login error:", error);

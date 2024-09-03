@@ -61,6 +61,8 @@ const Navbar: React.FC = () => {
     try {
       setIsLoading(true);
       const position = await getCurrentPosition();
+      // console.log("coooordinates---", position.coords);
+
       const { latitude, longitude } = position.coords;
       const locationData = {
         type: "Point",
@@ -72,6 +74,11 @@ const Navbar: React.FC = () => {
       dispatch(setLocationState(locationData));
       setLocation(locality);
     } catch (error: any) {
+      if (error.code === error.PERMISSION_DENIED) {
+        toast.error("Location access denied. Please enable location services.");
+      } else {
+        toast.error("Failed to fetch location. Please try again.");
+      }
       console.error("Error location:", error);
       setLocation("Unknown location");
     } finally {

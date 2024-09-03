@@ -12,7 +12,11 @@ import moment from "moment";
 import { Pagination } from "@mui/material";
 import { Booking } from "../../../types/Booking";
 import { useWorkerId } from "../../../redux/hooks/userSelectors";
-import { confirmBooking, getWorkerBooking } from "../../../api/worker";
+import {
+  confirmBooking,
+  getWorkerBooking,
+  rejectBooking,
+} from "../../../api/worker";
 import { Button, Popover } from "flowbite-react";
 import MapIcon from "@mui/icons-material/Map";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +32,7 @@ const BookingsWorker = () => {
     null
   );
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
+  const [isPopoverVisible2, setIsPopoverVisible2] = useState(false);
 
   useEffect(() => {
     fetchBookings();
@@ -68,10 +73,28 @@ const BookingsWorker = () => {
         console.log(`Booking ${selectedBookingId} confirmed`);
         const response = await confirmBooking(selectedBookingId);
         // console.log("response----", response);
-        if (response.ststus === 200) {
+        if (response && response.status === 200) {
           setSelectedBookingId(null);
           setIsPopoverVisible(false);
           fetchBookings();
+          // console.log("finished");
+        }
+      } catch (error) {
+        console.error("Error confirming booking", error);
+      }
+    }
+  };
+  const handleReject = async () => {
+    if (selectedBookingId) {
+      try {
+        console.log(`Booking ${selectedBookingId} Reject`);
+        const response = await rejectBooking(selectedBookingId);
+        console.log("response----", response);
+        if (response && response.status === 200) {
+          setSelectedBookingId(null);
+          setIsPopoverVisible2(false);
+          fetchBookings();
+          // console.log("finished");
         }
       } catch (error) {
         console.error("Error confirming booking", error);
@@ -82,6 +105,7 @@ const BookingsWorker = () => {
   const handlePopoverClose = () => {
     setSelectedBookingId(null);
     setIsPopoverVisible(false);
+    setIsPopoverVisible2(false);
   };
 
   return (
@@ -134,7 +158,7 @@ const BookingsWorker = () => {
                       ? "text-orange-800 bg-orange-100 border border-orange-400"
                       : booking.status === "completed"
                       ? "text-blue-800 bg-blue-100 border border-blue-400"
-                      : booking.status === "canceled"
+                      : booking.status === "cancelled"
                       ? "text-red-800 bg-red-100 border border-red-400"
                       : ""
                   }`}
@@ -180,19 +204,44 @@ const BookingsWorker = () => {
                     <></>
                   )}
                 </Popover>
-
-                <button
-                  type="button"
-                  className="w-full gap-2 bg-white justify-center border-green-700 border text-green-700 hover:bg-green-800 hover:text-white  font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center me-2"
-                  onClick={() => navigate('/worker/direction',{
-                    state:booking.address.location.coordinates})}
+                <Popover
+                  open={isPopoverVisible2 && selectedBookingId === booking._id}
+                  content={
+                    <div className="w-64 text-sm">
+                      <div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                          Are you Sure?
+                        </h3>
+                      </div>
+                      <div className="px-3 py-2">
+                        <p className="text-gray-500 dark:text-gray-400">
+                          Reject this Booking...
+                        </p>
+                        <div className="mt-4 flex justify-end space-x-3">
+                          <Button onClick={handlePopoverClose}>No</Button>
+                          <Button onClick={handleReject}>Yes</Button>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                  placement="bottom"
+                  trigger="click"
                 >
-                  <span className="text-green-900 hover:text-white">
-                    {" "}
-                    <MapIcon fontSize="inherit" />
-                  </span>
-                  Map
-                </button>
+                  {booking.status === "pending" ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedBookingId(booking._id!);
+                        setIsPopoverVisible2(true);
+                      }}
+                      className="capitalize text-red-500 hover:text-white border hover:bg-red-500 border-red-600 rounded-lg self-start md:self-center w-full text-center py-1"
+                    >
+                      Reject
+                    </button>
+                  ) : (
+                    <></>
+                  )}
+                </Popover>
               </div>
             </div>
 
@@ -201,7 +250,7 @@ const BookingsWorker = () => {
                 onClick={() => toggleAccordion(booking._id!)}
                 className="items-center w-full font-semibold text-left transition-all ease-in cursor-pointer rounded-t-1 group text-black"
               >
-                <span className="text-sm text-custom_buttonColor flex items-center px-4">
+                <span className="text-sm text-custom_buttonColor flex items-center px-4 hover:text-custom_navyBlue">
                   More Info
                   {openBookingId === booking._id ? (
                     <ArrowCircleUpSharp fontSize="inherit" className="ml-1" />
@@ -209,6 +258,21 @@ const BookingsWorker = () => {
                     <ArrowCircleDownSharp fontSize="inherit" className="ml-1" />
                   )}
                 </span>
+              </button>
+              <button
+                type="button"
+                className="w-full gap-2 bg-white justify-center border-green-700 border text-green-700 hover:bg-green-800 hover:text-white  font-medium rounded-lg text-sm px-2 py-1 text-center inline-flex items-center me-2"
+                onClick={() =>
+                  navigate("/worker/direction", {
+                    state: booking.address.location.coordinates,
+                  })
+                }
+              >
+                <span className="text-green-900 hover:text-white">
+                  {" "}
+                  <MapIcon fontSize="inherit" />
+                </span>
+                Map
               </button>
 
               <div

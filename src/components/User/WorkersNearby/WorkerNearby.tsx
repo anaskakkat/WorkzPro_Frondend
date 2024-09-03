@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TextField, } from "@mui/material";
+import { TextField } from "@mui/material";
 import { fetchWorkers } from "../../../api/user";
 import Loader from "../../loader/Loader";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -67,9 +67,9 @@ const WorkerNearby: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row">
+    <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="w-full md:w-64 bg-custom_bg_blue p-4 md:h-screen">
+      <div className="w-full md:w-64 bg-custom_bg_blue p-4 h-full">
         <TextField
           fullWidth
           label="Search workers"
@@ -80,27 +80,29 @@ const WorkerNearby: React.FC = () => {
         />
       </div>
 
-      {/* Worker Cards */}
+      {/* Main Content Area */}
+      <div className="flex-1 p-4 flex flex-col ">
+        {/* Heading */}
+        <h2 className="text-xl font-bold mb-4 text-custom_navyBlue">Workers Nearby</h2>
 
-      
-      <div className="flex-1 p-4">
+        {/* Worker Cards */}
         {filteredWorkers.length === 0 ? (
-          <div className="flex min-h-full mx-auto align-middle  justify-center">
+          <div className="flex min-h-full mx-auto align-middle justify-center">
             No users available for the selected service
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 capitalize">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 capitalize">
             {filteredWorkers.map((worker) => (
               <div
                 key={worker._id}
-                className="border-blue-200 border w-full py-2 px-3 flex flex-col items-center rounded-xl"
+                className="border border-blue-200 w-full py-2 px-3 flex flex-col items-center rounded-xl"
               >
-                <div className="rounded-lg">
+                <div className="rounded-lg ">
                   <img
                     src={worker.profilePicture}
                     width={180}
                     alt="profile"
-                    className="rounded-xl  shadow-md shadow-slate-200"
+                    className="rounded-xl shadow-md shadow-slate-200"
                   />
                 </div>
                 <div className="flex flex-col text-center ">
@@ -115,7 +117,7 @@ const WorkerNearby: React.FC = () => {
                     {worker.distance} km away
                   </p>
                   <button
-                    className=" border border-blue-500 px-11  font-semibold py-2 rounded-full w-full bg-blue-700 text-white hover:bg-blue-800"
+                    className="border border-blue-500 px-11 font-semibold py-2 rounded-full w-full bg-blue-700 text-white hover:bg-blue-800"
                     onClick={() => handleDetails(worker._id)}
                   >
                     Details
