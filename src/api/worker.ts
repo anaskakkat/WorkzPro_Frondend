@@ -221,3 +221,17 @@ export const rejectBooking = async (workerId: string) => {
     handleApiError(error);
   }
 };
+export const updateWorkerProfile = async (
+  workerId: string,
+  formDAta: FormData
+) => {
+  try {
+    const response = await Api.patch(
+      workerRoutes.updateWorkerProfile(workerId),
+      formDAta
+    );
+    return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};

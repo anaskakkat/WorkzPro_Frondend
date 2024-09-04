@@ -21,7 +21,7 @@ export default function CustomTabPanel() {
   };
 
   return (
-    <div className="border-2 border-blue-100 rounded-lg w-full md:w-3/4 lg:w-full mx-auto p-4">
+    <div className="border-2 border-blue-100 rounded-lg w-full p-4 ">
       <div className="flex justify-center mb-4">
         <Tabs
           value={value}

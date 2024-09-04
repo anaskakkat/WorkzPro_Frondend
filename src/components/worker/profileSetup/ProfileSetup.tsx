@@ -102,16 +102,7 @@ const ProfileSetup: React.FC = () => {
       console.error("Error workerServices services:", error);
     }
   };
-  // useEffect(() => {
-  //   if (profilePic) {
-  //     const objectUrl = URL.createObjectURL(profilePic);
-  //     setProfilePicUrl(objectUrl);
 
-  //     return () => URL.revokeObjectURL(objectUrl);
-  //   } else {
-  //     setProfilePicUrl(workerId?.profilePicture || "default-profile-pic.jpg");
-  //   }
-  // }, [profilePic, workerId?.profilePicture]);
 
   const handleProfilePicChange = (
     event: React.ChangeEvent<HTMLInputElement>

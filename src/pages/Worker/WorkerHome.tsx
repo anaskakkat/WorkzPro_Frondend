@@ -13,6 +13,11 @@ import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { removeWorkerInfo } from "../../redux/slices/workerSlice";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import Person from "@mui/icons-material/Person";
+
+
+
+
 interface WorkerHomeProps {
   children: ReactNode;
 }
@@ -134,6 +139,24 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
                     }`}
                   />
                   <span className="ml-3">Bookings</span>
+                </li>
+              </Link>
+              <Link to="/worker/profile">
+                <li
+                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2  hover:bg-blue-600 hover:text-white ${
+                    location.pathname === "/worker/profile"
+                      ? "bg-blue-600 text-white"
+                      : ""
+                  }`}
+                >
+                  <Person
+                    className={`text-gray-500 transition duration-75 ${
+                      location.pathname === "/worker/profile"
+                        ? "text-white "
+                        : " "
+                    }`}
+                  />
+                  <span className="ml-3">profile</span>
                 </li>
               </Link>
             </ul>

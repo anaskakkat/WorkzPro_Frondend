@@ -26,6 +26,7 @@ const workerRoutes = {
   bookingConfirmation: (bookingId: string) => `worker/bookings/${bookingId}`,
   rejectBookingRequest: (bookingId: string) =>
     `worker/bookings/reject/${bookingId}`,
+  updateWorkerProfile: (id: string) => `worker/profile/${id}`,
 };
 
 export default workerRoutes;

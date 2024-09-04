@@ -169,12 +169,12 @@ const BookingForm = () => {
   }
 
   return (
-    <div className="flex-1 p-4 border-l-2 border-blue-100 rounded-sm">
+    <div className="flex-1 p-4 border-l-2 min-w-96 border-blue-100 rounded-sm">
       <h2 className="font-semibold mb-2 text-custom_navyBlue">
         Booking Details
       </h2>
 
-      <form className="max-w-md mx-auto" onSubmit={handleSubmit}>
+      <form className=" mx-auto" onSubmit={handleSubmit}>
         {/* Form Fields */}
         <div className="mb-2">
           <input
