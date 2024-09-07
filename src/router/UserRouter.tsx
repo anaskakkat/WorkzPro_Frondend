@@ -15,6 +15,9 @@ import Demo from "../components/Demo";
 import BookingSuccess from "../pages/User/BookingSuccess";
 import UserProfile from "../pages/User/UserProfile";
 import ErrorComponent from "../components/ErrorComponent";
+import Chats from "../pages/User/Chats";
+import BookingsPage from "../pages/User/BookingsPage";
+import DashboarLayout from "../pages/User/DashboarLayout";
 
 export const UserRouter = () => {
   return (
@@ -29,7 +32,7 @@ export const UserRouter = () => {
         </Route>
 
         <Route path="/" element={<UserLayout />}>
-        <Route path="/demo" element={<Demo />} />
+          <Route path="/demo" element={<Demo />} />
           {/* homeRoute */}
           <Route path="/" element={<HomePage />} />
 
@@ -47,8 +50,12 @@ export const UserRouter = () => {
             element={<WorkerCheckout />}
           />
           <Route path="/success/:id" element={<BookingSuccess />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/bookings" element={<UserProfile />} />
+          <Route element={<DashboarLayout />}>
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/bookings" element={<BookingsPage />} />
+            <Route path="/chats" element={<Chats />} />
+          </Route>
+
           <Route path="*" element={<ErrorComponent />} />
         </Route>
       </Routes>

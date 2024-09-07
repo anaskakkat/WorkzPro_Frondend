@@ -31,7 +31,6 @@ interface User {
 const WorkersAdmin: React.FC = () => {
   const [workers, setWorkers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [selectedWorker, setSelectedWorker] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [page, setPage] = useState(1);
@@ -43,7 +42,6 @@ const WorkersAdmin: React.FC = () => {
 
         setWorkers(response);
       } catch (err) {
-        setError("Failed to fetch users.");
         console.error(err);
       } finally {
         setLoading(false);

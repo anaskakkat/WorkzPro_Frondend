@@ -68,7 +68,7 @@ const Otp: React.FC = () => {
     try {
       const response = await verifyotp(email, otpCode);
       if (response && response.status === 200) {
-        // console.log("OTP verified:", response);
+        console.log("OTP verified:", response);
         const user = response.data.user;
         dispatch(setUserInfo(user));
         navigate("/");

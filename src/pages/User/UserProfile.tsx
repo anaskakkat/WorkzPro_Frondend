@@ -1,10 +1,10 @@
 import React from "react";
-import ProfilePage from "../../components/User/User_profile/ProfilePage";
+import Profile from "../../components/User/Profile/Profile";
 
 const UserProfile = () => {
   return (
     <>
-      <ProfilePage />
+      <Profile />
     </>
   );
 };

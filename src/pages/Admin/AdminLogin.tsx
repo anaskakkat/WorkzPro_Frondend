@@ -4,9 +4,8 @@ import { Box, Typography, Button, CircularProgress } from "@mui/material";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
-import { setWorkerInfo } from "../../redux/slices/workerSlice";
 import CustomTextField from "../../components/styleComponents/StyledTextField";
-import logo from "/workzpro-high-resolution-logo.jpeg"; // Adjusted the logo path for consistency
+import logo from "/workzpro-high-resolution-logo.jpeg"; 
 import { verifyloginAdmin } from "../../api/admin";
 import { setadminInfo } from "../../redux/slices/adminSlice";
 

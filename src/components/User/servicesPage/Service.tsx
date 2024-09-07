@@ -50,7 +50,7 @@ const Service: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-[calc(100vh-4rem)]">
       <div className="flex-grow flex items-center justify-center px-10 md:px-20">
         <div className="w-full flex flex-col md:flex-row items-center gap-20">
           <div className="max-w-60 md:w-1/3 mb-6 md:mb-0 flex items-center justify-center">
