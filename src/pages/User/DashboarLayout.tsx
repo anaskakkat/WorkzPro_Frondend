@@ -5,7 +5,7 @@ const DashboardLayout = () => {
   return (
     <div className="flex flex-col md:flex-row ">
       {/* Sidebar */}
-      <div className="bg-gray-800 text-white w-full md:w-1/4 lg:w-1/5 p-4">
+      <div className="bg-gray-800 text-white w-auto md:w-1/4 lg:w-1/5 p-4">
         <ul className="space-y-2">
           <li>
             <NavLink

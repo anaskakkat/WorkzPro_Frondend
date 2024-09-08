@@ -10,12 +10,12 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GOOGLE_CLIENT_ID } from "./constants/constant_env.tsx";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       <ThemeProvider theme={theme}>
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
           <App />
         </GoogleOAuthProvider>
       </ThemeProvider>
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </Provider>
 );

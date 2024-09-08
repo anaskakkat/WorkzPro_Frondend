@@ -74,7 +74,7 @@ const BookingsUser = () => {
     return <Loader />;
   }
   return (
-    <div className="mx-4 md:mx-8 lg:mx-20 overflow-hidden  h-[calc(100vh-4rem)]">
+    <div className="mx-4 md:mx-8 lg:mx-20 overflow-hidden h-[calc(100vh-4rem)]">
       <div className="container mt-2 text font-semibold text-custom_navyBlue">
         My Bookings
       </div>
@@ -84,7 +84,7 @@ const BookingsUser = () => {
           <CircularProgress />
         </div>
       ) : ( */}
-      <div className="flex flex-col gap-4 font-normal text-sm ">
+      <div className="flex flex-col gap-4 font-normal text-sm  ">
         {bookings &&
           bookings.map((booking) => (
             <div

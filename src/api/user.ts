@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 import { IGoogleUser } from "../types/user";
+import { Message } from "../components/User/chat/MessageUi";
 interface FormData {
   name: string;
   email: string;
@@ -160,9 +161,52 @@ export const getBookingsUser = async (userId: string) => {
     throw error;
   }
 };
-export const fetchBookingsByDate = async (workerId: string,date: Date) => {
+export const fetchBookingsByDate = async (workerId: string, date: Date) => {
   try {
-    const response = await Api.get(userRoutes.fetchBookingsByDate(workerId,date));
+    const response = await Api.get(
+      userRoutes.fetchBookingsByDate(workerId, date)
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchChats = async (userId: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchChats(userId));
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const createChat = async (
+  name: string,
+  userId: string,
+  workerId: string
+) => {
+  try {
+    const response = await Api.post(userRoutes.createChat, {
+      recieverName: name,
+      senderId: userId,
+      recieverId: workerId,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchMessages = async (chatId: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchMessages(chatId));
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const sendMessage = async (message: Message) => {
+  try {
+    const response = await Api.post(userRoutes.sendMessage, message);
     return response.data;
   } catch (error) {
     throw error;

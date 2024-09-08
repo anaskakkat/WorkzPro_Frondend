@@ -13,6 +13,10 @@ const userRoutes = {
   fetchBookingsByUser: (id: string) => `user/booking/user/${id}`,
   fetchBookingsByDate: (workerId: string, date: Date) =>
     `user/booking/${workerId}/date/${date.toISOString()}`,
+  fetchChats: (userId: string) => `user/chat/${userId}`,
+  createChat: `user/chat`,
+  fetchMessages: (chatId: string) => `user/chat/messages/${chatId}`,
+  sendMessage: `user/chat/addMessage`,
 };
 
 export default userRoutes;
