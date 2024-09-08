@@ -14,9 +14,7 @@ import { useDispatch } from "react-redux";
 import { removeWorkerInfo } from "../../redux/slices/workerSlice";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import Person from "@mui/icons-material/Person";
-
-
-
+import { Chat } from "@mui/icons-material";
 
 interface WorkerHomeProps {
   children: ReactNode;
@@ -68,7 +66,7 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
             <MenuIcon />
           </button>
 
-          <img src={logo} alt="Logo" className="h-12" />
+          <img src={logo} alt="Logo" className="h-10" />
 
           <div className="flex items-center">
             <span className="text-custom_navyBlue mr-4 capitalize">
@@ -86,8 +84,8 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
           } lg:translate-x-0 flex flex-col`}
           aria-label="Sidebar"
         >
-          <div className="flex-1 py-8 px-2 pb-4 overflow-y-auto bg-blue-100">
-            <ul className="space-y-2 font-medium text-custom_navyBlue ">
+          <div className="flex-1 py-8 px-2 pb-4 overflow-y-auto bg-blue-950">
+            <ul className="space-y-2 font-medium text-blue-200 ">
               {/* Dashboard Tab */}
               <Link to="/worker">
                 <li
@@ -98,31 +96,37 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
                   }`}
                 >
                   <DashboardIcon
-                    className={`text-gray-500 transition duration-75 hover:bg-blue-600 hover:text-white ${
-                      location.pathname === "/worker" ? "text-white " : ""
+                    className={`transition duration-75 ${
+                      location.pathname === "/worker"
+                        ? "text-white"
+                        : " hover:text-white"
                     }`}
                   />
-                  <span className="ml-3">Dashboard</span>
+                  <span className="ml-3 text-blue-00">Dashboard</span>
                 </li>
               </Link>
 
               {/* Slot Tab */}
               <Link to="/worker/slots">
                 <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-blue-600  hover:text-white ${
+                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-blue-600 hover:text-white ${
                     location.pathname === "/worker/slots"
                       ? "bg-blue-600 text-white"
                       : ""
                   }`}
                 >
                   <SlotIcon
-                    className={`text-gray-500 transition duration-75 ${
-                      location.pathname === "/worker/slots" ? "text-white " : ""
+                    className={`transition duration-75 ${
+                      location.pathname === "/worker/slots"
+                        ? "text-white"
+                        : " hover:text-white"
                     }`}
                   />
                   <span className="ml-3">Slot</span>
                 </li>
               </Link>
+
+              {/* Bookings Tab */}
               <Link to="/worker/bookings">
                 <li
                   className={`flex items-center p-2 cursor-pointer rounded-lg m-2  hover:bg-blue-600 hover:text-white ${
@@ -132,15 +136,17 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
                   }`}
                 >
                   <CalendarMonthIcon
-                    className={`text-gray-500 transition duration-75 ${
+                    className={`transition duration-75 ${
                       location.pathname === "/worker/bookings"
-                        ? "text-white "
-                        : " "
+                        ? "text-white"
+                        : " hover:text-white"
                     }`}
                   />
                   <span className="ml-3">Bookings</span>
                 </li>
               </Link>
+
+              {/* Profile Tab */}
               <Link to="/worker/profile">
                 <li
                   className={`flex items-center p-2 cursor-pointer rounded-lg m-2  hover:bg-blue-600 hover:text-white ${
@@ -150,13 +156,33 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
                   }`}
                 >
                   <Person
-                    className={`text-gray-500 transition duration-75 ${
+                    className={`transition duration-75 ${
                       location.pathname === "/worker/profile"
-                        ? "text-white "
-                        : " "
+                        ? "text-white"
+                        : " hover:text-white"
                     }`}
                   />
-                  <span className="ml-3">profile</span>
+                  <span className="ml-3">Profile</span>
+                </li>
+              </Link>
+
+              {/* Chats Tab */}
+              <Link to="/worker/chats">
+                <li
+                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2  hover:bg-blue-600 hover:text-white ${
+                    location.pathname === "/worker/chats"
+                      ? "bg-blue-600 text-white"
+                      : ""
+                  }`}
+                >
+                  <Chat
+                    className={`transition duration-75 ${
+                      location.pathname === "/worker/chats"
+                        ? "text-white"
+                        : " hover:text-white"
+                    }`}
+                  />
+                  <span className="ml-3">Chats</span>
                 </li>
               </Link>
             </ul>
@@ -172,7 +198,7 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
             </button>
           </div>
         </aside>
-        <main className="flex-1 p-4 overflow-auto">{children}</main>
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>
   );

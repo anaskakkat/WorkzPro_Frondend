@@ -200,8 +200,16 @@ const BookingsWorker = () => {
                     >
                       Accept
                     </button>
-                  ) : (
-                    <></>
+                  ) : (<></>
+                    // <button
+                    //   onClick={() =>
+                    //     navigate("/worker/chats", {
+                    //       state: { userId: booking.userId },
+                    //     })
+                    //   }
+                    // >
+                    //   Chat
+                    // </button>
                   )}
                 </Popover>
                 <Popover

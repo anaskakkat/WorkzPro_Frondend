@@ -1,7 +1,6 @@
 import Api from "../config/axiosConfig";
 import workerRoutes from "../endpoints/workerEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
-import ISlot from "../types/ISlot";
 import { IWorkerRegistration, LeaveType, ServiceData } from "../types/IWorker";
 import { IGoogleUser } from "../types/user";
 
@@ -235,3 +234,48 @@ export const updateWorkerProfile = async (
     handleApiError(error);
   }
 };
+
+// chat create
+export const createChat = async (
+  name: string,
+  userId: string,
+  workerId: string
+) => {
+  try {
+    const response = await Api.post(workerRoutes.createChat, {
+      recieverName: name,
+      senderId: workerId,
+      recieverId: userId,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// worker  chat feth
+
+export const fetchChats = async (Id: string) => {
+  try {
+    const response = await Api.get(workerRoutes.fetchChats(Id));
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchMessages = async (chatId: string) => {
+  try {
+    const response = await Api.get(workerRoutes.fetchMessages(chatId));
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+// export const sendMessage = async (message: Message) => {
+//   try {
+//     const response = await Api.post(workerRoutes.sendMessage, message);
+//     return response.data;
+//   } catch (error) {
+//     throw error;
+//   }
+// };

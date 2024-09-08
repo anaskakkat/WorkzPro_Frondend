@@ -27,6 +27,10 @@ const workerRoutes = {
   rejectBookingRequest: (bookingId: string) =>
     `worker/bookings/reject/${bookingId}`,
   updateWorkerProfile: (id: string) => `worker/profile/${id}`,
+  createChat: `worker/chat`,
+  fetchChats: (workerId: string) => `worker/chat/${workerId}`,
+  fetchMessages: (chatId: string) => `worker/chat/messages/${chatId}`,
+  sendMessage: `user/chat/addMessage`,
 };
 
 export default workerRoutes;

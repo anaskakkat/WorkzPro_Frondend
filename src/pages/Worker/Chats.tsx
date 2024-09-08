@@ -1,7 +1,9 @@
+import WorkerChatsUi from "../../components/worker/chats/WorkerChatsUi"
 
 const Chats = () => {
+  
   return (
-    <div>Chats</div>
+    < WorkerChatsUi/>
   )
 }
 

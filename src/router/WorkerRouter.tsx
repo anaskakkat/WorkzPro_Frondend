@@ -17,6 +17,7 @@ import WorkerInterceptor from "../components/axiosInterceptors/workerInterceptor
 import ErrorComponent from "../components/ErrorComponent";
 import MapDirection from "../components/worker/bookings/MapDirection";
 import WorkerProfile from "../pages/Worker/WorkerProfile";
+import Chats from "../pages/Worker/Chats";
 const WorkerRouter = () => {
   return (
     <WorkerInterceptor>
@@ -40,6 +41,7 @@ const WorkerRouter = () => {
             <Route path="reviews" element={<Reviews />} />
             <Route path="direction" element={<MapDirection />} />
             <Route path="profile" element={<WorkerProfile />} />
+            <Route path="chats" element={<Chats />} />
 
             <Route path="*" element={<ErrorComponent />} />
           </Route>
