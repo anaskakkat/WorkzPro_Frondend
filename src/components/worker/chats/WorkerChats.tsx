@@ -2,17 +2,19 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useWorkerId } from "../../../redux/hooks/userSelectors";
 import { createChat, fetchChats } from "../../../api/worker";
+
 interface WorkerChatsProps {
   onSelectChat: (chatId: string) => void;
+  setUserName: (name: string) => void; 
 }
-const WorkerChats: React.FC<WorkerChatsProps> = ({ onSelectChat }) => {
+
+const WorkerChats: React.FC<WorkerChatsProps> = ({ onSelectChat, setUserName }) => {
   const [chats, setChats] = useState<any[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
-
   const location = useLocation();
   const userId = location.state?.userId;
-  //   console.log("Worker ID for chat:", userId);
   const workerId = useWorkerId();
+
   useEffect(() => {
     handleFetchChats();
     if (workerId && userId) {
@@ -27,6 +29,7 @@ const WorkerChats: React.FC<WorkerChatsProps> = ({ onSelectChat }) => {
       console.log("Error creating chat:", error);
     }
   };
+
   const handleFetchChats = async () => {
     try {
       const response = await fetchChats(workerId);
@@ -36,53 +39,29 @@ const WorkerChats: React.FC<WorkerChatsProps> = ({ onSelectChat }) => {
       console.log("Error fetching chats:", error);
     }
   };
-  const handleSelectChat = (chatId: string) => {
+
+  const handleSelectChat = (chatId: string, chatName: string) => {
     setActiveChatId(chatId);
     onSelectChat(chatId);
+    setUserName(chatName);
   };
+
   return (
     <div className="w-1/4 border-r border-gray-200 text-custom_navyBlue bg-blue-50 flex flex-col">
-      <div className="p-4 border-b border-gray-200">
-        {/* <img
-          className="w-10 h-10 rounded-full"
-          src="/api/placeholder/30/30"
-          alt="User avatar"
-        /> */}
-        Chats
-      </div>
+      <div className="p-4 border-b border-gray-200">Chats</div>
       <div className="flex-1 overflow-y-auto">
         {chats.length > 0 ? (
           chats.map((chat) => (
             <div
               key={chat.name}
               className={`p-4 cursor-pointer flex items-center ${
-                activeChatId === chat.chatId
-                  ? "bg-blue-100"
-                  : "hover:bg-blue-100"
+                activeChatId === chat.chatId._id ? "bg-blue-100" : "hover:bg-blue-100"
               }`}
-              onClick={() => handleSelectChat(chat.chatId._id)}
+              onClick={() => handleSelectChat(chat.chatId._id, chat.name)} 
             >
-              {/* <img
-                className="w-12 h-12 rounded-full"
-                src="/api/placeholder/41/41"
-                alt="Contact avatar"
-              /> */}
               <div className="ml-4 flex-1">
-                <h3 className="text-sm font-semibold capitalize">
-                  {chat.name}
-                </h3>
-                {/* <p className="text-xs text-gray-500 truncate">
-                  {chat.messages.length > 0
-                    ? chat.messages[chat.messages.length - 1].content
-                    : "No messages yet"}
-                </p> */}
+                <h3 className="text-sm font-semibold capitalize">{chat.name}</h3>
               </div>
-              {/* <span className="text-xs text-gray-400">
-                {new Date(chat.createdAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span> */}
             </div>
           ))
         ) : (

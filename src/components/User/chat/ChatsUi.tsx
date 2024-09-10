@@ -78,7 +78,7 @@ const ChatsUi: React.FC<{ onSelectChat: (_id: string) => void }> = ({
                 </h3>
                 <p className="text-xs text-gray-500 truncate">
                   {chat.messages.length > 0
-                    ? chat.messages[chat.messages.length - 1].content
+                    ? chat.messages[chat.messages.length - 1].message
                     : "No messages yet"}
                 </p>
               </div>

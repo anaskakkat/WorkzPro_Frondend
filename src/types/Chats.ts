@@ -6,5 +6,8 @@ export interface Chat {
 }
 
 export interface Message {
-  content: string;
+  message: string;
+  chatId: string;
+  sender: string;
+  receiver: string | null;
 }

@@ -1,23 +1,48 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
-import { fetchMessages } from "../../../api/worker";
-// import { useLocation } from "react-router-dom";
-interface MessageUiProps {
+import { fetchMessages, sendMessage } from "../../../api/worker";
+import { Message } from "../../User/chat/MessageUi";
+import { useWorkerId } from "../../../redux/hooks/userSelectors";
+import toast from "react-hot-toast";
+
+interface WorkerChatsMessagesProps {
   chatId: string;
+  userName: string;
 }
 
-const WorkerChatsMessages: React.FC<MessageUiProps> = ({ chatId }) => {
+const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
+  chatId,
+  userName,
+}) => {
   const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const workerId = useWorkerId();
   const [message, setMessage] = useState("");
-  console.log("chatId-----:", chatId);
-
-  const handleSendMessage = (e: { preventDefault: () => void }) => {
+  const [receiverId, setReceiverId] = useState<string | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const handleSendMessage = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-    // Add logic to send message
+    if (!message.trim()) {
+      toast.error("Please type a message");
+      return;
+    }
+    try {
+      const newMessage = {
+        chatId,
+        sender: workerId,
+        receiver: receiverId,
+        message,
+      };
+      await sendMessage(newMessage);
+      setMessages((prevMessages) => [...prevMessages, newMessage]); // Update messages with the new message
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
     setMessage("");
   };
+
   useEffect(() => {
     if (chatId) {
       handleFetchMessages(chatId);
@@ -28,55 +53,60 @@ const WorkerChatsMessages: React.FC<MessageUiProps> = ({ chatId }) => {
     setLoading(true);
     try {
       const response = await fetchMessages(chatId);
-      // console.log("rsrp-------", response);
-      //   setWorkerName(response.recieverName);
-      //   setMessages(response.messages);
-      //   setReceiverId(response.participants[1]);
+      setMessages(response.messages);
+      setReceiverId(response.participants[0]);
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Scroll to the last message when messages update
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
   return (
     <div className="flex-1 flex flex-col">
-      {/* Chat header */}
       <div className="p-4 border-b border-gray-200 flex items-center bg-blue-50">
-        {/* <img
-          className="w-10 h-10 rounded-full"
-          src="/api/placeholder/40/40"
-          alt="Contact avatar"
-        /> */}
         <div className="ml-4">
-          <h2 className="text- font-semibold">Arun Gosh</h2>
+          <h2 className="font-semibold capitalize">{userName}</h2>
           <p className="text-xs text-gray-500">Online</p>
         </div>
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-        {/* Received message */}
-        <div className="flex items-end">
-          <img
-            className="w-8 h-8 rounded-full"
-            src="/api/placeholder/32/32"
-            alt="Contact avatar"
-          />
-          <div className="ml-2 bg-white rounded-b-xl p-3 max-w-xs shadow rounded-tr-xl">
-            <p className="text-sm">Hello! How are you?</p>
-          </div>
-        </div>
+      <div
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {loading ? (
+          <p>Loading messages...</p>
+        ) : (
+          messages.map((msg, index) => (
+            <div
+              key={msg._id}
+              className={`flex ${
+                msg.sender === workerId ? "justify-start" : "justify-end"
+              }`}
+            >
+              <div
+                className={`${
+                  msg.sender === workerId
+                    ? "bg-white text-gray-800 rounded-tr-lg rounded-bl-lg rounded-br-lg lg:min-w-40"
+                    : "bg-blue-500 text-white rounded-tl-lg rounded-b-lg lg:min-w-40"
+                } p-3 max-w-xs shadow`}
+              >
+                <p className="text-sm">{msg.message}</p>
+              </div>
 
-        {/* Sent message */}
-        <div className="flex items-end justify-end">
-          <div className="mr-2 bg-blue-500 text-white rounded-b-xl rounded-tl-xl p-3 max-w-xs shadow">
-            <p className="text-sm">
-              Hi there! I'm doing great, thanks for asking.
-            </p>
-          </div>
-        </div>
-
-        {/* Add more messages here */}
+              {/* Set the last message reference */}
+              {index === messages.length - 1 && <div ref={lastMessageRef} />}
+            </div>
+          ))
+        )}
       </div>
 
       {/* Message input */}
@@ -104,6 +134,7 @@ const WorkerChatsMessages: React.FC<MessageUiProps> = ({ chatId }) => {
           <button
             type="submit"
             className="bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600"
+            disabled={!message.trim()}
           >
             <SendIcon fontSize="small" />
           </button>

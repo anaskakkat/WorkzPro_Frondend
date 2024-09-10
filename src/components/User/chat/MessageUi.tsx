@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import { fetchMessages, sendMessage } from "../../../api/user";
 import { useUserId } from "../../../redux/hooks/userSelectors";
+import { SocketContext } from "../../../context/socketContext";
 
 interface MessageUiProps {
   chatId: string;
@@ -12,8 +13,8 @@ interface MessageUiProps {
 export interface Message {
   chatId: string;
   _id?: string;
-  senderId: string;
-  receiverId: string | null;
+  sender: string;
+  receiver: string | null;
   message: string;
 }
 
@@ -24,6 +25,20 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
   const userId = useUserId();
   const [receiverId, setReceiverId] = useState<string | null>(null);
   const [workerName, setWorkerName] = useState("");
+  const socketContext = useContext(SocketContext);
+  const socket = socketContext?.socket;
+  useEffect(() => {
+    if (socket) {
+      socket.on("messageReceived", (newMessage: Message) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      });
+
+      return () => {
+        socket.off("messageReceived");
+      };
+    }
+  }, [socket]);
+
   useEffect(() => {
     if (chatId) {
       handleFetchMessages(chatId);
@@ -53,37 +68,29 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
     try {
       const newMessage = {
         chatId,
-        senderId: userId,
-        receiverId,
+        sender: userId,
+        receiver: receiverId,
         message,
       };
-
-      const response = await sendMessage(newMessage);
-
-      // Add sent message to the message list
-      //   setMessages((prevMessages) => [...prevMessages, response.message]);
-
+      // const response =
+      await sendMessage(newMessage);
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
+  // console.log("messages------", messages);
 
   return (
     <div className="flex-1 flex flex-col">
       <div className="p-4 border-b border-gray-200 flex items-center bg-blue-50">
-        {/* <img
-          className="w-10 h-10 rounded-full"
-          src="/api/placeholder/40/40"
-          alt="Contact avatar"
-        /> */}
         <div className="ml-4">
           <h2 className="font-semibold capitalize">{workerName}</h2>
           <p className="text-xs text-gray-500">Online</p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-blue-50">
         {loading ? (
           <p>Loading messages...</p>
         ) : (
@@ -91,24 +98,29 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
             <div
               key={msg._id}
               className={`flex ${
-                msg.senderId === userId ? "justify-end" : "justify-start"
+                msg.sender === userId ? "justify-start" : "justify-end"
               }`}
             >
               <div
                 className={`${
-                  msg.senderId === userId
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-300 text-black"
-                } rounded-xl p-3 max-w-xs shadow`}
+                  msg.sender === userId
+                    ? "bg-white text-gray-800 rounded-tr-xl  rounded-bl-lg rounded-br-lg lg:min-w-40"
+                    : "bg-blue-500 text-white  rounded-tl-lg rounded-br-lg rounded-b-lg lg:min-w-40"
+                } p-3 max-w-xs lg:max-w-md shadow-md`}
               >
                 <p className="text-sm">{msg.message}</p>
+                <p className="text-xs mt-1 opacity-75">
+                  {/* {new Date(msg.timestamp).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })} */}
+                </p>
               </div>
             </div>
           ))
         )}
       </div>
 
-      {/* Message input */}
       <form
         onSubmit={handleSendMessage}
         className="p-4 bg-white border-t border-gray-200"
@@ -133,7 +145,7 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
           <button
             type="submit"
             className="bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600"
-            disabled={!message.trim()} // Disable button if message is empty
+            disabled={!message.trim()}
           >
             <SendIcon fontSize="small" />
           </button>

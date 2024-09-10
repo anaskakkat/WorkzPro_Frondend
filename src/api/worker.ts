@@ -3,6 +3,7 @@ import workerRoutes from "../endpoints/workerEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 import { IWorkerRegistration, LeaveType, ServiceData } from "../types/IWorker";
 import { IGoogleUser } from "../types/user";
+import { Message } from "../types/Chats";
 
 export const registerWorker = async (worker: IWorkerRegistration) => {
   try {
@@ -257,6 +258,8 @@ export const createChat = async (
 
 export const fetchChats = async (Id: string) => {
   try {
+    console.log('workerId-----',Id);
+    
     const response = await Api.get(workerRoutes.fetchChats(Id));
     return response.data;
   } catch (error) {
@@ -271,11 +274,11 @@ export const fetchMessages = async (chatId: string) => {
     throw error;
   }
 };
-// export const sendMessage = async (message: Message) => {
-//   try {
-//     const response = await Api.post(workerRoutes.sendMessage, message);
-//     return response.data;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+export const sendMessage = async (message: Message) => {
+  try {
+    const response = await Api.post(workerRoutes.sendMessage, message);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

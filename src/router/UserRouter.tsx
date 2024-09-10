@@ -18,13 +18,13 @@ import ErrorComponent from "../components/ErrorComponent";
 import Chats from "../pages/User/Chats";
 import BookingsPage from "../pages/User/BookingsPage";
 import DashboarLayout from "../pages/User/DashboarLayout";
+import { SocketProvider } from "../context/socketContext";
 
 export const UserRouter = () => {
   return (
     <InterceptorSetup>
       <Routes>
         {/* Public routes */}
-
         <Route element={<PublicRoute />}>
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/otp" element={<Otp />} />
@@ -38,22 +38,24 @@ export const UserRouter = () => {
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/services" element={<Service />} />
-            <Route path="/workersNearby" element={<WorkersNearby />} />
-            <Route
-              path="/WorkerDetails/:workerId"
-              element={<DeatilsWorker />}
-            />
-          </Route>
-          <Route
-            path="/workerCheckout/:workerId"
-            element={<WorkerCheckout />}
-          />
-          <Route path="/success/:id" element={<BookingSuccess />} />
-          <Route element={<DashboarLayout />}>
-            <Route path="/profile" element={<UserProfile />} />
-            <Route path="/bookings" element={<BookingsPage />} />
-            <Route path="/chats" element={<Chats />} />
+            <Route element={<SocketProvider />}>
+              <Route path="/services" element={<Service />} />
+              <Route path="/workersNearby" element={<WorkersNearby />} />
+              <Route
+                path="/WorkerDetails/:workerId"
+                element={<DeatilsWorker />}
+              />
+              <Route
+                path="/workerCheckout/:workerId"
+                element={<WorkerCheckout />}
+              />
+              <Route path="/success/:id" element={<BookingSuccess />} />
+              <Route element={<DashboarLayout />}>
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/bookings" element={<BookingsPage />} />
+                <Route path="/chats" element={<Chats />} />
+              </Route>
+            </Route>
           </Route>
 
           <Route path="*" element={<ErrorComponent />} />
