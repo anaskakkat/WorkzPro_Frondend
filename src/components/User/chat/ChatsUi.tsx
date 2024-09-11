@@ -6,10 +6,9 @@ import { Chat } from "../../../types/Chats";
 
 // Define types for chat data
 
-
-const ChatsUi: React.FC<{ onSelectChat: (_id: string) => void }> = ({
-  onSelectChat,
-}) => {
+const ChatsUi: React.FC<{
+  onSelectChat: (_id: string, id: string) => void;
+}> = ({ onSelectChat }) => {
   const location = useLocation();
   const workerId = location.state?.workerId as { name: string; _id: string };
   const userId = useUserId();
@@ -43,9 +42,11 @@ const ChatsUi: React.FC<{ onSelectChat: (_id: string) => void }> = ({
     }
   };
 
-  const handleSelectChat = (chatId: string) => {
+  const handleSelectChat = (chatId: string, id: string) => {
+    // console.log("id-------",chatId);
+
     setActiveChatId(chatId);
-    onSelectChat(chatId);
+    onSelectChat(chatId, id);
   };
 
   return (
@@ -65,7 +66,7 @@ const ChatsUi: React.FC<{ onSelectChat: (_id: string) => void }> = ({
               className={`p-4 cursor-pointer flex items-center ${
                 activeChatId === chat._id ? "bg-blue-100" : "hover:bg-blue-100"
               }`}
-              onClick={() => handleSelectChat(chat._id)}
+              onClick={() => handleSelectChat(chat._id, chat.participants[0]!)}
             >
               <img
                 className="w-12 h-12 rounded-full"

@@ -30,7 +30,7 @@ const workerRoutes = {
   createChat: `worker/chat`,
   fetchChats: (workerId: string) => `worker/chat/${workerId}`,
   fetchMessages: (chatId: string) => `worker/chat/messages/${chatId}`,
-  sendMessage: `user/chat/addMessage`,
+  sendMessage: `worker/chat/addMessage`,
 };
 
 export default workerRoutes;

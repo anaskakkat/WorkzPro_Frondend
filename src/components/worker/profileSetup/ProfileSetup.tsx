@@ -103,7 +103,6 @@ const ProfileSetup: React.FC = () => {
     }
   };
 
-
   const handleProfilePicChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -313,11 +312,12 @@ const ProfileSetup: React.FC = () => {
                     required
                     input={<OutlinedInput label="Service" />}
                   >
-                    {serviceList.map((service: any, index) => (
-                      <MenuItem key={index} value={service._id}>
-                        {service.name as string}
-                      </MenuItem>
-                    ))}
+                    {serviceList ||
+                      [].map((service: any, index) => (
+                        <MenuItem key={index} value={service._id}>
+                          {service.name as string}
+                        </MenuItem>
+                      ))}
                   </CustomSelect>
                 </FormControl>
 

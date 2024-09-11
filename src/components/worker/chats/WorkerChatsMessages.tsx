@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
@@ -6,7 +6,7 @@ import { fetchMessages, sendMessage } from "../../../api/worker";
 import { Message } from "../../User/chat/MessageUi";
 import { useWorkerId } from "../../../redux/hooks/userSelectors";
 import toast from "react-hot-toast";
-
+import { SocketContext } from "../../../context/socketContext";
 interface WorkerChatsMessagesProps {
   chatId: string;
   userName: string;
@@ -16,12 +16,15 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
   chatId,
   userName,
 }) => {
+  const socketContext = useContext(SocketContext);
+  const socket = socketContext?.socket;
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const workerId = useWorkerId();
   const [message, setMessage] = useState("");
   const [receiverId, setReceiverId] = useState<string | null>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
+
   const handleSendMessage = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (!message.trim()) {
@@ -35,8 +38,14 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
         receiver: receiverId,
         message,
       };
-      await sendMessage(newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]); // Update messages with the new message
+
+      // Emit the message via socket for real-time updates
+
+      const response = await sendMessage(newMessage);
+      // console.log("response--", response);
+
+      socket?.emit("sendMessage", response);
+      setMessages((prevMessages) => [...prevMessages, response]);
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -62,7 +71,19 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
     }
   };
 
-  // Scroll to the last message when messages update
+  // Listen for new messages from the socket
+  useEffect(() => {
+    socket?.on("newMessage", (newMessage: Message) => {
+      console.log("new message worker side---", newMessage);
+
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+
+    
+
+  }, []);
+
+  // // Scroll to the last message when messages update
   useEffect(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
@@ -89,20 +110,19 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
             <div
               key={msg._id}
               className={`flex ${
-                msg.sender === workerId ? "justify-start" : "justify-end"
+                msg.sender === workerId ? "justify-end" : "justify-start"
               }`}
             >
               <div
                 className={`${
                   msg.sender === workerId
-                    ? "bg-white text-gray-800 rounded-tr-lg rounded-bl-lg rounded-br-lg lg:min-w-40"
-                    : "bg-blue-500 text-white rounded-tl-lg rounded-b-lg lg:min-w-40"
+                    ? "bg-blue-500 text-white rounded-tl-lg rounded-b-lg lg:min-w-40"
+                    : "bg-white text-gray-800 rounded-tr-lg rounded-bl-lg rounded-br-lg lg:min-w-40"
                 } p-3 max-w-xs shadow`}
               >
                 <p className="text-sm">{msg.message}</p>
               </div>
 
-              {/* Set the last message reference */}
               {index === messages.length - 1 && <div ref={lastMessageRef} />}
             </div>
           ))

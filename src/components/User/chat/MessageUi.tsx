@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
@@ -8,6 +8,7 @@ import { SocketContext } from "../../../context/socketContext";
 
 interface MessageUiProps {
   chatId: string;
+  senderId:string
 }
 
 export interface Message {
@@ -18,7 +19,7 @@ export interface Message {
   message: string;
 }
 
-const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
+const MessageUi: React.FC<MessageUiProps> = ({ chatId,senderId}) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,29 +28,69 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
   const [workerName, setWorkerName] = useState("");
   const socketContext = useContext(SocketContext);
   const socket = socketContext?.socket;
-  useEffect(() => {
-    if (socket) {
-      socket.on("messageReceived", (newMessage: Message) => {
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
-      });
 
-      return () => {
-        socket.off("messageReceived");
-      };
-    }
-  }, [socket]);
+  // Ref to track the last message
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  console.log(chatId,"kjkjkjkj");
+  
+  // useEffect(() => {
+  //   socket?.on("newMessage", (newMessage: Message) => {
+  //     console.log(
+  //       senderId,newMessage.receiver,"jhjhsjhsjshjshsjhs"
+  //       )
+  //     console.log("new message user",chatId,userId, "side---", newMessage);
+  //     // const message=newMessage.message
+     
+  //     if(chatId==newMessage.chatId){
+        
+  //       console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+  //       setMessages((prevMessages) => [...prevMessages,newMessage]);
+       
+  //     } 
+    
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    const handleNewMessage = (newMessage: Message) => {
+      console.log(senderId, newMessage.receiver, "Checking newMessage receiver");
+      console.log("New message received on user side", chatId, userId, newMessage);
+  
+      // Ensure the message is for the current chatId
+      if (chatId === newMessage.chatId) {
+        console.log("Message belongs to the current chat");
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
+    };
+  
+    // Attach the listener for the newMessage event
+    socket?.on("newMessage", handleNewMessage);
+  
+    // Cleanup listener when chatId changes or component unmounts
+    return () => {
+      socket?.off("newMessage", handleNewMessage);
+    };
+  }, [chatId, socket]); // Ensure chatId and socket are in the dependency array
+  
 
   useEffect(() => {
     if (chatId) {
+      console.log(chatId,"fetching time anase")
       handleFetchMessages(chatId);
     }
   }, [chatId]);
+
+  // Scroll to bottom when new messages arrive
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const handleFetchMessages = async (chatId: string) => {
     setLoading(true);
     try {
       const response = await fetchMessages(chatId);
-      // console.log("rsrp-------", response);
       setWorkerName(response.recieverName);
       setMessages(response.messages);
       setReceiverId(response.participants[1]);
@@ -72,14 +113,14 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
         receiver: receiverId,
         message,
       };
-      // const response =
-      await sendMessage(newMessage);
+      const response = await sendMessage(newMessage);
+      setMessages((prevMessages) => [...prevMessages, response]);
+      socket?.emit("sendMessage", response);
       setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
-  // console.log("messages------", messages);
 
   return (
     <div className="flex-1 flex flex-col">
@@ -90,7 +131,11 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-blue-50">
+      {/* Adjusted message container */}
+      <div
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg-blue-50 custom-scroll"
+        style={{ height: "calc(100vh - 200px)", overflow: "auto" }}
+      >
         {loading ? (
           <p>Loading messages...</p>
         ) : (
@@ -98,27 +143,22 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
             <div
               key={msg._id}
               className={`flex ${
-                msg.sender === userId ? "justify-start" : "justify-end"
+                msg.sender === userId ? "justify-end" : "justify-start"
               }`}
             >
               <div
                 className={`${
                   msg.sender === userId
-                    ? "bg-white text-gray-800 rounded-tr-xl  rounded-bl-lg rounded-br-lg lg:min-w-40"
-                    : "bg-blue-500 text-white  rounded-tl-lg rounded-br-lg rounded-b-lg lg:min-w-40"
+                    ? "bg-blue-500 text-white rounded-tl-lg rounded-br-lg rounded-b-lg lg:min-w-40"
+                    : "bg-white text-gray-800 rounded-tr-xl rounded-bl-lg rounded-br-lg lg:min-w-40"
                 } p-3 max-w-xs lg:max-w-md shadow-md`}
               >
                 <p className="text-sm">{msg.message}</p>
-                <p className="text-xs mt-1 opacity-75">
-                  {/* {new Date(msg.timestamp).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })} */}
-                </p>
               </div>
             </div>
           ))
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       <form

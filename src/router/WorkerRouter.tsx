@@ -18,6 +18,7 @@ import ErrorComponent from "../components/ErrorComponent";
 import MapDirection from "../components/worker/bookings/MapDirection";
 import WorkerProfile from "../pages/Worker/WorkerProfile";
 import Chats from "../pages/Worker/Chats";
+import { SocketProvider } from "../context/socketContext";
 const WorkerRouter = () => {
   return (
     <WorkerInterceptor>
@@ -27,23 +28,25 @@ const WorkerRouter = () => {
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/otp" element={<OtpWorker />} />
         </Route>
-        <Route path="/" element={<WorkerLayout />}>
-          {/* Public routes */}
-          <Route element={<ProfileVerify />}>
-            <Route path="profile_setup" element={<ProfileSetupPage />} />
-          </Route>
-          {/* Protected routes */}
-          <Route element={<WorkerProtectedRoute />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="bookings" element={<Bookings />} />
-            <Route path="slots" element={<Slots />} />
-            <Route path="payments" element={<Payments />} />
-            <Route path="reviews" element={<Reviews />} />
-            <Route path="direction" element={<MapDirection />} />
-            <Route path="profile" element={<WorkerProfile />} />
-            <Route path="chats" element={<Chats />} />
+        <Route element={<SocketProvider />}>
+          <Route path="/" element={<WorkerLayout />}>
+            {/* Public routes */}
+            <Route element={<ProfileVerify />}>
+              <Route path="profile_setup" element={<ProfileSetupPage />} />
+            </Route>
+            {/* Protected routes */}
+            <Route element={<WorkerProtectedRoute />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="bookings" element={<Bookings />} />
+              <Route path="slots" element={<Slots />} />
+              <Route path="payments" element={<Payments />} />
+              <Route path="reviews" element={<Reviews />} />
+              <Route path="direction" element={<MapDirection />} />
+              <Route path="profile" element={<WorkerProfile />} />
+              <Route path="chats" element={<Chats />} />
 
-            <Route path="*" element={<ErrorComponent />} />
+              <Route path="*" element={<ErrorComponent />} />
+            </Route>
           </Route>
         </Route>
       </Routes>

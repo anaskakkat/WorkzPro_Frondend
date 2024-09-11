@@ -3,6 +3,7 @@ export interface Chat {
   recieverName: string;
   messages: Message[];
   createdAt: string;
+  participants:string[]
 }
 
 export interface Message {
@@ -10,4 +11,5 @@ export interface Message {
   chatId: string;
   sender: string;
   receiver: string | null;
+
 }
