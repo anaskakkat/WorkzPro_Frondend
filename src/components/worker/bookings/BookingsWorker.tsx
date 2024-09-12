@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 import Person4Icon from "@mui/icons-material/Person4";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -13,26 +13,29 @@ import { Pagination } from "@mui/material";
 import { Booking } from "../../../types/Booking";
 import { useWorkerId } from "../../../redux/hooks/userSelectors";
 import {
+  completeBooking,
   confirmBooking,
   getWorkerBooking,
   rejectBooking,
 } from "../../../api/worker";
-import { Button, Popover } from "flowbite-react";
 import MapIcon from "@mui/icons-material/Map";
 import { useNavigate } from "react-router-dom";
-
+import toast from "react-hot-toast";
+import PopoverConfirmation from "./PopoverConfirmation";
+import PaymentIcon from "@mui/icons-material/Payment";
 const BookingsWorker = () => {
   const navigate = useNavigate();
   const [openBookingId, setOpenBookingId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const workerId = useWorkerId();
   const bookingsPerPage = 3;
-  const [bookings, setbBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(
     null
   );
-  const [isPopoverVisible, setIsPopoverVisible] = useState(false);
-  const [isPopoverVisible2, setIsPopoverVisible2] = useState(false);
+  const [confirmPopoverVisible, setConfirmPopoverVisible] = useState(false);
+  const [rejectPopoverVisible, setRejectPopoverVisible] = useState(false);
+  const [completePopoverVisible, setCompletePopoverVisible] = useState(false);
 
   useEffect(() => {
     fetchBookings();
@@ -42,10 +45,10 @@ const BookingsWorker = () => {
     try {
       const response = await getWorkerBooking(workerId);
       if (response) {
-        setbBookings(response);
+        setBookings(response);
       }
     } catch (error) {
-      // Handle error
+      console.error(error);
     }
   };
 
@@ -56,7 +59,7 @@ const BookingsWorker = () => {
   };
 
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number
   ) => {
     setPage(value);
@@ -72,12 +75,10 @@ const BookingsWorker = () => {
       try {
         console.log(`Booking ${selectedBookingId} confirmed`);
         const response = await confirmBooking(selectedBookingId);
-        // console.log("response----", response);
         if (response && response.status === 200) {
           setSelectedBookingId(null);
-          setIsPopoverVisible(false);
+          setConfirmPopoverVisible(false);
           fetchBookings();
-          // console.log("finished");
         }
       } catch (error) {
         console.error("Error confirming booking", error);
@@ -92,7 +93,7 @@ const BookingsWorker = () => {
         console.log("response----", response);
         if (response && response.status === 200) {
           setSelectedBookingId(null);
-          setIsPopoverVisible2(false);
+          setRejectPopoverVisible(false);
           fetchBookings();
           // console.log("finished");
         }
@@ -101,13 +102,25 @@ const BookingsWorker = () => {
       }
     }
   };
-
-  const handlePopoverClose = () => {
-    setSelectedBookingId(null);
-    setIsPopoverVisible(false);
-    setIsPopoverVisible2(false);
+  const handleComplete = async () => {
+    if (selectedBookingId) {
+      try {
+        console.log(`Booking ${selectedBookingId} completed`);
+        const response = await completeBooking(selectedBookingId);
+        if (response && response.status === 200) {
+          toast.success(response.data);
+          setSelectedBookingId(null);
+          setCompletePopoverVisible(false);
+          fetchBookings();
+        }
+      } catch (error) {
+        console.error("Error completing booking", error);
+      }
+    }
   };
-
+  const handlePayNow = (bookingId: string) => {
+    console.log(`Initiating payment for booking ${bookingId}`);
+  };
   return (
     <div className="mx-4 md:mx-8 lg:mx-24">
       <div className="container  font-semibold text-custom_navyBlue">
@@ -124,7 +137,7 @@ const BookingsWorker = () => {
               <div className="flex flex-col gap-1 capitalize text-sm font-medium  lg:min-w-48">
                 <div className="flex items-center ">
                   <Person4Icon fontSize="inherit" className="mr-2" />
-                  {booking.workerId.name}
+                  {booking.userId.userName}
                 </div>
                 <div className="flex items-center">
                   <MiscellaneousServicesIcon
@@ -133,9 +146,13 @@ const BookingsWorker = () => {
                   />
                   {booking.workerId.service.name}
                 </div>
-                <div className="flex items-center max-w-48 ">
+                <div className="flex  items-center max-w-48 ">
                   <AssignmentIcon fontSize="inherit" className="mr-2" />
                   <span className="truncate">{booking.service.service}</span>
+                </div>
+                <div className="flex text-xs   items-center max-w-48 ">
+                <PaymentIcon fontSize="inherit" className="mr-2" />
+                  <span className="truncate text-yellow-700">{booking?.paymentStatus}</span>
                 </div>
                 <div className="flex items-center max-w-44 my-1"></div>
               </div>
@@ -153,7 +170,7 @@ const BookingsWorker = () => {
                 <kbd
                   className={`px-4 mb-1 w-full text-center py-1 text-[13px] font-semibold rounded-lg self-start md:self-center ${
                     booking.status === "confirmed"
-                      ? "text-green-900 bg-green-100 border border-green-400"
+                      ? "text-green-900 bg-green-100 border border-green-600"
                       : booking.status === "pending"
                       ? "text-orange-800 bg-orange-100 border border-orange-400"
                       : booking.status === "completed"
@@ -166,90 +183,88 @@ const BookingsWorker = () => {
                   {booking.status}
                 </kbd>
 
-                <Popover
-                  open={isPopoverVisible && selectedBookingId === booking._id}
-                  content={
-                    <div className="w-64 text-sm">
-                      <div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          Are you Sure?
-                        </h3>
-                      </div>
-                      <div className="px-3 py-2">
-                        <p className="text-gray-500 dark:text-gray-400">
-                          Confirm this Booking...
-                        </p>
-                        <div className="mt-4 flex justify-end space-x-3">
-                          <Button onClick={handlePopoverClose}>No</Button>
-                          <Button onClick={handleConfirm}>Yes</Button>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                  placement="bottom"
-                  trigger="click"
-                >
-                  {booking.status === "pending" ? (
+                {booking.status === "pending" && (
+                  <>
+                    <PopoverConfirmation
+                      isOpen={
+                        confirmPopoverVisible &&
+                        selectedBookingId === booking._id
+                      }
+                      onClose={() => setConfirmPopoverVisible(false)}
+                      onConfirm={handleConfirm}
+                      title="Are you Sure?"
+                      message="Confirm this Booking..."
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedBookingId(booking._id!);
+                          setConfirmPopoverVisible(true);
+                        }}
+                        className="capitalize text-blue-600 hover:text-white border hover:bg-blue-500 border-blue-600 rounded-lg self-start md:self-center w-full text-center py-1"
+                      >
+                        Accept
+                      </button>
+                    </PopoverConfirmation>
+
+                    <PopoverConfirmation
+                      isOpen={
+                        rejectPopoverVisible &&
+                        selectedBookingId === booking._id
+                      }
+                      onClose={() => setRejectPopoverVisible(false)}
+                      onConfirm={handleReject}
+                      title="Are you Sure?"
+                      message="Reject this Booking..."
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedBookingId(booking._id!);
+                          setRejectPopoverVisible(true);
+                        }}
+                        className="capitalize text-red-500 hover:text-white border hover:bg-red-500 border-red-600 rounded-lg self-start md:self-center w-full text-center py-1"
+                      >
+                        Reject
+                      </button>
+                    </PopoverConfirmation>
+                  </>
+                )}
+
+                {booking.status === "confirmed" && (
+                  <PopoverConfirmation
+                    isOpen={
+                      completePopoverVisible &&
+                      selectedBookingId === booking._id
+                    }
+                    onClose={() => setCompletePopoverVisible(false)}
+                    onConfirm={handleComplete}
+                    title="Confirm Work Completion"
+                    message="Are you sure the work is completed?"
+                  >
                     <button
-                      type="button"
                       onClick={() => {
                         setSelectedBookingId(booking._id!);
-                        setIsPopoverVisible(true);
+                        setCompletePopoverVisible(true);
                       }}
-                      className="capitalize text-blue-600 hover:text-white border hover:bg-blue-500 border-blue-600 rounded-lg self-start md:self-center w-full text-center py-1"
+                      className="border py-1 px-2 rounded-lg text-xs border-custom_navyBlue hover:bg-blue-100"
                     >
-                      Accept
+                      Work Completed
                     </button>
-                  ) : (<></>
-                    // <button
-                    //   onClick={() =>
-                    //     navigate("/worker/chats", {
-                    //       state: { userId: booking.userId },
-                    //     })
-                    //   }
-                    // >
-                    //   Chat
-                    // </button>
-                  )}
-                </Popover>
-                <Popover
-                  open={isPopoverVisible2 && selectedBookingId === booking._id}
-                  content={
-                    <div className="w-64 text-sm">
-                      <div className="border-b border-gray-200 bg-gray-100 px-3 py-2 dark:border-gray-600 dark:bg-gray-700">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          Are you Sure?
-                        </h3>
-                      </div>
-                      <div className="px-3 py-2">
-                        <p className="text-gray-500 dark:text-gray-400">
-                          Reject this Booking...
-                        </p>
-                        <div className="mt-4 flex justify-end space-x-3">
-                          <Button onClick={handlePopoverClose}>No</Button>
-                          <Button onClick={handleReject}>Yes</Button>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                  placement="bottom"
-                  trigger="click"
-                >
-                  {booking.status === "pending" ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedBookingId(booking._id!);
-                        setIsPopoverVisible2(true);
-                      }}
-                      className="capitalize text-red-500 hover:text-white border hover:bg-red-500 border-red-600 rounded-lg self-start md:self-center w-full text-center py-1"
-                    >
-                      Reject
-                    </button>
-                  ) : (
-                    <></>
-                  )}
-                </Popover>
+                  </PopoverConfirmation>
+                )}
+                {booking.status === "completed" && (
+                  <button
+                    onClick={() => handlePayNow(booking._id!)}
+                    className="text-xs capitalize text-white  border bg-black hover:bg-white hover:border-blue-700 hover:text-black border-blue-600-600 rounded-lg self-start md:self-center w-full text-center py-1"
+                  >
+                    <span className="text-blue-500 ">
+                      
+                      <PaymentIcon fontSize="small"/>{" "}
+                    </span>{" "}
+                    Pay Now
+                  </button>
+                )}
               </div>
             </div>
 
@@ -319,7 +334,7 @@ const BookingsWorker = () => {
           </div>
         ))}
       </div>
-      {currentBookings.length > 2 ? (
+      {bookings.length > bookingsPerPage && (
         <div className="flex bottom-0 justify-center my-4">
           <Pagination
             count={totalPages}
@@ -328,9 +343,8 @@ const BookingsWorker = () => {
             color="primary"
           />
         </div>
-      ) : (
-        ""
       )}
+
       <div className="bg- h-1 flex-row flex"></div>
     </div>
   );

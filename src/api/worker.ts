@@ -221,6 +221,22 @@ export const rejectBooking = async (workerId: string) => {
     handleApiError(error);
   }
 };
+
+// completeBooking--------
+
+export const completeBooking = async (workerId: string) => {
+  try {
+    const response = await Api.patch(
+      workerRoutes.completeBooking(workerId)
+    );
+    return response;
+  } catch (error) {
+    handleApiError(error);
+  }
+};
+
+
+
 export const updateWorkerProfile = async (
   workerId: string,
   formDAta: FormData
@@ -235,6 +251,12 @@ export const updateWorkerProfile = async (
     handleApiError(error);
   }
 };
+
+
+
+
+
+
 
 // chat create
 export const createChat = async (
@@ -253,6 +275,14 @@ export const createChat = async (
     throw error;
   }
 };
+
+
+
+
+
+
+
+
 
 // worker  chat feth
 

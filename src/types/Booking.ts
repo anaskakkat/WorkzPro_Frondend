@@ -31,10 +31,7 @@ export interface Booking {
     amount: number;
     slot: number;
   };
-  paymentDetails: {
-    status: "pending" | "success";
-    date: Date | null;
-  };
+  paymentStatus: 'pending' | 'success';
   address: {
     houseNumber: string;
     street: string;
