@@ -222,7 +222,7 @@ export const rejectBooking = async (workerId: string) => {
   }
 };
 
-// completeBooking--------
+// completeBooking-----------------------------------------------------------------------------------------
 
 export const completeBooking = async (workerId: string) => {
   try {
@@ -235,7 +235,7 @@ export const completeBooking = async (workerId: string) => {
   }
 };
 
-
+// updateWorkerProfile--------------------------------------------------------------------------------------------
 
 export const updateWorkerProfile = async (
   workerId: string,
@@ -258,7 +258,7 @@ export const updateWorkerProfile = async (
 
 
 
-// chat create
+// chat create---------------------------------------------------------------------------------
 export const createChat = async (
   name: string,
   userId: string,
@@ -284,7 +284,7 @@ export const createChat = async (
 
 
 
-// worker  chat feth
+// worker  chat feth---------------------------------------------------------------------------------
 
 export const fetchChats = async (Id: string) => {
   try {

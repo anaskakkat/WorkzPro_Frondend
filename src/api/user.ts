@@ -212,3 +212,14 @@ export const sendMessage = async (message: Message) => {
     throw error;
   }
 };
+// make payment-------------------------------------------------------------------------------------------------
+export const makePayment = async (bookingId: string) => {
+  try {
+    console.log("iddddddddddd---", bookingId);
+
+    const response = await Api.post(userRoutes.makePayment(bookingId));
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

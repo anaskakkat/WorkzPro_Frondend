@@ -22,7 +22,7 @@ import MapIcon from "@mui/icons-material/Map";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import PopoverConfirmation from "./PopoverConfirmation";
-import PaymentIcon from "@mui/icons-material/Payment";
+
 const BookingsWorker = () => {
   const navigate = useNavigate();
   const [openBookingId, setOpenBookingId] = useState<string | null>(null);
@@ -118,9 +118,7 @@ const BookingsWorker = () => {
       }
     }
   };
-  const handlePayNow = (bookingId: string) => {
-    console.log(`Initiating payment for booking ${bookingId}`);
-  };
+
   return (
     <div className="mx-4 md:mx-8 lg:mx-24">
       <div className="container  font-semibold text-custom_navyBlue">
@@ -150,10 +148,7 @@ const BookingsWorker = () => {
                   <AssignmentIcon fontSize="inherit" className="mr-2" />
                   <span className="truncate">{booking.service.service}</span>
                 </div>
-                <div className="flex text-xs   items-center max-w-48 ">
-                <PaymentIcon fontSize="inherit" className="mr-2" />
-                  <span className="truncate text-yellow-700">{booking?.paymentStatus}</span>
-                </div>
+               
                 <div className="flex items-center max-w-44 my-1"></div>
               </div>
               <div className="flex flex-col gap-1">
@@ -253,18 +248,7 @@ const BookingsWorker = () => {
                     </button>
                   </PopoverConfirmation>
                 )}
-                {booking.status === "completed" && (
-                  <button
-                    onClick={() => handlePayNow(booking._id!)}
-                    className="text-xs capitalize text-white  border bg-black hover:bg-white hover:border-blue-700 hover:text-black border-blue-600-600 rounded-lg self-start md:self-center w-full text-center py-1"
-                  >
-                    <span className="text-blue-500 ">
-                      
-                      <PaymentIcon fontSize="small"/>{" "}
-                    </span>{" "}
-                    Pay Now
-                  </button>
-                )}
+               
               </div>
             </div>
 

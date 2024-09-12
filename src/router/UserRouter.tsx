@@ -19,6 +19,7 @@ import Chats from "../pages/User/Chats";
 import BookingsPage from "../pages/User/BookingsPage";
 import DashboarLayout from "../pages/User/DashboarLayout";
 import { SocketProvider } from "../context/socketContext";
+import PaymentSuccess from "../components/worker/bookings/PaymentSuccess";
 
 export const UserRouter = () => {
   return (
@@ -50,6 +51,7 @@ export const UserRouter = () => {
                 element={<WorkerCheckout />}
               />
               <Route path="/success/:id" element={<BookingSuccess />} />
+              <Route path="/success" element={<PaymentSuccess />} />
               <Route element={<DashboarLayout />}>
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/bookings" element={<BookingsPage />} />

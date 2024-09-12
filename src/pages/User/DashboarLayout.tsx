@@ -5,7 +5,7 @@ const DashboardLayout = () => {
   return (
     <div className="flex flex-col md:flex-row ">
       {/* Sidebar */}
-      <div className="bg-gray-800 text-white w-auto md:w-1/4 lg:w-1/5 p-4">
+      <div className="bg-gray-800 text-white w-auto md:w-1/4 lg:w-1/5 p-4 ">
         <ul className="space-y-2">
           <li>
             <NavLink
@@ -50,7 +50,7 @@ const DashboardLayout = () => {
       </div>
 
       {/* Main Content */}
-      <div className="w-full  md:w-3/4 lg:w-4/5 bg-gray-100 ">
+      <div className="w-full  md:w-3/4 lg:w-4/5 bg-gray-100 h-full ">
         <Outlet />
       </div>
     </div>

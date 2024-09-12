@@ -5,7 +5,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { FaAddressBook } from "react-icons/fa";
 import { useUserId } from "../../../redux/hooks/userSelectors";
-import { getBookingsUser } from "../../../api/user";
+import { getBookingsUser, makePayment } from "../../../api/user";
 import { Booking } from "../../../types/Booking";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DetailsIcon from "@mui/icons-material/Details";
@@ -15,7 +15,10 @@ import moment from "moment";
 import { Pagination } from "@mui/material";
 import Loader from "../../loader/Loader";
 import { useNavigate } from "react-router-dom";
-
+import PaymentIcon from "@mui/icons-material/Payment";
+import { loadStripe } from "@stripe/stripe-js";
+import ChatIcon from "@mui/icons-material/Chat";
+import { STRIPE_PUBLISHABLE_KEY } from "../../../constants/constant_env";
 const BookingsUser = () => {
   const navigate = useNavigate();
   const userId = useUserId();
@@ -70,11 +73,28 @@ const BookingsUser = () => {
     setOpenBookingId(null);
   };
 
+  const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
+  const handlePayNow = async (bookingId: string) => {
+    console.log(`Initiating payment for booking ${bookingId}`);
+    try {
+      const response = await makePayment(bookingId);
+      console.log("Payment response:", response);
+      let URL = response.url;
+      const stripe = await stripePromise;
+      if (stripe) {
+        window.location.href = URL;
+      }
+      await fetchBookings();
+    } catch (error) {
+      console.error("Payment error:", error);
+    }
+  };
+
   if (loading) {
     return <Loader />;
   }
   return (
-    <div className="mx-4 md:mx-8 lg:mx-20 overflow-hidden h-[calc(100vh-4rem)]">
+    <div className="mx-4 md:mx-8 lg:mx-20 overflow-hidden ">
       <div className="container mt-2 text font-semibold text-custom_navyBlue">
         My Bookings
       </div>
@@ -108,6 +128,12 @@ const BookingsUser = () => {
                     <AssignmentIcon fontSize="inherit" className="mr-2" />
                     <span className="truncate">{booking.service.service}</span>
                   </div>
+                  <div className="flex text-xs   items-center max-w-48 ">
+                    <PaymentIcon fontSize="inherit" className="mr-2" />
+                    <span className="truncate text-yellow-700">
+                      {booking?.paymentStatus}
+                    </span>
+                  </div>
                 </div>
                 <div className="flex flex-col gap-1 font-medium">
                   <kbd className="px-4 md:px-8 py-1 text-gray-800 bg-gray-100 border border-gray-200 rounded-lg flex items-center">
@@ -119,19 +145,34 @@ const BookingsUser = () => {
                     {booking.slots}
                   </div>
                 </div>
-                <div className="flex flex-col">
-                  <kbd className="px-4 h-fit py-2 text-sm font-semibold text-blue-900 bg-orange-200 border border-orange-400 rounded-lg self-start md:self-center">
+                <div className="flex flex-col gap-1">
+                  <kbd className="px-3 h-fit py-1 text-xs font-medium text-black bg-orange-200 border border-orange-600 rounded-lg self-start md:self-center">
                     {booking.status}
                   </kbd>
                   <button
+                    className="text-xs flex justify-center gap-2 capitalize text-white  border bg-blue-400 hover:bg-white hover:border-blue-700 hover:text-black border-blue-600-600 rounded-lg self-start md:self-center w-full text-center py-1"
                     onClick={() =>
                       navigate("/chats", {
                         state: { workerId: booking.workerId },
                       })
                     }
                   >
+                    <span>
+                      <ChatIcon fontSize="inherit" />{" "}
+                    </span>
                     Chat
                   </button>
+                  {booking.status === "completed" && (
+                    <button
+                      onClick={() => handlePayNow(booking._id!)}
+                      className="text-xs capitalize text-white  border bg-black hover:bg-white hover:border-blue-700 hover:text-black border-blue-600-600 rounded-lg self-start md:self-center w-full text-center py-1"
+                    >
+                      <span className="text-blue-500 ">
+                        <PaymentIcon fontSize="small" />{" "}
+                      </span>{" "}
+                      Pay Now
+                    </button>
+                  )}
                 </div>
               </div>
 

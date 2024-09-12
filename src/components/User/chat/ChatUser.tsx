@@ -1,21 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ChatsUi from "./ChatsUi";
 import MessageUi from "./MessageUi";
 
 const ChatUser = () => {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  
-  const handleChatSelection = (chatId: string,id:string) => {
+
+  const handleChatSelection = (chatId: string) => {
     setSelectedChatId(chatId);
-    setSelectedUserId(id)
   };
 
-
-  useEffect(()=>{
-        
-       console.log("hiiiiiiii")
-  },[selectedChatId])
 
   return (
     <div className="h-[calc(100vh-4rem)] flex bg-gray-100">
@@ -25,7 +18,10 @@ const ChatUser = () => {
 
         {/* Chat area: pass the selectedChatId to MessageUi */}
         {selectedChatId ? (
-          <MessageUi chatId={selectedChatId} senderId={selectedUserId as string} />
+          <MessageUi
+            chatId={selectedChatId}
+           
+          />
         ) : (
           <div className="flex-1 flex justify-center items-center">
             <p>Select a chat to start messaging</p>

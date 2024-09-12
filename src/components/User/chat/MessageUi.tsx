@@ -8,7 +8,6 @@ import { SocketContext } from "../../../context/socketContext";
 
 interface MessageUiProps {
   chatId: string;
-  senderId:string
 }
 
 export interface Message {
@@ -19,7 +18,7 @@ export interface Message {
   message: string;
 }
 
-const MessageUi: React.FC<MessageUiProps> = ({ chatId,senderId}) => {
+const MessageUi: React.FC<MessageUiProps> = ({ chatId}) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -33,43 +32,26 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId,senderId}) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   console.log(chatId,"kjkjkjkj");
   
-  // useEffect(() => {
-  //   socket?.on("newMessage", (newMessage: Message) => {
-  //     console.log(
-  //       senderId,newMessage.receiver,"jhjhsjhsjshjshsjhs"
-  //       )
-  //     console.log("new message user",chatId,userId, "side---", newMessage);
-  //     // const message=newMessage.message
-     
-  //     if(chatId==newMessage.chatId){
-        
-  //       console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-  //       setMessages((prevMessages) => [...prevMessages,newMessage]);
-       
-  //     } 
-    
-  //   });
-  // }, []);
+
 
   useEffect(() => {
     const handleNewMessage = (newMessage: Message) => {
-      console.log(senderId, newMessage.receiver, "Checking newMessage receiver");
-      console.log("New message received on user side", chatId, userId, newMessage);
+      // console.log("New message received on user side", chatId, userId, newMessage);
   
       // Ensure the message is for the current chatId
-      if (chatId === newMessage.chatId) {
-        console.log("Message belongs to the current chat");
+      // if (chatId === newMessage.chatId) {
+        // console.log("Message belongs to the current chat");
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-      }
+      // }
     };
   
     // Attach the listener for the newMessage event
     socket?.on("newMessage", handleNewMessage);
   
     // Cleanup listener when chatId changes or component unmounts
-    return () => {
-      socket?.off("newMessage", handleNewMessage);
-    };
+    // return () => {
+    //   socket?.off("newMessage", handleNewMessage);
+    // };
   }, [chatId, socket]); // Ensure chatId and socket are in the dependency array
   
 
@@ -127,7 +109,7 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId,senderId}) => {
       <div className="p-4 border-b border-gray-200 flex items-center bg-blue-50">
         <div className="ml-4">
           <h2 className="font-semibold capitalize">{workerName}</h2>
-          <p className="text-xs text-gray-500">Online</p>
+          {/* <p className="text-xs text-gray-500">Online</p> */}
         </div>
       </div>
 
