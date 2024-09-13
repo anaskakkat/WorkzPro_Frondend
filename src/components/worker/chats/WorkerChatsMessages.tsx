@@ -75,12 +75,10 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
   useEffect(() => {
     socket?.on("newMessage", (newMessage: Message) => {
       console.log("new message worker side---", newMessage);
-
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      if (chatId === newMessage.chatId) {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+      }
     });
-
-    
-
   }, []);
 
   // // Scroll to the last message when messages update
@@ -135,9 +133,9 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
         className="p-4 bg-white border-t border-gray-200"
       >
         <div className="flex items-center">
-          <button type="button" className="text-gray-400 hover:text-gray-600">
+          {/* <button type="button" className="text-gray-400 hover:text-gray-600">
             <AttachFileIcon fontSize="small" />
-          </button>
+          </button> */}
           <input
             type="text"
             value={message}

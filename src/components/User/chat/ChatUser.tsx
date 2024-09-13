@@ -9,19 +9,15 @@ const ChatUser = () => {
     setSelectedChatId(chatId);
   };
 
-
   return (
-    <div className="h-[calc(100vh-4rem)] flex bg-gray-100">
-      <div className="flex w-full bg-white shadow-xl overflow-hidden">
+    <div className="h-[calc(100vh-4rem)] flex">
+      <div className="flex w-full  shadow-xl overflow-hidden">
         {/* Sidebar: pass the handler to ChatsUi */}
         <ChatsUi onSelectChat={handleChatSelection} />
 
         {/* Chat area: pass the selectedChatId to MessageUi */}
         {selectedChatId ? (
-          <MessageUi
-            chatId={selectedChatId}
-           
-          />
+          <MessageUi chatId={selectedChatId} />
         ) : (
           <div className="flex-1 flex justify-center items-center">
             <p>Select a chat to start messaging</p>

@@ -1,10 +1,14 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import { fetchMessages, sendMessage } from "../../../api/user";
 import { useUserId } from "../../../redux/hooks/userSelectors";
 import { SocketContext } from "../../../context/socketContext";
+import {
+  formatDateForChat,
+  formatTimeForChat,
+} from "../../../utils/chatHelperFunctions";
 
 interface MessageUiProps {
   chatId: string;
@@ -15,10 +19,12 @@ export interface Message {
   _id?: string;
   sender: string;
   receiver: string | null;
-  message: string;
+  message?: string;
+  image?: string;
+  timestamp?: string;
 }
 
-const MessageUi: React.FC<MessageUiProps> = ({ chatId}) => {
+const MessageUi: React.FC<MessageUiProps> = ({ chatId }) => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,42 +33,27 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId}) => {
   const [workerName, setWorkerName] = useState("");
   const socketContext = useContext(SocketContext);
   const socket = socketContext?.socket;
+  const [lastSeen, setLastSeen] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // Ref to track the last message
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  console.log(chatId,"kjkjkjkj");
-  
-
 
   useEffect(() => {
     const handleNewMessage = (newMessage: Message) => {
-      // console.log("New message received on user side", chatId, userId, newMessage);
-  
-      // Ensure the message is for the current chatId
-      // if (chatId === newMessage.chatId) {
-        // console.log("Message belongs to the current chat");
+      if (chatId === newMessage.chatId) {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-      // }
+      }
     };
-  
-    // Attach the listener for the newMessage event
     socket?.on("newMessage", handleNewMessage);
-  
-    // Cleanup listener when chatId changes or component unmounts
-    // return () => {
-    //   socket?.off("newMessage", handleNewMessage);
-    // };
-  }, [chatId, socket]); // Ensure chatId and socket are in the dependency array
-  
+  }, [chatId, socket]);
 
   useEffect(() => {
     if (chatId) {
-      console.log(chatId,"fetching time anase")
       handleFetchMessages(chatId);
     }
   }, [chatId]);
 
-  // Scroll to bottom when new messages arrive
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -73,9 +64,12 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId}) => {
     setLoading(true);
     try {
       const response = await fetchMessages(chatId);
+      console.log("resppp---", response);
+
       setWorkerName(response.recieverName);
       setMessages(response.messages);
       setReceiverId(response.participants[1]);
+      setLastSeen(response.lastSeen);
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
@@ -86,70 +80,150 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId}) => {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!message.trim()) return;
-
+    if (!message.trim() && !selectedFile) return;
+    const formData = new FormData();
+    formData.append("chatId", chatId);
+    formData.append("sender", userId);
+    formData.append("receiver", receiverId!);
+    if (message) formData.append("message", message);
+    if (selectedFile) formData.append("image", selectedFile);
     try {
-      const newMessage = {
-        chatId,
-        sender: userId,
-        receiver: receiverId,
-        message,
-      };
-      const response = await sendMessage(newMessage);
+      const response = await sendMessage(formData);
       setMessages((prevMessages) => [...prevMessages, response]);
       socket?.emit("sendMessage", response);
       setMessage("");
+      setSelectedFile(null);
     } catch (error) {
       console.error("Error sending message:", error);
     }
   };
 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
   return (
-    <div className="flex-1 flex flex-col">
-      <div className="p-4 border-b border-gray-200 flex items-center bg-blue-50">
+    <div className="flex-1 flex flex-col bg-gray-200">
+      <div className="p-4 border-b  flex items-center bg-gray-300">
+        {/* <img
+          className="w-10 rounded-full truncate"
+          src="/api/placeholder/30/30"
+          alt={workerName}
+        /> */}
         <div className="ml-4">
           <h2 className="font-semibold capitalize">{workerName}</h2>
-          {/* <p className="text-xs text-gray-500">Online</p> */}
+          {lastSeen && (
+            <p className="text-xs text-gray-500">
+              Last seen at {formatTimeForChat(lastSeen)}
+            </p>
+          )}
         </div>
       </div>
 
       {/* Adjusted message container */}
       <div
-        className="flex-1 overflow-y-auto p-4 space-y-4 bg-blue-50 custom-scroll"
-        style={{ height: "calc(100vh - 200px)", overflow: "auto" }}
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg- custom-scroll"
+        style={{
+          height: "calc(100vh - 200px)",
+          overflow: "auto ",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
       >
         {loading ? (
           <p>Loading messages...</p>
         ) : (
-          messages.map((msg) => (
-            <div
-              key={msg._id}
-              className={`flex ${
-                msg.sender === userId ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div
-                className={`${
-                  msg.sender === userId
-                    ? "bg-blue-500 text-white rounded-tl-lg rounded-br-lg rounded-b-lg lg:min-w-40"
-                    : "bg-white text-gray-800 rounded-tr-xl rounded-bl-lg rounded-br-lg lg:min-w-40"
-                } p-3 max-w-xs lg:max-w-md shadow-md`}
-              >
-                <p className="text-sm">{msg.message}</p>
-              </div>
-            </div>
-          ))
+          <>
+            {messages.map((msg, index) => {
+              const showDateHeader =
+                index === 0 ||
+                formatDateForChat(messages[index - 1].timestamp!) !==
+                  formatDateForChat(msg.timestamp!);
+              return (
+                <div key={msg._id}>
+                  {/* Date Header */}
+                  {showDateHeader && (
+                    <div className="text-center text-xs bg-gray-700 text-white my-2 rounded-lg p-2 w-fit mx-auto">
+                      <span> {formatDateForChat(msg.timestamp!)}</span>
+                    </div>
+                  )}
+
+                  {/* Message Bubble */}
+                  <div
+                    className={`flex ${
+                      msg.sender === userId ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`${
+                        msg.sender === userId
+                          ? "bg-blue-200 text-black rounded-tl-lg rounded-br-lg rounded-b-lg lg:min-w-40"
+                          : "bg-white text-gray-800 rounded-tr-xl rounded-bl-lg rounded-br-lg lg:min-w-40"
+                      } p-3 max-w-xs lg:max-w-md shadow-md`}
+                    >
+                      {msg.image ? (
+                        <img
+                          src={msg.image}
+                          alt="Sent image"
+                          className="max-w-40"
+                        />
+                      ) : (
+                        <p className="text-sm">{msg.message}</p>
+                      )}{" "}
+                      <p className="text-xs text-right text-gray-500">
+                        {formatTimeForChat(msg.timestamp!)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </>
         )}
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Image Preview Section */}
+      {selectedFile && (
+        <div className="flex items-center mt-2">
+          <img
+            src={URL.createObjectURL(selectedFile)}
+            alt="Selected"
+            className="w-16 h-16 object-cover rounded-lg mr-4"
+          />
+          <button
+            type="button"
+            onClick={() => setSelectedFile(null)} // Clear the selected file
+            className="text-red-500 text-sm hover:underline"
+          >
+            Remove
+          </button>
+        </div>
+      )}
+
       <form
         onSubmit={handleSendMessage}
-        className="p-4 bg-white border-t border-gray-200"
+        className="p-4  border border-gray-300"
       >
         <div className="flex items-center">
-          <button type="button" className="text-gray-400 hover:text-gray-600">
-            <AttachFileIcon fontSize="small" />
+          <input
+            type="file"
+            accept="image/*"
+            id="image-input"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <button
+            type="button"
+            className="text-gray-400 hover:text-gray-600"
+            onClick={() => document.getElementById("image-input")?.click()}
+          >
+            <span className="text-black">
+              {" "}
+              <AddPhotoAlternateIcon fontSize="small" />
+            </span>
           </button>
           <input
             type="text"
@@ -162,12 +236,16 @@ const MessageUi: React.FC<MessageUiProps> = ({ chatId}) => {
             type="button"
             className="text-gray-400 hover:text-gray-600 mr-2"
           >
-            <EmojiEmotionsIcon fontSize="small" />
+            <span className="text-yellow-400">
+              {" "}
+              <EmojiEmotionsIcon fontSize="small" />
+            </span>{" "}
           </button>
+
           <button
             type="submit"
             className="bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600"
-            disabled={!message.trim()}
+            disabled={!message.trim() && !selectedFile}
           >
             <SendIcon fontSize="small" />
           </button>

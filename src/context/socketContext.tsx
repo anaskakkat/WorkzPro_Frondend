@@ -30,7 +30,6 @@ export const SocketProvider: React.FC = () => {
 
       setSocket(socket);
 
-
       socket.on("connection", () => {
         console.log("Connected to socket server");
       });

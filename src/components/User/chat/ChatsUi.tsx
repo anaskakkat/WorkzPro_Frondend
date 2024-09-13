@@ -51,22 +51,22 @@ const ChatsUi: React.FC<{
   };
 
   return (
-    <div className="w-1/4 border-r border-gray-200 text-custom_navyBlue bg-blue-50 flex flex-col">
-      <div className="p-4 border-b border-gray-200">
+    <div className="w-1/4 border-r border-gray-200 text-custom_navyBlue bg-gray-100 flex flex-col">
+      <div className="p-4 border-b border-gray-200 bg-gray-300">
         {/* <img
           className="w-10 h-10 rounded-full"
           src="/api/placeholder/30/30"
           alt="User avatar"
         /> */}
-        <span className="text-custom_navyBlue font-semibold">Chats</span>
+        <span className="text-gray-9 font-semibold">Chats</span>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto ">
         {chats.length > 0 ? (
           chats.map((chat) => (
             <div
               key={chat._id}
-              className={`p-4 cursor-pointer flex items-center ${
-                activeChatId === chat._id ? "bg-gray-300" : "hover:bg-blue-100"
+              className={`p-4 cursor-pointer flex items-center  rounded m-1.5 ${
+                activeChatId === chat._id ? "bg-blue-100" : "hover:bg-blue-50"
               }`}
               onClick={() => handleSelectChat(chat._id)}
             >

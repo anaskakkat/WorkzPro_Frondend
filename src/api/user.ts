@@ -204,7 +204,7 @@ export const fetchMessages = async (chatId: string) => {
     throw error;
   }
 };
-export const sendMessage = async (message: Message) => {
+export const sendMessage = async (message: any) => { 
   try {
     const response = await Api.post(userRoutes.sendMessage, message);
     return response.data;
