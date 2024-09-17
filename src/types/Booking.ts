@@ -25,13 +25,18 @@ export interface Booking {
   description: string;
   bookingDate: string;
   slots: string;
+  review?: {
+    _id: string;
+    comment: string;
+    rating:number
+  };
   service: {
     _id?: string;
     service: string;
     amount: number;
     slot: number;
   };
-  paymentStatus: 'pending' | 'success';
+  paymentStatus: "pending" | "success";
   address: {
     houseNumber: string;
     street: string;

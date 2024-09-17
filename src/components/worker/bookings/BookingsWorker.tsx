@@ -148,7 +148,7 @@ const BookingsWorker = () => {
                   <AssignmentIcon fontSize="inherit" className="mr-2" />
                   <span className="truncate">{booking.service.service}</span>
                 </div>
-               
+
                 <div className="flex items-center max-w-44 my-1"></div>
               </div>
               <div className="flex flex-col gap-1">
@@ -164,11 +164,11 @@ const BookingsWorker = () => {
               <div className="flex flex-col gap-1 capitalize text-[13px] font-semibold ">
                 <kbd
                   className={`px-4 mb-1 w-full text-center py-1 text-[13px] font-semibold rounded-lg self-start md:self-center ${
-                    booking.status === "confirmed"
+                    booking.status === "completed"
                       ? "text-green-900 bg-green-100 border border-green-600"
                       : booking.status === "pending"
                       ? "text-orange-800 bg-orange-100 border border-orange-400"
-                      : booking.status === "completed"
+                      : booking.status === "confirmed"
                       ? "text-blue-800 bg-blue-100 border border-blue-400"
                       : booking.status === "cancelled"
                       ? "text-red-800 bg-red-100 border border-red-400"
@@ -248,7 +248,6 @@ const BookingsWorker = () => {
                     </button>
                   </PopoverConfirmation>
                 )}
-               
               </div>
             </div>
 

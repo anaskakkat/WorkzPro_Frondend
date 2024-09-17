@@ -11,7 +11,7 @@ import ReactMapGL, {
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useEffect, useState } from "react";
 import { MAPBOX_ACCESS_TOKEN } from "../../../constants/constant_env";
-import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
+import { getSystemPosition } from "../../../utils/getCurrentLoaction";
 import validateForm from "../../../utils/bookingValidation";
 import toast from "react-hot-toast";
 
@@ -35,11 +35,11 @@ const BookingForm = () => {
   const selectedService = useSelectedService();
   const userId = useUserId();
   const { workerId } = useParams();
-  const [isBookingSuccessful, setIsBookingSuccessful] = useState(false);
+  const [, setIsBookingSuccessful] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
-    getCurrentPosition()
+    getSystemPosition()
       .then((position: { coords: { latitude: any; longitude: any } }) => {
         const { latitude, longitude } = position.coords;
         setLatitude(latitude);

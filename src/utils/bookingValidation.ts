@@ -18,7 +18,8 @@ const validateForm = (formData: FormData): ValidationErrors => {
 
   const descriptionPattern = /^[A-Za-z0-9 ]+$/; // Alphanumeric and spaces
   const houseNumberPattern = /^[A-Za-z0-9]+$/; // Alphanumeric only
-  const streetPattern = /^(?!.*\s{2,})[A-Za-z\-][A-Za-z\s\-]*[A-Za-z\-]$/; // Alphanumeric and spaces
+  const streetPattern =
+    /^(?!.*\s{2,})[A-Za-z0-9\-\[\]\(\)\{\}\_\@\!\#\$\%\^\&\*\+\=\|\~\`\:\;\'\"\,\.\<\>\?\/\ ]*[A-Za-z0-9\-\[\]\(\)\{\}\_\@\!\#\$\%\^\&\*\+\=\|\~\`\:\;\'\"\,\.\<\>\?\/]$/; // Alphanumeric and spaces
   const cityPattern = /^[A-Za-z ]+$/; // Alphabets and spaces
   const statePattern = /^[A-Za-z ]+$/; // Alphabets and spaces
   const pinCodePattern = /^\d{6}$/; // Exactly 6 digits

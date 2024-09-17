@@ -8,7 +8,7 @@ import { removeUserInfo } from "../../../redux/slices/userSlices";
 import { logoutUser } from "../../../api/user";
 import toast from "react-hot-toast";
 import logo from "/workzpro-high-resolution-logo.jpeg";
-import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
+import { getSystemPosition } from "../../../utils/getCurrentLoaction";
 import { fetchLocationDetails } from "../../../utils/getLocationDetails";
 // import { initAutocomplete } from "../../../utils/googleMapUtils";
 import { setLocationState } from "../../../redux/slices/LocationSlice";
@@ -60,8 +60,8 @@ const Navbar: React.FC = () => {
   const handleGetCurrentLocation = async () => {
     try {
       setIsLoading(true);
-      const position = await getCurrentPosition();
-      // console.log("coooordinates---", position.coords);
+      const position = await getSystemPosition() 
+      // console.log("coooordinates---", position);
 
       const { latitude, longitude } = position.coords;
       const locationData = {
@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
         coordinates: [longitude, latitude],
       };
 
-      // console.log("----location:-----", longitude,latitude);
+      console.log("----location:-----", longitude,latitude);
       const locality = await fetchLocationDetails(latitude, longitude);
       dispatch(setLocationState(locationData));
       setLocation(locality);

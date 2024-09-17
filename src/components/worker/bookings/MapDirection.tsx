@@ -18,10 +18,9 @@ import { FaPersonWalking } from "react-icons/fa6";
 import { BiCycling } from "react-icons/bi";
 import { GrDirections } from "react-icons/gr";
 import { MAPBOX_ACCESS_TOKEN } from "../../../constants/constant_env";
-import { getCurrentPosition } from "../../../utils/getCurrentLoaction";
+import { getSystemPosition } from "../../../utils/getCurrentLoaction";
 
 const directionsClient = mbxDirections({ accessToken: MAPBOX_ACCESS_TOKEN });
-
 
 interface LocationState {
   start: { lng: number; lat: number };
@@ -44,7 +43,7 @@ interface ProfileTimes {
 
 const MapDirection = () => {
   const userLocation = useLocation();
-// console.log("userLocation-------", userLocation);
+  // console.log("userLocation-------", userLocation);
   const navigate = useNavigate();
   const [viewState, setViewState] = useState<ViewState>({
     longitude: 0,
@@ -74,7 +73,7 @@ const MapDirection = () => {
 
   useEffect(() => {
     // Fetch user's current location
-    getCurrentPosition()
+    getSystemPosition()
       .then((position: { coords: { latitude: any; longitude: any } }) => {
         const { latitude, longitude } = position.coords;
         const start = { lng: longitude, lat: latitude };

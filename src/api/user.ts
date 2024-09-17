@@ -3,7 +3,6 @@ import axios, { AxiosResponse } from "axios";
 import userRoutes from "../endpoints/userEndpoints";
 import { handleApiError } from "../config/HandleApiErrors";
 import { IGoogleUser } from "../types/user";
-import { Message } from "../components/User/chat/MessageUi";
 interface FormData {
   name: string;
   email: string;
@@ -204,7 +203,7 @@ export const fetchMessages = async (chatId: string) => {
     throw error;
   }
 };
-export const sendMessage = async (message: any) => { 
+export const sendMessage = async (message: any) => {
   try {
     const response = await Api.post(userRoutes.sendMessage, message);
     return response.data;
@@ -215,9 +214,45 @@ export const sendMessage = async (message: any) => {
 // make payment-------------------------------------------------------------------------------------------------
 export const makePayment = async (bookingId: string) => {
   try {
-    console.log("iddddddddddd---", bookingId);
+    // console.log("iddddddddddd---", bookingId);
 
     const response = await Api.post(userRoutes.makePayment(bookingId));
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+// add review-------------------------------------------------------------------------------------------------
+
+export const addReview = async (
+  userId: string,
+  bookingId: string,
+  rating: number,
+  comment: string
+) => {
+  try {
+    const response = await Api.post(userRoutes.addReview, {
+      userId,
+      bookingId,
+      rating,
+      comment,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const updateReview = async (
+  reviewId: string,
+  rating: number,
+  comment: string
+) => {
+  try {
+    const response = await Api.patch(userRoutes.updateReview, {
+      reviewId,
+      rating,
+      comment,
+    });
     return response.data;
   } catch (error) {
     throw error;

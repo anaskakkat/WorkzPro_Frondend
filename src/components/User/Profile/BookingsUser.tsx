@@ -5,20 +5,31 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { FaAddressBook } from "react-icons/fa";
 import { useUserId } from "../../../redux/hooks/userSelectors";
-import { getBookingsUser, makePayment } from "../../../api/user";
+import {
+  addReview,
+  getBookingsUser,
+  makePayment,
+  updateReview,
+} from "../../../api/user";
 import { Booking } from "../../../types/Booking";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 import DetailsIcon from "@mui/icons-material/Details";
 import NumbersIcon from "@mui/icons-material/Numbers";
-import { ArrowCircleDownSharp, ArrowCircleUpSharp } from "@mui/icons-material";
+import {
+  ArrowCircleDownSharp,
+  ArrowCircleUpSharp,
+  Edit,
+} from "@mui/icons-material";
 import moment from "moment";
-import { Pagination } from "@mui/material";
+import { Pagination, Rating } from "@mui/material";
 import Loader from "../../loader/Loader";
 import { useNavigate } from "react-router-dom";
 import PaymentIcon from "@mui/icons-material/Payment";
 import { loadStripe } from "@stripe/stripe-js";
 import ChatIcon from "@mui/icons-material/Chat";
 import { STRIPE_PUBLISHABLE_KEY } from "../../../constants/constant_env";
+import ReviewModal from "./ReviewModal";
+import toast from "react-hot-toast";
 const BookingsUser = () => {
   const navigate = useNavigate();
   const userId = useUserId();
@@ -29,6 +40,15 @@ const BookingsUser = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const bookingsPerPage = 3;
+  const [openReviewModal, setOpenReviewModal] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState<string | null>(
+    null
+  );
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentReview, setCurrentReview] = useState<{
+    rating: number;
+    comment: string;
+  } | null>(null);
 
   const toggleAccordion = (id: string) => {
     setOpenBookingId((prevId) => (prevId === id ? null : id));
@@ -46,6 +66,8 @@ const BookingsUser = () => {
     setLoading(true);
     try {
       const response = await getBookingsUser(userId);
+      // console.log("response--", response);
+
       if (response.status === 200) {
         setAllBookings(response.data.booking);
         setTotalPages(
@@ -58,7 +80,12 @@ const BookingsUser = () => {
       setLoading(false);
     }
   };
-
+  const handleAddReview = (bookingId: string) => {
+    setSelectedBookingId(bookingId);
+    setIsEditing(false);
+    setCurrentReview(null);
+    setOpenReviewModal(true);
+  };
   const updateDisplayedBookings = () => {
     const startIndex = (page - 1) * bookingsPerPage;
     const endIndex = startIndex + bookingsPerPage;
@@ -73,6 +100,7 @@ const BookingsUser = () => {
     setOpenBookingId(null);
   };
 
+  //stripe--------------------------------
   const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
   const handlePayNow = async (bookingId: string) => {
     console.log(`Initiating payment for booking ${bookingId}`);
@@ -90,28 +118,60 @@ const BookingsUser = () => {
     }
   };
 
+  const handleReviewSubmit = async (rating: number, comment: string) => {
+    if (selectedBookingId) {
+      try {
+        let response;
+        if (isEditing) {
+          response = await updateReview(selectedBookingId, rating, comment);
+          toast.success(response);
+          console.log("Review updated successfully:", response);
+        } else {
+          response = await addReview(
+            userId,
+            selectedBookingId,
+            rating,
+            comment
+          );
+          toast.success(response);
+
+          console.log("Review added successfully:", response);
+        }
+        await fetchBookings();
+      } catch (error) {
+        console.error("Error adding/updating review:", error);
+      }
+    }
+  };
+  const handleEditReview = (
+    bookingId: string,
+    rating: number,
+    comment: string
+  ) => {
+    setSelectedBookingId(bookingId);
+    setIsEditing(true);
+    setCurrentReview({ rating, comment });
+    setOpenReviewModal(true);
+  };
   if (loading) {
     return <Loader />;
   }
+
   return (
     <div className="mx-4 md:mx-8 lg:mx-20 overflow-hidden ">
-      <div className="container mt-2 text font-semibold text-custom_navyBlue">
+      <div className="container mt-2 text font-semibold text-custom_navyBlue ">
         My Bookings
       </div>
       <hr className="my-2" />
-      {/* {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <CircularProgress />
-        </div>
-      ) : ( */}
-      <div className="flex flex-col gap-4 font-normal text-sm  ">
+
+      <div className="flex flex-col gap-4 font-normal text-sm   ">
         {bookings &&
           bookings.map((booking) => (
             <div
               key={booking._id}
               className="container border-y shadow-lg bg-white rounded-2xl px-4 md:px-8 py-3 border-blue-400 text-custom_navyBlue"
             >
-              <div className="flex flex-col md:flex-row justify-between mx-2 md:mx-4 gap-4 ">
+              <div className="flex flex-col md:flex-row justify-between mx-2 md:mx-4 gap-4  ">
                 <div className="flex flex-col gap-1 capitalize text-sm font-medium  min-w-56">
                   <div className="flex items-center ">
                     <Person4Icon fontSize="inherit" className="mr-2" />
@@ -135,6 +195,7 @@ const BookingsUser = () => {
                     </span>
                   </div>
                 </div>
+
                 <div className="flex flex-col gap-1 font-medium">
                   <kbd className="px-4 md:px-8 py-1 text-gray-800 bg-gray-100 border border-gray-200 rounded-lg flex items-center">
                     <CalendarMonthIcon fontSize="inherit" className="mr-2" />
@@ -144,11 +205,45 @@ const BookingsUser = () => {
                     <CalendarMonthIcon fontSize="inherit" className="mr-2" />
                     {booking.slots}
                   </div>
+                  {booking.status === "completed" && !booking.review && (
+                    <span
+                      className="px-4 md:px-8 py-1 mt-1 text-white  bg-orange-500 border border-gray-200 rounded-lg flex-row text-center cursor-pointer hover:bg-orange-600"
+                      onClick={() => handleAddReview(booking._id!)}
+                    >
+                      Write Review
+                    </span>
+                  )}
+                </div>
+                <div className="mx-4 md:mx-8 lg:mx-20 overflow-hidden ">
+                  {/* Existing content */}
+
+                  {/* Include the modal */}
+                  <ReviewModal
+                    open={openReviewModal}
+                    onClose={() => setOpenReviewModal(false)}
+                    onSubmit={handleReviewSubmit}
+                    initialRating={currentReview?.rating}
+                    initialComment={currentReview?.comment}
+                    isEditing={isEditing}
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <kbd className="px-3 h-fit py-1 text-xs font-medium text-black bg-orange-200 border border-orange-600 rounded-lg self-start md:self-center">
+                  <kbd
+                    className={`px-4 mb-1 w-full text-center py-1 text-[13px] font-semibold rounded-lg self-start md:self-center ${
+                      booking.status === "completed"
+                        ? "text-green-900 bg-green-100 border border-green-600"
+                        : booking.status === "pending"
+                        ? "text-orange-800 bg-orange-100 border border-orange-400"
+                        : booking.status === "confirmed"
+                        ? "text-blue-800 bg-blue-100 border border-blue-400"
+                        : booking.status === "cancelled"
+                        ? "text-red-800 bg-red-100 border border-red-400"
+                        : ""
+                    }`}
+                  >
                     {booking.status}
                   </kbd>
+
                   <button
                     className="text-xs flex justify-center gap-2 capitalize text-white  border bg-blue-400 hover:bg-white hover:border-blue-700 hover:text-black border-blue-600-600 rounded-lg self-start md:self-center w-full text-center py-1"
                     onClick={() =>
@@ -174,9 +269,34 @@ const BookingsUser = () => {
                     </button>
                   )}
                 </div>
-              </div>
-
-              <div className="mt-4">
+              </div>{" "}
+              {booking.review && (
+                <div className="border-blue-200 border mt-2 px-2 py-1 rounded capitalize flex flex-col gap-1">
+                  <div className="flex flex-row gap-4">
+                    <Rating
+                      name="read-only"
+                      readOnly
+                      size="small"
+                      value={booking.review.rating}
+                    />
+                    {booking.review.comment}
+                    <span
+                      className="cursor-pointer hover:text-blue-600"
+                      onClick={() =>
+                        handleEditReview(
+                          booking.review!._id,
+                          booking.review!.rating,
+                          booking.review!.comment
+                        )
+                      }
+                    >
+                      {" "}
+                      <Edit fontSize="small" />
+                    </span>{" "}
+                  </div>
+                </div>
+              )}
+              <div className="mt-2">
                 <button
                   onClick={() => toggleAccordion(booking._id!)}
                   className="items-center w-full px-4 font-semibold text-left transition-all ease-in  cursor-pointer rounded-t-1 group text-black"

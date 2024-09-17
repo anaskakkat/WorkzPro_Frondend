@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import { useWorkerId } from "../../../redux/hooks/userSelectors";
-import { createChat, fetchChats } from "../../../api/worker";
+import {  fetchChats } from "../../../api/worker";
 
 interface WorkerChatsProps {
   onSelectChat: (chatId: string) => void;
@@ -14,30 +13,25 @@ const WorkerChats: React.FC<WorkerChatsProps> = ({
 }) => {
   const [chats, setChats] = useState<any[]>([]);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
-  const location = useLocation();
-  const userId = location.state?.userId;
   const workerId = useWorkerId();
 
   useEffect(() => {
     handleFetchChats();
-    if (workerId && userId) {
-      handleCreateChat();
-    }
-  }, [workerId, userId]);
+  },[]);
 
-  const handleCreateChat = async () => {
-    try {
-      await createChat(userId?.userName, userId._id, workerId);
-    } catch (error) {
-      console.log("Error creating chat:", error);
-    }
-  };
+  // const handleCreateChat = async () => {
+  //   try {
+  //     await createChat(userId?.userName, userId._id, workerId);
+  //   } catch (error) {
+  //     console.log("Error creating chat:", error);
+  //   }
+  // };
 
   const handleFetchChats = async () => {
     try {
       const response = await fetchChats(workerId);
       setChats(response);
-      // console.log("Chat fetch response:", response);
+      console.log("Chat fetch response:", response);
     } catch (error) {
       console.log("Error fetching chats:", error);
     }
@@ -50,8 +44,9 @@ const WorkerChats: React.FC<WorkerChatsProps> = ({
   };
 
   return (
-    <div className="w-1/4 border-r border-gray-200 text-custom_navyBlue bg-blue-50 flex flex-col">
-      <div className="p-4 border-b border-gray-200">Chats</div>
+    <div className="w-1/4 border-r border-gray-200 text-custom_navyBlue bg-gray-100 flex flex-col">
+      <div className="p-4 border-b border-gray-200 bg-gray-300">
+      Chats</div>
       <div className="flex-1 overflow-y-auto">
         {chats.length > 0 ? (
           chats.map((chat) => (

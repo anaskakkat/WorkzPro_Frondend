@@ -19,7 +19,7 @@ export const SocketProvider: React.FC = () => {
 
   useEffect(() => {
     if (userId || workerId) {
-      console.log("Connecting with userId:", userId, "and workerId:", workerId);
+      // console.log("Connecting with userId:", userId, "and workerId:", workerId);
 
       const socket = io(BACKEND_SERVER, {
         query: {
@@ -37,7 +37,7 @@ export const SocketProvider: React.FC = () => {
       socket.emit("addUser", userId || workerId);
 
       socket.on("getUsers", (users) => {
-        console.log("Received updated user list:", users);
+        // console.log("Received updated user list:", users);
         setOnlineUsers(users);
       });
 

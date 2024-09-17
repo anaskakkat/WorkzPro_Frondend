@@ -1,90 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import ReactMapGL from "react-map-gl";
-// import mapboxgl from "mapbox-gl";
-// import MapboxDirections from "@mapbox/mapbox-gl-directions";
-// import "mapbox-gl/dist/mapbox-gl.css";
-// import "@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css";
-// import { MAPBOX_ACCESS_TOKEN } from "../constants/constant_env";
-// import { getCurrentPosition } from "../utils/getCurrentLoaction";
-
-// const Demo: React.FC = () => {
-//   const [viewport, setViewport] = useState<{
-//     width: string;
-//     height: string;
-//     latitude: number | null;
-//     longitude: number | null;
-//     zoom: number;
-//   }>({
-//     width: "100%",
-//     height: "100vh",
-//     latitude: null,
-//     longitude: null,
-//     zoom: 14,
-//   });
-
-//   // Example worker location
-//   const workerLocation = { latitude: 37.7749, longitude: -122.4194 };
-
-//   useEffect(() => {
-//     getCurrentPosition()
-//       .then((position) => {
-//         const { latitude, longitude } = position.coords;
-//         setViewport({
-//           ...viewport,
-//           latitude,
-//           longitude,
-//         });
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching current location:", error);
-//       });
-//   }, []);
-
-//   useEffect(() => {
-//     if (viewport.latitude && viewport.longitude) {
-//       const map = new mapboxgl.Map({
-//         container: "map",
-//         style: "mapbox://styles/mapbox/streets-v11",
-//         center: [viewport.longitude, viewport.latitude],
-//         zoom: viewport.zoom,
-//         accessToken: MAPBOX_ACCESS_TOKEN,
-//       });
-
-//       const directions = new MapboxDirections({
-//         accessToken: MAPBOX_ACCESS_TOKEN,
-//         unit: "metric",
-//         controls: {
-//           inputs: false,
-//           instructions: true,
-//         },
-//       });
-
-//       map.addControl(directions, "top-left");
-
-//       directions.setOrigin([viewport.longitude, viewport.latitude]); // User location
-//       directions.setDestination([workerLocation.longitude, workerLocation.latitude]); // Worker location
-
-//       map.on("load", () => {
-//         map.resize(); // Ensures the map is properly resized
-//       });
-
-//       return () => map.remove(); // Clean up the map on component unmount
-//     }
-//   }, [viewport]);
-
-//   if (viewport.latitude === null || viewport.longitude === null) {
-//     return <div>Loading map...</div>;
-//   }
-
-//   return (
-//     <div className="w-full h-screen">
-//       <div id="map" style={{ width: "100%", height: "100%" }} />
-//     </div>
-//   );
-// };
-
-// export default Demo;
-
 import React, { useEffect, useState } from "react";
 import Map, { Marker, Source, Layer, NavigationControl } from "react-map-gl";
 import mapboxgl from "mapbox-gl";
@@ -100,6 +13,7 @@ import { FaPersonWalking } from "react-icons/fa6";
 import { BiCycling } from "react-icons/bi";
 import { GrDirections } from "react-icons/gr";
 import { MAPBOX_ACCESS_TOKEN } from "../constants/constant_env";
+import { getSystemPosition } from "../utils/getCurrentLoaction";
 
 const directionsClient = mbxDirections({ accessToken: MAPBOX_ACCESS_TOKEN });
 const locationState: LocationState = {
@@ -133,7 +47,7 @@ const Demo = () => {
   const [viewState, setViewState] = useState<ViewState>({
     longitude: (start.lng + end.lng) / 2,
     latitude: (start.lat + end.lat) / 2,
-    zoom: 14,
+    zoom: 12,
     pitch: 0,
     bearing: 0,
   });
@@ -150,7 +64,25 @@ const Demo = () => {
     walking: 0,
     cycling: 0,
   });
+  useEffect(() => {
+    handleGetCurrentLocation();
+  }, []);
+  const handleGetCurrentLocation = async () => {
+    try {
+      const position = await getSystemPosition();
+      // console.log("coooordinates---", position);
 
+      const { latitude, longitude } = position.coords;
+      const locationData = {
+        type: "Point",
+        coordinates: [longitude, latitude],
+      };
+
+      console.log("----location:-----", longitude, latitude);
+    } catch (error: any) {
+      console.error("Error location:", error);
+    }
+  };
   useEffect(() => {
     const getRoutes = async () => {
       const profiles: ("driving" | "walking" | "cycling")[] = [

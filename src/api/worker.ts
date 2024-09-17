@@ -226,9 +226,7 @@ export const rejectBooking = async (workerId: string) => {
 
 export const completeBooking = async (workerId: string) => {
   try {
-    const response = await Api.patch(
-      workerRoutes.completeBooking(workerId)
-    );
+    const response = await Api.patch(workerRoutes.completeBooking(workerId));
     return response;
   } catch (error) {
     handleApiError(error);
@@ -252,12 +250,6 @@ export const updateWorkerProfile = async (
   }
 };
 
-
-
-
-
-
-
 // chat create---------------------------------------------------------------------------------
 export const createChat = async (
   name: string,
@@ -276,20 +268,10 @@ export const createChat = async (
   }
 };
 
-
-
-
-
-
-
-
-
 // worker  chat feth---------------------------------------------------------------------------------
 
 export const fetchChats = async (Id: string) => {
   try {
-    console.log('workerId-----',Id);
-    
     const response = await Api.get(workerRoutes.fetchChats(Id));
     return response.data;
   } catch (error) {
