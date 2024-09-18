@@ -16,8 +16,11 @@ const userRoutes = {
   fetchBookingsByDate: (workerId: string, date: Date) =>
     `user/booking/${workerId}/date/${date.toISOString()}`,
   makePayment: (id: string) => `user/booking/payment/${id}`,
+
+  //reviewss---------------------------------------------------------------
   addReview: "user/booking/review",
   updateReview: "user/booking/review",
+  fetchReviews: (workerId: string) => `user/booking/review/${workerId}`,
 
   // chats---------------------------------------------------------------------------------------
   fetchChats: (userId: string) => `user/chat/${userId}`,

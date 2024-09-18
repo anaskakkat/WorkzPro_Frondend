@@ -226,6 +226,7 @@ export const makePayment = async (bookingId: string) => {
 
 export const addReview = async (
   userId: string,
+  workerId: string,
   bookingId: string,
   rating: number,
   comment: string
@@ -233,6 +234,7 @@ export const addReview = async (
   try {
     const response = await Api.post(userRoutes.addReview, {
       userId,
+      workerId,
       bookingId,
       rating,
       comment,
@@ -245,7 +247,7 @@ export const addReview = async (
 export const updateReview = async (
   reviewId: string,
   rating: number,
-  comment: string
+  comment: string,
 ) => {
   try {
     const response = await Api.patch(userRoutes.updateReview, {
@@ -253,6 +255,14 @@ export const updateReview = async (
       rating,
       comment,
     });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const fetchReviews = async (workerId: string) => {
+  try {
+    const response = await Api.get(userRoutes.fetchReviews(workerId));
     return response.data;
   } catch (error) {
     throw error;

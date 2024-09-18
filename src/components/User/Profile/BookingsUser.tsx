@@ -120,15 +120,24 @@ const BookingsUser = () => {
 
   const handleReviewSubmit = async (rating: number, comment: string) => {
     if (selectedBookingId) {
+      const booking = allBookings.find((b) => b._id === selectedBookingId);
+      const workerId = booking?.workerId._id;
+      console.log("workerid----------", workerId);
+
       try {
         let response;
         if (isEditing) {
-          response = await updateReview(selectedBookingId, rating, comment);
+          response = await updateReview(
+            selectedBookingId,
+            rating,
+            comment,
+          );
           toast.success(response);
           console.log("Review updated successfully:", response);
         } else {
           response = await addReview(
             userId,
+            workerId!,
             selectedBookingId,
             rating,
             comment

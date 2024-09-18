@@ -60,8 +60,11 @@ const Navbar: React.FC = () => {
   const handleGetCurrentLocation = async () => {
     try {
       setIsLoading(true);
-      const position = await getSystemPosition() 
+      const position = await getSystemPosition();
       // console.log("coooordinates---", position);
+
+      // const latitude = 11.15521644663281;
+      // const longitude = 75.89052316647641;
 
       const { latitude, longitude } = position.coords;
       const locationData = {
@@ -69,7 +72,7 @@ const Navbar: React.FC = () => {
         coordinates: [longitude, latitude],
       };
 
-      console.log("----location:-----", longitude,latitude);
+      console.log("----location:-----", longitude, latitude);
       const locality = await fetchLocationDetails(latitude, longitude);
       dispatch(setLocationState(locationData));
       setLocation(locality);

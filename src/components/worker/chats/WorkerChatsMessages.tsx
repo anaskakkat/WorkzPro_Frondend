@@ -19,6 +19,7 @@ interface WorkerChatsMessagesProps {
 
 const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
   chatId,
+  userName
 }) => {
   const socketContext = useContext(SocketContext);
   const socket = socketContext?.socket;
@@ -28,7 +29,7 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
   const [message, setMessage] = useState("");
   const [receiverId, setReceiverId] = useState<string | null>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
-  console.log("------WorkerChatsMessages-----chatId---", chatId);
+  // console.log("------WorkerChatsMessages-----chatId---", chatId);
   const [lastSeen, setLastSeen] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -64,13 +65,15 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
   }, [chatId]);
 
   const handleFetchMessages = async () => {
-    console.log("------WorkerChatsMessages-----handleFetchMessages---touched");
 
     setLoading(true);
     try {
       const response = await fetchMessages(chatId);
+      // console.log("------response-----fetchMessages---",response);
+
       setMessages(response.messages);
       setReceiverId(response.participants[0]);
+      setLastSeen(response.lastSeen);
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
@@ -108,7 +111,7 @@ const WorkerChatsMessages: React.FC<WorkerChatsMessagesProps> = ({
           alt={workerName}
         /> */}
         <div className="ml-4">
-          {/* <h2 className="font-semibold capitalize">{workerName}</h2> */}
+          <h2 className="font-semibold capitalize">{userName}</h2>
           {lastSeen && (
             <p className="text-xs text-gray-500">
               Last seen at {formatTimeForChat(lastSeen)}

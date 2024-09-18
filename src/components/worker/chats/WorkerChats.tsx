@@ -19,19 +19,14 @@ const WorkerChats: React.FC<WorkerChatsProps> = ({
     handleFetchChats();
   },[]);
 
-  // const handleCreateChat = async () => {
-  //   try {
-  //     await createChat(userId?.userName, userId._id, workerId);
-  //   } catch (error) {
-  //     console.log("Error creating chat:", error);
-  //   }
-  // };
+ 
 
   const handleFetchChats = async () => {
     try {
       const response = await fetchChats(workerId);
       setChats(response);
       console.log("Chat fetch response:", response);
+      setUserName(response.name)
     } catch (error) {
       console.log("Error fetching chats:", error);
     }
@@ -52,7 +47,7 @@ const WorkerChats: React.FC<WorkerChatsProps> = ({
           chats.map((chat) => (
             <div
               key={chat.name}
-              className={`p-4 cursor-pointer flex items-center ${
+              className={`p-4 cursor-pointer flex items-center rounded m-1.5 ${
                 activeChatId === chat.chatId._id
                   ? "bg-blue-100"
                   : "hover:bg-blue-100"

@@ -71,7 +71,7 @@ const WorkerDetails = () => {
           </div>
         </div>
         <div>
-          <CustomTabPanel />
+          <CustomTabPanel workerId={workerId!} />
         </div>
       </div>
     </>

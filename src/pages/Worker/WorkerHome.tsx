@@ -57,19 +57,19 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
   return (
     <div className="flex flex-col h-screen">
       {/* Navbar */}
-      <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
+      <nav className="sticky top-0 z-50 w-full bg-gray-50 border-b border-gray-200">
         <div className=" mx-10 px-3 py-3 lg:px-5 lg:pl-3 flex items-center justify-between">
           <button
-            className="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100"
+            className="inline-flex items-center p-3 text-sm text-gray-50 rounded-lg lg:hidden"
             onClick={toggleSidebar}
           >
             <MenuIcon />
           </button>
 
-          <img src={logo} alt="Logo" className="h-10" />
+          <img src={logo} alt="Logo" className="h-12" />
 
           <div className="flex items-center">
-            <span className="text-custom_navyBlue mr-4 capitalize">
+            <span className="text-custom_navyBlue font-medium mr-4 capitalize">
               {worker && worker.name}
             </span>
             <Avatar alt="John Doe" src={worker && worker.profilePicture} />
@@ -79,126 +79,129 @@ const WorkerHome: React.FC<WorkerHomeProps> = ({ children }) => {
 
       <div className="flex flex-1 overflow-hidden">
         <aside
-          className={`fixed lg:static top-0 left-0 w-60 h-full transition-transform border-r  hover:bg-blue-600 hover:text-white ${
+          className={`fixed lg:static top-0 left-0 w-64 h-full transition-transform border-r border-gray-100 bg-gray-50  hover:text-white ${
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           } lg:translate-x-0 flex flex-col`}
           aria-label="Sidebar"
         >
-          <div className="flex-1 py-8 px-2 pb-4 overflow-y-auto bg-blue-950">
-            <ul className="space-y-2 font-medium text-blue-200 ">
-              {/* Dashboard Tab */}
-              <Link to="/worker">
-                <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-blue-600 hover:text-white  ${
-                    location.pathname === "/worker"
-                      ? "bg-blue-600 text-white"
-                      : ""
-                  }`}
-                >
-                  <DashboardIcon
-                    className={`transition duration-75 ${
+          <div className="flex flex-col h-full py-3 px-2  overflow-y-auto bg-custom-gradient-black rounded-lg m-3">
+            <div className="flex-1">
+              <ul className="space-y-2 font-medium text-blue-50  ">
+                {/* Dashboard Tab */}
+                <Link to="/worker">
+                  <li
+                    className={`flex items-center p-3 cursor-pointer rounded-lg m-2 hover:bg-custom-gradient-blue hover:text-white  ${
                       location.pathname === "/worker"
-                        ? "text-white"
-                        : " hover:text-white"
+                        ? "bg-custom-gradient-blue text-white"
+                        : "bg-custom-gradient-black"
                     }`}
-                  />
-                  <span className="ml-3 text-blue-00">Dashboard</span>
-                </li>
-              </Link>
+                  >
+                    <DashboardIcon
+                      className={`transition duration-75 ${
+                        location.pathname === "/worker"
+                          ? "text-white"
+                          : "hover:text-white"
+                      }`}
+                    />
+                    <span className="ml-3 text-blue-00">Dashboard</span>
+                  </li>
+                </Link>
 
-              {/* Slot Tab */}
-              <Link to="/worker/slots">
-                <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2 hover:bg-blue-600 hover:text-white ${
-                    location.pathname === "/worker/slots"
-                      ? "bg-blue-600 text-white"
-                      : ""
-                  }`}
-                >
-                  <SlotIcon
-                    className={`transition duration-75 ${
+                {/* Slot Tab */}
+                <Link to="/worker/slots">
+                  <li
+                    className={`flex items-center p-3 cursor-pointer rounded-lg m-2 hover:bg-custom-gradient-blue hover:text-white ${
                       location.pathname === "/worker/slots"
-                        ? "text-white"
-                        : " hover:text-white"
+                        ? "bg-custom-gradient-blue text-white"
+                        : "bg-custom-gradient-black"
                     }`}
-                  />
-                  <span className="ml-3">Slot</span>
-                </li>
-              </Link>
+                  >
+                    <SlotIcon
+                      className={`transition duration-75 ${
+                        location.pathname === "/worker/slots"
+                          ? "text-white"
+                          : "hover:text-white"
+                      }`}
+                    />
+                    <span className="ml-3">Slot</span>
+                  </li>
+                </Link>
 
-              {/* Bookings Tab */}
-              <Link to="/worker/bookings">
-                <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2  hover:bg-blue-600 hover:text-white ${
-                    location.pathname === "/worker/bookings"
-                      ? "bg-blue-600 text-white"
-                      : ""
-                  }`}
-                >
-                  <CalendarMonthIcon
-                    className={`transition duration-75 ${
+                {/* Bookings Tab */}
+                <Link to="/worker/bookings">
+                  <li
+                    className={`flex items-center p-3 cursor-pointer rounded-lg m-2 hover:bg-custom-gradient-blue hover:text-white ${
                       location.pathname === "/worker/bookings"
-                        ? "text-white"
-                        : " hover:text-white"
+                        ? "bg-custom-gradient-blue text-white"
+                        : "bg-custom-gradient-black"
                     }`}
-                  />
-                  <span className="ml-3">Bookings</span>
-                </li>
-              </Link>
+                  >
+                    <CalendarMonthIcon
+                      className={`transition duration-75 ${
+                        location.pathname === "/worker/bookings"
+                          ? "text-white"
+                          : "hover:text-white"
+                      }`}
+                    />
+                    <span className="ml-3">Bookings</span>
+                  </li>
+                </Link>
 
-              {/* Profile Tab */}
-              <Link to="/worker/profile">
-                <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2  hover:bg-blue-600 hover:text-white ${
-                    location.pathname === "/worker/profile"
-                      ? "bg-blue-600 text-white"
-                      : ""
-                  }`}
-                >
-                  <Person
-                    className={`transition duration-75 ${
+                {/* Profile Tab */}
+                <Link to="/worker/profile">
+                  <li
+                    className={`flex items-center p-3 cursor-pointer rounded-lg m-2 hover:bg-custom-gradient-blue hover:text-white ${
                       location.pathname === "/worker/profile"
-                        ? "text-white"
-                        : " hover:text-white"
+                        ? "bg-custom-gradient-blue text-white"
+                        : "bg-custom-gradient-black"
                     }`}
-                  />
-                  <span className="ml-3">Profile</span>
-                </li>
-              </Link>
+                  >
+                    <Person
+                      className={`transition duration-75 ${
+                        location.pathname === "/worker/profile"
+                          ? "text-white"
+                          : "hover:text-white"
+                      }`}
+                    />
+                    <span className="ml-3">Profile</span>
+                  </li>
+                </Link>
 
-              {/* Chats Tab */}
-              <Link to="/worker/chats">
-                <li
-                  className={`flex items-center p-2 cursor-pointer rounded-lg m-2  hover:bg-blue-600 hover:text-white ${
-                    location.pathname === "/worker/chats"
-                      ? "bg-blue-600 text-white"
-                      : ""
-                  }`}
-                >
-                  <Chat
-                    className={`transition duration-75 ${
+                {/* Chats Tab */}
+                <Link to="/worker/chats">
+                  <li
+                    className={`flex items-center p-3 cursor-pointer rounded-lg m-2 hover:bg-custom-gradient-blue hover:text-white ${
                       location.pathname === "/worker/chats"
-                        ? "text-white"
-                        : " hover:text-white"
+                        ? "bg-custom-gradient-blue text-white"
+                        : "bg-custom-gradient-black"
                     }`}
-                  />
-                  <span className="ml-3">Chats</span>
-                </li>
-              </Link>
-            </ul>
-          </div>
-          <div className="flex items-center justify-center py-4 px-3 :hover bg-white ">
-            <button
-              onClick={handleLogout}
-              className="flex items-center w-full h-8 outline-2 border text-red-600 border-red-400  hover:bg-red-600 px-4  hover:text-white rounded"
-            >
-              <ExitToAppIcon className="mr-2 " />{" "}
-              {/* Add margin-right for spacing */}
-              Logout
-            </button>
+                  >
+                    <Chat
+                      className={`transition duration-75 ${
+                        location.pathname === "/worker/chats"
+                          ? "text-white"
+                          : "hover:text-white"
+                      }`}
+                    />
+                    <span className="ml-3">Chats</span>
+                  </li>
+                </Link>
+              </ul>
+            </div>
+
+            {/* Logout Button */}
+            <div className="mt-auto py-4 px-2">
+              <button
+                onClick={handleLogout}
+                className="flex items-center text-gray-50 w-full h-8  bg-custom-gradient-red hover:bg-red-800 px-4 rounded"
+              >
+                <ExitToAppIcon className="mr-2" />
+                Logout
+              </button>
+            </div>
           </div>
         </aside>
-        <main className="flex-1 overflow-auto">{children}</main>
+        <main className="flex-1 overflow-auto bg-gray-50">{children}</main>
       </div>
     </div>
   );

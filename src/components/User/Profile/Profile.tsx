@@ -40,7 +40,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="container mx-auto p-8 w-96 my-28 md:mx-8 md:my-4 border border-blue-400 rounded-xl">
+    <div className="container mx-auto p-8 w-96 my-28 md:mx-8 md:my-4 border border-blue-400 rounded-xl  h-[calc(100vh-6rem)]">
       {/* Profile Picture Section */}
       <div className="flex flex-col items-center">
         <div className="relative">

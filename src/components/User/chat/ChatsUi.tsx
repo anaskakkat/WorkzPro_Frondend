@@ -66,7 +66,7 @@ const ChatsUi: React.FC<{
             <div
               key={chat._id}
               className={`p-4 cursor-pointer flex items-center  rounded m-1.5 ${
-                activeChatId === chat._id ? "bg-blue-100" : "hover:bg-blue-50"
+                activeChatId === chat._id ? "bg-blue-100" : "hover:bg-blue-100"
               }`}
               onClick={() => handleSelectChat(chat._id)}
             >

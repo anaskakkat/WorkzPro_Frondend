@@ -1,20 +1,19 @@
-import * as React from "react";
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import AppBar from "@mui/material/AppBar";
-import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import RequestIcon from "@mui/icons-material/RequestPage";
+import ServicesIcon from "@mui/icons-material/Construction";
+import UsersIcon from "@mui/icons-material/People";
+import WorkersIcon from "@mui/icons-material/Work";
 import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
-import Menu from "@mui/material/Menu";
 import logo from "/workzpro-high-resolution-logo.jpeg";
 
 import UsersAdmin from "./UsersAdmin";
@@ -26,24 +25,16 @@ import Services from "./Services";
 import Workers from "../../pages/Admin/Workers";
 import DashboardAdmin from "./DashboardAdmin";
 import Request from "../../pages/Admin/Request";
+import { Logout } from "@mui/icons-material";
 
 const drawerWidth = 240;
 
 export default function SideBarAdmin() {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [activeItem, setActiveItem] = useState("Dashboard");
   const dispatch = useDispatch();
 
   const adminInfo = useSelector((state: any) => state.adminInfo.adminInfo);
   const adminName = adminInfo ? adminInfo.name : "Admin";
-
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleItemClick = (text: string) => {
     setActiveItem(text);
@@ -80,13 +71,19 @@ export default function SideBarAdmin() {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <div className="flex bg-gray-50">
       <AppBar
         position="fixed"
-        sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
-        style={{ background: "#003383" }}
+        sx={{
+          width: `calc(100% - ${drawerWidth}px)`,
+          ml: `${drawerWidth}px`,
+          backgroundColor: "#f9fafb",
+          color: "#000000",
+          boxShadow: "none",
+          borderBottom: "#f9fafb",
+        }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", p: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", p: 1.5 }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Admin Panel
           </Typography>
@@ -97,35 +94,10 @@ export default function SideBarAdmin() {
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={handleMenu}
               color="inherit"
             >
               <AccountCircle />
             </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <div
-                onClick={() => {
-                  handleLogout();
-                  handleClose();
-                }}
-              >
-                Logout
-              </div>
-            </Menu>
           </Box>
         </Box>
       </AppBar>
@@ -141,32 +113,47 @@ export default function SideBarAdmin() {
         variant="permanent"
         anchor="left"
       >
-        <Box sx={{ p: 2, textAlign: "center" }}>
-          <img src={logo} alt="Logo" style={{ width: "50%", height: "auto" }} />
-        </Box>
+        <div>
+          <img src={logo} alt="Logo" className="w-40 py-1 mx-auto" />
+        </div>
         <Divider />
-        <List>
-          {["Dashboard", "Requests", "Services", "Users", "Workers"].map(
-            (text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton
-                  onClick={() => handleItemClick(text)}
-                  selected={activeItem === text}
-                >
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            )
-          )}
-        </List>
+        <div className="bg-custom-gradient-black h-full m-2 rounded-xl p-2">
+          {[
+            { text: "Dashboard", icon: <DashboardIcon /> },
+            { text: "Requests", icon: <RequestIcon /> },
+            { text: "Services", icon: <ServicesIcon /> },
+            { text: "Users", icon: <UsersIcon /> },
+            { text: "Workers", icon: <WorkersIcon /> },
+          ].map(({ text, icon }) => (
+            <div
+              key={text}
+              className={`mx-2.5 my-2 p text-white rounded-lg ${
+                activeItem === text
+                  ? "bg-custom-gradient-blue"
+                  : "bg-custom-gradient-black"
+              }`}
+            >
+              <ListItemButton
+                onClick={() => handleItemClick(text)}
+                selected={activeItem === text}
+              >
+                <ListItemIcon sx={{ color: "white" }}>{icon}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </div>
+          ))}
+          <div
+            className="bg-custom-gradient-red px-5 py-3 mx-2 flex text-white rounded-lg gap-6 cursor-pointer"
+            onClick={() => handleLogout()}
+          >
+            <Logout /> Logout
+          </div>
+        </div>
         <Divider />
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 1, mt: 10 }}>
         {renderComponent()}
       </Box>
-    </Box>
+    </div>
   );
 }
