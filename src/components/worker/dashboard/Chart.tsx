@@ -24,7 +24,7 @@ const chartConfig = {
   },
   workers: {
     label: "Workers",
-    color: "#10b981",
+    color: "#",
   },
 } satisfies ChartConfig;
 
