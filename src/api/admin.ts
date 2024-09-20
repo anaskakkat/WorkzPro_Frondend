@@ -182,3 +182,12 @@ export const rejectRequest = async (workerId: string, reason: string) => {
     handleApiError(error);
   }
 };
+//dashbord---------------------------------------------------
+export const fetchDashbordData = async () => {
+  try {
+    const response = await Api.get(adminRoutes.fetchDashboard);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -15,6 +15,8 @@ const adminRoutes = {
   unblockWorker: (id: string) => `admin/workers/${id}/unblock`,
   worker_request: (id: string) => `admin/request/${id}`,
   requestReject: (id: string) => `admin/requestReject/${id}`,
+  // dashbord------------------------
+  fetchDashboard: `admin/dashbord`,
 };
 
 export default adminRoutes;

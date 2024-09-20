@@ -294,3 +294,13 @@ export const sendMessage = async (message: Message) => {
     throw error;
   }
 };
+
+//dashbord---------------------------------------------------
+export const fetchDashbordData = async (workerId: string) => {
+  try {
+    const response = await Api.post(workerRoutes.fetchDashboard(workerId));
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

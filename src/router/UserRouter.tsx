@@ -19,7 +19,7 @@ import Chats from "../pages/User/Chats";
 import BookingsPage from "../pages/User/BookingsPage";
 import DashboarLayout from "../pages/User/DashboarLayout";
 import { SocketProvider } from "../context/socketContext";
-import PaymentSuccess from "../components/worker/bookings/PaymentSuccess";
+import PaymentSuccess from "../components/User/Profile/PaymentSuccess";
 
 export const UserRouter = () => {
   return (

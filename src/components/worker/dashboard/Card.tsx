@@ -18,7 +18,7 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className="h-24 flex p-3 rounded-lg border gap-3"
+      className="h-24 flex py-4 rounded-lg border gap-2"
       style={{
         boxShadow:
           "0rem 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0rem 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06)",
@@ -35,8 +35,8 @@ const Card: React.FC<CardProps> = ({
           <Icon fontSize="large" />
         </span>
       </div>
-      <div className="px-4">
-        <p className="font-medium">{title}</p>
+      <div className="py-2 px-3">
+        <p className="font-medium text-sm text-custom_navyBlue">{title}</p>
         <p className="text-center mt-2 font-bold text-xl">{value}</p>
       </div>
     </div>

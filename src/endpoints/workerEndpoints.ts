@@ -32,7 +32,8 @@ const workerRoutes = {
   bookingConfirmation: (bookingId: string) => `worker/bookings/${bookingId}`,
   rejectBookingRequest: (bookingId: string) =>
     `worker/bookings/reject/${bookingId}`,
-  completeBooking: (bookingId: string) => `worker/bookings/completeBooking/${bookingId}`,
+  completeBooking: (bookingId: string) =>
+    `worker/bookings/completeBooking/${bookingId}`,
 
   // profile---------------------------------------------------------------------------------------------------------------------------------
   updateWorkerProfile: (id: string) => `worker/profile/${id}`,
@@ -42,6 +43,9 @@ const workerRoutes = {
   fetchChats: (workerId: string) => `worker/chat/${workerId}`,
   fetchMessages: (chatId: string) => `worker/chat/messages/${chatId}`,
   sendMessage: `worker/chat/addMessage`,
+
+  // dashbord------------------------
+  fetchDashboard: (workerId: string) => `worker/dashbord/${workerId}`,
 };
 
 export default workerRoutes;

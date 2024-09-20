@@ -122,7 +122,7 @@ const BookingsUser = () => {
     if (selectedBookingId) {
       const booking = allBookings.find((b) => b._id === selectedBookingId);
       const workerId = booking?.workerId._id;
-      console.log("workerid----------", workerId);
+      // console.log("workerid----------", workerId);
 
       try {
         let response;
