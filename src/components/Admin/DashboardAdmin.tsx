@@ -4,21 +4,78 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
-import { Chart } from "../worker/dashboard/Chart";
+import { ChartContainer } from "@/components/ui/chart";
 import { fetchDashbordData } from "@/api/admin";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
+interface MonthlyData {
+  _id: string;
+  totalUsers: number;
+  totalWorkers: number;
+}
+
+// ChartConfig for the chart configuration
+const chartConfig = {
+  users: {
+    label: "Users",
+    color: "#2563eb",
+  },
+  workers: {
+    label: "Workers",
+    color: "",
+  },
+} as const;
 
 const DashboardAdmin = () => {
-  // State to store the dashboard data
   const [dashboardData, setDashboardData] = useState({
     blockedWorkers: 0,
     blockedUsers: 0,
     totalServices: 0,
     pendingRequests: 0,
-    userMonthlyData: [],
-    workerMonthlyData: [],
+    userMonthlyData: [] as MonthlyData[],
+    workerMonthlyData: [] as MonthlyData[],
   });
 
-  // Fetch dashboard data on component mount
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  // Prepare data for the chart
+  const chartData = months.map((month, index) => {
+    const userData = dashboardData.userMonthlyData.find(
+      (data) => parseInt(data._id) === index + 1
+    );
+    const workerData = dashboardData.workerMonthlyData.find(
+      (data) => parseInt(data._id) === index + 1
+    );
+
+    return {
+      month,
+      users: userData ? userData.totalUsers : 0,
+      workers: workerData ? workerData.totalWorkers : 0,
+    };
+  });
+
   useEffect(() => {
     handleDashboard();
   }, []);
@@ -26,9 +83,6 @@ const DashboardAdmin = () => {
   const handleDashboard = async () => {
     try {
       const response = await fetchDashbordData();
-      console.log("resp-----", response);
-
-      // Update the state with the response data
       setDashboardData({
         blockedWorkers: response.blockedWorkers || 0,
         blockedUsers: response.blockedUsers || 0,
@@ -38,7 +92,7 @@ const DashboardAdmin = () => {
         workerMonthlyData: response.workerMonthlyData || [],
       });
     } catch (error) {
-      console.error("dashboard fetching error:", error);
+      console.error("Dashboard fetching error:", error);
     }
   };
 
@@ -46,13 +100,11 @@ const DashboardAdmin = () => {
     blockedWorkers,
     blockedUsers,
     totalServices,
-    userMonthlyData,
-    workerMonthlyData,
     pendingRequests,
   } = dashboardData;
 
   return (
-    <div className="">
+    <div>
       <p className="text-xl p-1 font-semibold">Welcome Anas</p>
       <div className="flex flex-col md:flex-row justify-evenly gap-3">
         <Card
@@ -67,7 +119,7 @@ const DashboardAdmin = () => {
           title="Blocked Users"
           value={blockedUsers}
           backgroundColor="linear-gradient(195deg, #42424a, #191919)"
-          boxShadow=" 0rem 0.25rem 1.25rem 0rem rgba(0, 0, 0, 0.14), 0rem 0.4375rem 0.625rem -0.3125rem rgba(64, 64, 64, 0.4)"
+          boxShadow="0rem 0.25rem 1.25rem 0rem rgba(0, 0, 0, 0.14), 0rem 0.4375rem 0.625rem -0.3125rem rgba(64, 64, 64, 0.4)"
         />
         <Card
           icon={MiscellaneousServicesIcon}
@@ -84,12 +136,29 @@ const DashboardAdmin = () => {
           boxShadow="0rem 0.25rem 1.25rem 0rem rgba(0, 0, 0, 0.14), 0rem 0.4375rem 0.625rem -0.3125rem rgba(233, 30, 98, 0.4)"
         />
       </div>
-      <div className="">
+      <div>
         <p className="p-5 text-xl font-semibold">Details</p>
-        <Chart
-          userMonthlyData={userMonthlyData}
-          workerMonthlyData={workerMonthlyData}
-        />
+        <ChartContainer config={chartConfig} className="h-80 mt-1 mx-5 p-5">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar
+                dataKey="users"
+                fill={chartConfig.users.color}
+                name={chartConfig.users.label}
+              />
+              <Bar
+                dataKey="workers"
+                fill={chartConfig.workers.color}
+                name={chartConfig.workers.label}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
       </div>
     </div>
   );

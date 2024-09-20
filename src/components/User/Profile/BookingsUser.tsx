@@ -127,11 +127,7 @@ const BookingsUser = () => {
       try {
         let response;
         if (isEditing) {
-          response = await updateReview(
-            selectedBookingId,
-            rating,
-            comment,
-          );
+          response = await updateReview(selectedBookingId, rating, comment);
           toast.success(response);
           console.log("Review updated successfully:", response);
         } else {
@@ -146,7 +142,7 @@ const BookingsUser = () => {
 
           console.log("Review added successfully:", response);
         }
-        await fetchBookings();
+        // await fetchBookings();
       } catch (error) {
         console.error("Error adding/updating review:", error);
       }
@@ -199,7 +195,7 @@ const BookingsUser = () => {
                   </div>
                   <div className="flex text-xs   items-center max-w-48 ">
                     <PaymentIcon fontSize="inherit" className="mr-2" />
-                    <span className="truncate text-yellow-700">
+                    <span className="truncate text-yellow-500">
                       {booking?.paymentStatus}
                     </span>
                   </div>
@@ -266,17 +262,18 @@ const BookingsUser = () => {
                     </span>
                     Chat
                   </button>
-                  {booking.status === "completed" && (
-                    <button
-                      onClick={() => handlePayNow(booking._id!)}
-                      className="text-xs capitalize text-white  border bg-black hover:bg-white hover:border-blue-700 hover:text-black border-blue-600-600 rounded-lg self-start md:self-center w-full text-center py-1"
-                    >
-                      <span className="text-blue-500 ">
-                        <PaymentIcon fontSize="small" />{" "}
-                      </span>{" "}
-                      Pay Now
-                    </button>
-                  )}
+                  {booking.status === "completed" &&
+                    booking.paymentStatus === "pending" && (
+                      <button
+                        onClick={() => handlePayNow(booking._id!)}
+                        className="text-xs capitalize text-white  border bg-black hover:bg-white hover:border-blue-700 hover:text-black border-blue-600-600 rounded-lg self-start md:self-center w-full text-center py-1"
+                      >
+                        <span className="text-blue-500 ">
+                          <PaymentIcon fontSize="small" />{" "}
+                        </span>{" "}
+                        Pay Now
+                      </button>
+                    )}
                 </div>
               </div>{" "}
               {booking.review && (
