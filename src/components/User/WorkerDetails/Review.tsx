@@ -1,5 +1,6 @@
+import { formatDateForChat } from "@/utils/chatHelperFunctions";
 import { Rating } from "@mui/material";
-
+import userLogo from '/user.png'
 interface ReviewProps {
   userName: string;
   userAvatar: string;
@@ -21,13 +22,15 @@ const Review = ({
         <div className="flex items-center mb-4 md:mb-0">
           {/* User profile image or avatar */}
           <img
-            src={userAvatar}
-            alt={`${userName} Avatar`}
+            src={userAvatar || userLogo}
+            alt={userName}
             className="w-12 h-12 rounded-full object-cover mr-4"
           />
           <div>
             <h2 className="text-lg font-semibold text-gray-800">{userName}</h2>
-            <p className="text-sm text-gray-600">Reviewed on {reviewDate}</p>
+            <p className="text-sm text-gray-600">
+              Reviewed on {formatDateForChat(reviewDate)}
+            </p>
           </div>
         </div>
         {/* Star Rating */}
@@ -38,7 +41,9 @@ const Review = ({
       </div>
 
       {/* Review Comment */}
-      <p className="mt-4 text-gray-700 text-sm md:text-base">{comment}</p>
+      <p className="mt-4 text-gray-700 text-sm md:text-base capitalize">
+        {comment}
+      </p>
     </div>
   );
 };

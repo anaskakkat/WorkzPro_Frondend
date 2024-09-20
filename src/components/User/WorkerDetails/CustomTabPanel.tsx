@@ -34,7 +34,7 @@ export default function CustomTabPanel({ workerId }: CustomTabPanelProps) {
           aria-label="secondary tabs example"
           className="w-full"
         >
-          <Tab value="one" label="Details" className="flex text-center" />
+          <Tab value="one" label="Reviews" className="flex text-center" />
           <Tab value="two" label="Booking" className="flex text-center" />
           {/* Add more tabs if needed */}
         </Tabs>
