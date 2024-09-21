@@ -76,7 +76,7 @@ const ProfileSetup: React.FC = () => {
   const [selectedService, setSelectedService] = useState<string>("");
   const [selectRadius, setSelectRadius] = useState<number>();
   const [loading, setLoading] = useState(false);
-  const [profilePicUrl, setProfilePicUrl] = useState<string>("");
+  const [profilePicUrl] = useState<string>("");
   const searchInput = useRef<HTMLInputElement>(null);
   const [locationCoords, setLocationCoords] = useState<{
     lat: number;
@@ -312,10 +312,10 @@ const ProfileSetup: React.FC = () => {
                     required
                     input={<OutlinedInput label="Service" />}
                   >
-                    {serviceList ||
-                      [].map((service: any, index) => (
+                    {serviceList.length > 0 &&
+                      serviceList.map((service: any, index) => (
                         <MenuItem key={index} value={service._id}>
-                          {service.name as string}
+                          {service.name}
                         </MenuItem>
                       ))}
                   </CustomSelect>

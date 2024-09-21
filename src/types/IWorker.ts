@@ -1,6 +1,7 @@
 import IService from "./IService";
 
 interface IWorker {
+  averageRating: number;
   locationName: string;
   _id: string;
   workerId: number;
