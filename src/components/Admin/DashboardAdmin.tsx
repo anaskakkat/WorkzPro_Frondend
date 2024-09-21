@@ -137,8 +137,8 @@ const DashboardAdmin = () => {
         />
       </div>
       <div>
-        <p className="p-5 text-xl font-semibold">Details</p>
-        <ChartContainer config={chartConfig} className="h-80 mt-1 mx-5 p-5">
+        <p className="text-xl font-semibold">Details</p>
+        <ChartContainer config={chartConfig} className="h-80 w-full mt-8">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />

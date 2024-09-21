@@ -1,46 +1,68 @@
-"use client";
+import { BarChart } from "@mui/x-charts/BarChart";
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-
-const chartData = [
-    { month: "January", desktop: 186 },
-    { month: "February", desktop: 305 },
-    { month: "March", desktop: 237 },
-    { month: "April", desktop: 73 },
-    { month: "May", desktop: 209 },
-    { month: "June", desktop: 214 },
-    { month: "July", desktop: 214 },
-    { month: "August", desktop: 214 }, 
-    { month: "September", desktop: 214 },  
-    { month: "October", desktop: 214 },
-    { month: "November", desktop: 214 },
-    { month: "December", desktop: 214 },
-  ];
-  
+const monthNames: string[] = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",
+  earnings: {
+    label: "Earnings",
+    color: "#1A73E8",
   },
-} satisfies ChartConfig;
+};
 
-export function Chart() {
+interface MonthlyEarning {
+  _id: number;
+  totalEarnings: number;
+}
+
+interface ChartData {
+  month: string;
+  earnings: number;
+}
+
+interface ChartProps {
+  monthlyEarnings: MonthlyEarning[];
+}
+
+export function Chart({ monthlyEarnings }: ChartProps) {
+  // console.log("earnings----", monthlyEarnings);
+
+  const chartData: ChartData[] = monthNames.map((month) => ({
+    month,
+    earnings: 0,
+  }));
+
+  monthlyEarnings.forEach((item) => {
+    const monthIndex = item._id - 1;
+    if (monthIndex >= 0 && monthIndex < chartData.length) {
+      chartData[monthIndex].earnings = item.totalEarnings || 0;
+    }
+  });
+
   return (
-    <ChartContainer config={chartConfig} className="h-80 mt-1 mx-5 p-5">
-      <BarChart accessibilityLayer data={chartData}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="month"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) => value.slice(0, 3)}
-        />
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-      </BarChart>
-    </ChartContainer>
+    <BarChart
+      xAxis={[{ scaleType: "band", data: chartData.map((item) => item.month) }]}
+      series={[
+        {
+          data: chartData.map((item) => item.earnings),
+          label: chartConfig.earnings.label,
+          color: chartConfig.earnings.color,
+        },
+      ]}
+      width={1000}
+      height={300}
+    />
   );
 }

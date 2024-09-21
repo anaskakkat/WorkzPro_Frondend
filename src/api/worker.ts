@@ -298,7 +298,7 @@ export const sendMessage = async (message: Message) => {
 //dashbord---------------------------------------------------
 export const fetchDashbordData = async (workerId: string) => {
   try {
-    const response = await Api.post(workerRoutes.fetchDashboard(workerId));
+    const response = await Api.get(workerRoutes.fetchDashboard(workerId));
     return response.data;
   } catch (error) {
     throw error;
