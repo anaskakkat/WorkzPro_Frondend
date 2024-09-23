@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import HomePage from "../pages/User/HomePage";
 import SignUpPage from "../pages/User/Signup";
 import LoginPage from "../pages/User/LoginPage";
 import Otp from "../pages/User/Otp";
@@ -19,6 +18,7 @@ import BookingsPage from "../pages/User/BookingsPage";
 import DashboarLayout from "../pages/User/DashboarLayout";
 import { SocketProvider } from "../context/socketContext";
 import PaymentSuccess from "../components/User/Profile/PaymentSuccess";
+import HomePage from "@/pages/User/HomePage";
 
 export const UserRouter = () => {
   return (
@@ -35,6 +35,7 @@ export const UserRouter = () => {
 
           {/* homeRoute */}
           <Route path="/" element={<HomePage />} />
+
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>

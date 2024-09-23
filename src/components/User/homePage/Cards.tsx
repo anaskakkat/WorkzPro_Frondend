@@ -21,16 +21,16 @@ const Cards = () => {
 
   return (
     <>
-      <h2 className="text-sm lg:text-2xl  text-custom_navyBlue font-bold text-center my-4">
+      <h2 className="text-sm lg:text-2xl font-bold text-center mt-6">
         What We Can Help With
       </h2>
-      <div className="bg-custom_bg_blue py-8">
+      <div className="py-8">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 ">
             {services.map((service, index) => (
               <div
                 key={index}
-                className="bg-white p-4 md:p-6 rounded-lg shadow-lg hover:shadow-xl  hover:-translate-y-2 text-center w-full"
+                className="bg-white p-4 border md:p-6 rounded-lg shadow-lg hover:shadow-xl  hover:-translate-y-2 text-center w-full"
               >
                 <img
                   src={service.logo}
