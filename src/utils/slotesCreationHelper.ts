@@ -1,4 +1,4 @@
-import { addMinutes, format, isBefore, startOfDay } from "date-fns";
+import { addMinutes, isBefore, startOfDay } from "date-fns";
 
 export const formatTimeSlot = (slot: string) => {
   const [start, end] = slot.split(" - ");

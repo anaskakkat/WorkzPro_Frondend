@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import Loader from "../loader/Loader";
 
-interface User {
+interface Worker {
   _id: string;
-  userName: string;
+  name: string;
   email: string;
   status: string;
   isBlocked: boolean;
@@ -29,9 +29,9 @@ interface User {
 }
 
 const WorkersAdmin: React.FC = () => {
-  const [workers, setWorkers] = useState<User[]>([]);
+  const [workers, setWorkers] = useState<Worker[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedWorker, setSelectedWorker] = useState<User | null>(null);
+  const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [page, setPage] = useState(1);
   const [workersPerPage] = useState(10);
@@ -87,7 +87,7 @@ const WorkersAdmin: React.FC = () => {
     }
   };
 
-  const handleDetailsClick = (worker: User) => {
+  const handleDetailsClick = (worker: Worker) => {
     setSelectedWorker(worker);
     setIsModalOpen(true);
   };
@@ -96,10 +96,7 @@ const WorkersAdmin: React.FC = () => {
     setIsModalOpen(false);
     setSelectedWorker(null);
   };
-  const handleChangePage = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handleChangePage = (value: number) => {
     setPage(value);
   };
   if (loading) return <Loader />;
@@ -111,7 +108,7 @@ const WorkersAdmin: React.FC = () => {
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg ">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
           <tr>
             <th scope="col" className="px-6 py-3">
               Sr. No
@@ -122,6 +119,7 @@ const WorkersAdmin: React.FC = () => {
             <th scope="col" className="px-6 py-3">
               Status
             </th>
+            <th></th>
             <th scope="col" className="px-6 py-3">
               Action
             </th>
@@ -141,10 +139,10 @@ const WorkersAdmin: React.FC = () => {
                 <img
                   className="w-10 h-10 rounded-full"
                   src={user.profilePicture || defaultImage}
-                  alt={user.userName}
+                  alt={user.name}
                 />
                 <div className="ps-3">
-                  <div className="text-base font-semibold">{user.userName}</div>
+                  <div className="text-base font-semibold">{user.name}</div>
                   <div className="font-normal text-gray-500">{user.email}</div>
                 </div>
               </th>
@@ -167,7 +165,7 @@ const WorkersAdmin: React.FC = () => {
               <td>
                 <button
                   onClick={() => handleDetailsClick(user)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded"
+                  className="bg-custom-gradient-black hover:text-blue-300 text-white text-xs font-semibold py-1.5 px-3 rounded-sm"
                 >
                   Details
                 </button>{" "}
@@ -175,11 +173,11 @@ const WorkersAdmin: React.FC = () => {
               <td className="px-6 py-4">
                 <button
                   onClick={() => handleBlockUnblock(user._id, user.isBlocked)}
-                  className={`font-medium border-2 ${
+                  className={`font-medium border ${
                     user.isBlocked
-                      ? "border-green-600 text-green-600 hover:bg-green-500 hover:text-white"
-                      : "border-red-200 text-red-600 hover:bg-red-500 hover:text-white"
-                  } bg-transparent rounded-lg px-4 py-2 transition-colors duration-300`}
+                      ? "border-green-600 text-green-600 hover:bg-green-700 hover:text-white"
+                      : "border-red-200 text-red-600 hover:bg-red-600 hover:text-white"
+                  } bg-transparent rounded-md px-2 py-1.5 transition-colors duration-300`}
                 >
                   {user.isBlocked ? "Unblock" : "Block"}
                 </button>
@@ -193,8 +191,8 @@ const WorkersAdmin: React.FC = () => {
         <Pagination
           count={pageCount}
           page={page}
-          onChange={handleChangePage}
-          color="primary"
+          onChange={() => handleChangePage}
+          color="standard"
         />
       </div>
 
@@ -207,44 +205,63 @@ const WorkersAdmin: React.FC = () => {
         <DialogTitle>Worker Details</DialogTitle>
         <DialogContent>
           {selectedWorker && (
-            <div>
+            <div className="max-w-lg mx-auto p-4 border border-gray-200 rounded-lg shadow-md bg-white">
               <img
                 src={selectedWorker.profilePicture}
-                alt={selectedWorker.userName}
-                className="w-24 h-24 rounded-full mx-auto mb-4"
+                alt={selectedWorker.name}
+                className="w-24 h-24 rounded-full mx-auto mb-4 border-2 border-gray-300"
               />
-              <p>
-                <strong>Name:</strong> {selectedWorker.userName}
-              </p>
-              <p>
-                <strong>Email:</strong> {selectedWorker.email}
-              </p>
-              <p>
-                <strong>Phone Number:</strong> {selectedWorker.phoneNumber}
-              </p>
-              <p>
-                <strong>Experience:</strong> {selectedWorker.experience} years
-              </p>
-              <p>
-                <strong>Location:</strong> {selectedWorker.locationName}
-              </p>
-              <p>
-                <strong>Wage per Day:</strong> {selectedWorker.wageDay}
-              </p>
-              <p>
-                <strong>Work Radius:</strong> {selectedWorker.workRadius} km
-              </p>
-              <p>
-                <strong>Status:</strong> {selectedWorker.status}
-              </p>
-              <p>
-                <strong>Identity Proof:</strong>
-              </p>
-              <img
-                src={selectedWorker.identityProof}
-                alt="Identity Proof"
-                className="w-88 h-48 mt-2 rounded-lg"
-              />
+              <h2 className="text-xl font-semibold text-center mb-4 capitalize">
+                {selectedWorker.name}
+              </h2>
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <strong>Email:</strong>
+                  <span className="text-gray-700">{selectedWorker.email}</span>
+                </div>
+                <div className="flex justify-between">
+                  <strong>Phone Number:</strong>
+                  <span className="text-gray-700">
+                    {selectedWorker.phoneNumber}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <strong>Experience:</strong>
+                  <span className="text-gray-700">
+                    {selectedWorker.experience} years
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <strong>Location:</strong>
+                  <span className="text-gray-700">
+                    {selectedWorker.locationName}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <strong>Wage per Day:</strong>
+                  <span className="text-gray-700">
+                    {selectedWorker.wageDay}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <strong>Work Radius:</strong>
+                  <span className="text-gray-700">
+                    {selectedWorker.workRadius} km
+                  </span>
+                </div>
+                <div className="flex justify-between capitalize">
+                  <strong>Status:</strong>
+                  <span className="text-gray-700">{selectedWorker.status}</span>
+                </div>
+                <div>
+                  <strong>Identity Proof:</strong>
+                  <img
+                    src={selectedWorker.identityProof}
+                    alt="Identity Proof"
+                    className="w-full h-48 mt-2 rounded-lg object-cover"
+                  />
+                </div>
+              </div>
             </div>
           )}
         </DialogContent>

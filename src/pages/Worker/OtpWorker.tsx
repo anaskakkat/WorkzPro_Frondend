@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import Logo from "../../assets/Logo workzpro.png";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { resendOtp } from "../../api/user";
 import { verifyWorkerOtp } from "../../api/worker";

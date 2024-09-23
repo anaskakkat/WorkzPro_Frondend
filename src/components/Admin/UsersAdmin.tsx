@@ -6,7 +6,7 @@ import Loader from "../loader/Loader";
 import { Pagination } from "@mui/material";
 interface User {
   profilePicture: string;
-  _id: number;
+  _id: string;
   userName: string;
   email: string;
   status: string;
@@ -35,7 +35,7 @@ const UsersAdmin: React.FC = () => {
     fetchUsers();
   }, []);
 
-  const handleBlockUnblock = async (userId: number, isBlocked: boolean) => {
+  const handleBlockUnblock = async (userId: string, isBlocked: boolean) => {
     try {
       const action = isBlocked ? "unblock" : "block";
       const result = await Swal.fire({
@@ -64,7 +64,7 @@ const UsersAdmin: React.FC = () => {
       console.error("Failed to update user status", err);
     }
   };
-  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handleChangePage = (value: number) => {
     setPage(value);
   };
   if (loading) return <Loader />;
@@ -75,7 +75,7 @@ const UsersAdmin: React.FC = () => {
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
           <tr>
             <th scope="col" className="px-6 py-3">
               Sr. No
@@ -146,8 +146,8 @@ const UsersAdmin: React.FC = () => {
         <Pagination
           count={pageCount}
           page={page}
-          onChange={handleChangePage}
-          color="primary"
+          onChange={(_event, value) => handleChangePage(value)}
+          color="standard"
         />
       </div>
     </div>

@@ -7,7 +7,6 @@ import ProtectedRoute from "../components/protectedRoute.tsx/userProtectedRoute"
 import PublicRoute from "../components/protectedRoute.tsx/PublicRoute";
 import Service from "../components/User/servicesPage/Service";
 import UserLayout from "../pages/User/UserLayout";
-import InterceptorSetup from "../components/axiosInterceptors/axiosInterceptors";
 import WorkersNearby from "../pages/User/WorkersNearby";
 import DeatilsWorker from "../pages/User/DeatilsWorker";
 import WorkerCheckout from "../pages/User/WorkerCheckout";
@@ -23,7 +22,6 @@ import PaymentSuccess from "../components/User/Profile/PaymentSuccess";
 
 export const UserRouter = () => {
   return (
-    <InterceptorSetup>
       <Routes>
         {/* Public routes */}
         <Route element={<PublicRoute />}>
@@ -34,6 +32,7 @@ export const UserRouter = () => {
 
         <Route path="/" element={<UserLayout />}>
           <Route path="/demo" element={<Demo />} />
+
           {/* homeRoute */}
           <Route path="/" element={<HomePage />} />
 
@@ -52,6 +51,8 @@ export const UserRouter = () => {
               />
               <Route path="/success/:id" element={<BookingSuccess />} />
               <Route path="/success" element={<PaymentSuccess />} />
+
+              {/* Dashboard Layout Routes */}
               <Route element={<DashboarLayout />}>
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/bookings" element={<BookingsPage />} />
@@ -60,9 +61,10 @@ export const UserRouter = () => {
             </Route>
           </Route>
 
+          {/* Fallback for unknown routes */}
           <Route path="*" element={<ErrorComponent />} />
         </Route>
       </Routes>
-    </InterceptorSetup>
+   
   );
 };

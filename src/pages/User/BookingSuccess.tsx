@@ -1,4 +1,3 @@
-import React from "react";
 import BookingConfirm from "../../components/User/bookingConfirm/BookinConfirm";
 
 const BookingSuccess = () => {

@@ -59,7 +59,7 @@ const Services: React.FC = () => {
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [editingService, setEditingService] = useState<IService | null>(null);
   const [page, setPage] = useState(1);
-  const [itemsPerPage] = useState(2);
+  const [itemsPerPage] = useState(5);
   const fetchServices = async () => {
     try {
       const response = await getServices();
@@ -192,10 +192,7 @@ const Services: React.FC = () => {
       toast.error("Failed to update service");
     }
   };
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
-    value: number
-  ) => {
+  const handlePageChange = (value: number) => {
     setPage(value);
   };
   if (loading) return <div className="text-center p-4">Loading...</div>;
@@ -206,21 +203,18 @@ const Services: React.FC = () => {
   const totalPages = Math.ceil(services.length / itemsPerPage);
 
   return (
-    <div className="container align-middle mx-auto p-4">
-      <Button
-        variant="contained"
-        color="primary"
+    <div className="container align-middle mx-auto">
+      <button
         onClick={handleAddService}
-        style={{ marginBottom: "1rem", backgroundColor: "#3B82F6" }}
-        className="text-white"
+        className="text-white bg-custom-gradient-black rounded-sm p-2 m-2 font-medium hover:text-blue-300 "
       >
         Create Service
-      </Button>
+      </button>
 
       <div className="overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700  bg-gray-50">
-            <tr className="bg-blue-50">
+            <tr className="bg-gray-200">
               <th scope="col" className="px-6 py-3">
                 Sr. No
               </th>
@@ -236,49 +230,49 @@ const Services: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-              {paginatedServices.map((service, index) => (
-                <TableRow
-                  key={service._id}
-                  className="bg-white border-b hover:bg-custom_bg_blue"
+            {paginatedServices.map((service, index) => (
+              <TableRow
+                key={service._id}
+                className="bg-white border-b hover:bg-custom_bg_blue"
+              >
+                <td className="px-6 py-4">{index + 1}</td>
+                <td className="px-6 py-4">{service.name}</td>
+                <td
+                  className={`px-6 py-4 ${
+                    service.isBlocked ? "text-red-500" : "text-green-600"
+                  }`}
                 >
-                  <td className="px-6 py-4">{index + 1}</td>
-                  <td className="px-6 py-4">{service.name}</td>
-                  <td
-                    className={`px-6 py-4 ${
-                      service.isBlocked ? "text-red-500" : "text-green-600"
-                    }`}
+                  {service.isBlocked ? "Blocked" : "Active"}
+                </td>
+                <td className=" py-4">
+                  <Button
+                    variant="outlined"
+                    color={service.isBlocked ? "success" : "error"}
+                    onClick={() =>
+                      handleBlockUnblock(service._id, service.isBlocked)
+                    }
                   >
-                    {service.isBlocked ? "Blocked" : "Active"}
-                  </td>
-                  <td className=" py-4">
-                    <Button
-                      variant="outlined"
-                      color={service.isBlocked ? "success" : "error"}
-                      onClick={() =>
-                        handleBlockUnblock(service._id, service.isBlocked)
-                      }
-                    >
-                      {service.isBlocked ? " List" : "Unlist"}
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="info"
-                      onClick={() => handleEdit(service._id)}
-                      sx={{ margin: "0 8px" }}
-                    >
-                      Edit
-                    </Button>
-                  </td>
-                </TableRow>
-              ))}
+                    {service.isBlocked ? " List" : "Unlist"}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    onClick={() => handleEdit(service._id)}
+                    sx={{ margin: "0 8px" }}
+                  >
+                    Edit
+                  </Button>
+                </td>
+              </TableRow>
+            ))}
           </tbody>
         </table>
         <div className="flex justify-center my-4">
           <Pagination
             count={totalPages}
             page={page}
-            onChange={handlePageChange}
-            color="primary"
+            onChange={(_event, value) => handlePageChange(value)}
+            color="standard"
           />
         </div>
       </div>

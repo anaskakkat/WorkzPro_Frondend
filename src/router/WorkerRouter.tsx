@@ -13,7 +13,6 @@ import Payments from "../pages/Worker/Payments";
 import Reviews from "../pages/Worker/Reviews";
 import ProfileSetupPage from "../pages/Worker/ProfileSetupPage";
 import ProfileVerify from "../components/protectedRoute.tsx/worker/ProfileVerify";
-import WorkerInterceptor from "../components/axiosInterceptors/workerInterceptor";
 import ErrorComponent from "../components/ErrorComponent";
 import MapDirection from "../components/worker/bookings/MapDirection";
 import WorkerProfile from "../pages/Worker/WorkerProfile";
@@ -21,7 +20,6 @@ import Chats from "../pages/Worker/Chats";
 import { SocketProvider } from "../context/socketContext";
 const WorkerRouter = () => {
   return (
-    <WorkerInterceptor>
       <Routes>
         <Route element={<WorkerPublicRoute />}>
           <Route path="/login" element={<WorkerLogin />} />
@@ -50,7 +48,6 @@ const WorkerRouter = () => {
           </Route>
         </Route>
       </Routes>
-    </WorkerInterceptor>
   );
 };
 

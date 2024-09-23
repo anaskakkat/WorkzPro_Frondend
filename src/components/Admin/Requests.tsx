@@ -197,8 +197,8 @@ const Requests: React.FC = () => {
           </tbody>
         </table>
       ) : (
-        <div className="text-center py-4 text-gray-500">
-          No requests to display.
+        <div className="text-center py-4 text-gray-800 bg-gray-200">
+          No requests.
         </div>
       )}
 

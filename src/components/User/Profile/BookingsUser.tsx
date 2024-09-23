@@ -142,7 +142,7 @@ const BookingsUser = () => {
 
           console.log("Review added successfully:", response);
         }
-        // await fetchBookings();
+        await fetchBookings();
       } catch (error) {
         console.error("Error adding/updating review:", error);
       }

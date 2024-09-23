@@ -4,7 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const ProfileVerify=() => {
     const workerInfo = useSelector((state: RootState) => state.workerInfo);
-// console.log('workerInfo',workerInfo);
+console.log('--ProfileVerify----workerInfo',workerInfo);
 
 return workerInfo.workerInfo!==null ? <Outlet/>:<Navigate to={'/worker/login'}/>
 

@@ -7,7 +7,7 @@ const initialState = {
   isProfileSetup: false,
 };
 
-const userSlice = createSlice({
+const workerSlice  = createSlice({
   name: "worker",
   initialState,
   reducers: {
@@ -24,5 +24,5 @@ const userSlice = createSlice({
 });
 
 export const { setWorkerInfo, removeWorkerInfo } =
-  userSlice.actions;
-export default userSlice.reducer;
+  workerSlice.actions;
+export default workerSlice.reducer;

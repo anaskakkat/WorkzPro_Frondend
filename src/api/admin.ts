@@ -50,7 +50,7 @@ export const getUsers = async () => {
     handleApiError(error);
   }
 };
-export const blockUser = async (userId: number) => {
+export const blockUser = async (userId: string) => {
   try {
     const response = await Api.patch(adminRoutes.blockUser(userId));
 
@@ -59,7 +59,7 @@ export const blockUser = async (userId: number) => {
     handleApiError(error);
   }
 };
-export const unblockUser = async (userId: number) => {
+export const unblockUser = async (userId: string) => {
   try {
     const response = await Api.patch(adminRoutes.unblockUser(userId));
 

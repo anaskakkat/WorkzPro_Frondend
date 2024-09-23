@@ -10,7 +10,7 @@ const StyledTextField = styled(TextField)(() => ({
       // borderColor: "#848884",
     },
     "&:hover fieldset": {
-      borderColor: "#3B82F6",
+      borderColor: "#49a3f1",
     },
     "&.Mui-focused fieldset": {
       borderColor: "#BFDBFC",

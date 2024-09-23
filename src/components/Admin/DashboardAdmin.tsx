@@ -27,7 +27,7 @@ interface MonthlyData {
 const chartConfig = {
   users: {
     label: "Users",
-    color: "#2563eb",
+    color: "#49a3f1",
   },
   workers: {
     label: "Workers",

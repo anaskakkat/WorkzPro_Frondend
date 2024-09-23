@@ -7,7 +7,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { getDistance } from "geolib";
 import CustomTextField from "@/components/styleComponents/StyledTextField";
-import { Rating, MenuItem, Select, Pagination } from "@mui/material";
+import {
+  Rating,
+  MenuItem,
+  Select,
+  Pagination,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 
 const WorkerNearby: React.FC = () => {
   const [workers, setWorkers] = useState<IWorker[]>([]);
@@ -104,7 +111,7 @@ const WorkerNearby: React.FC = () => {
   return (
     <div className="flex h-screen ">
       {/* Sidebar */}
-      <div className="w-full md:w-64 bg-gray-50 p-5 h-full">
+      <div className="w-full md:w-64 bg-gray-50 p-5 h-full pt-12">
         <CustomTextField
           fullWidth
           label="Search workers"
@@ -113,17 +120,17 @@ const WorkerNearby: React.FC = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           margin="normal"
           sx={{
-            width: "94%",
+            width: "90%",
           }}
         />
 
-        <label htmlFor="rating-filter">Filter by Rating:</label>
-        <div className="mt-4 overflow-hidden">
+        <div className="mt-4 overflow-hidden flex flex-col">
+          <label htmlFor="rating-filter">Filter by Rating:</label>
           <Select
             id="rating-filter"
             value={ratingFilter || ""}
             onChange={(e) => setRatingFilter(Number(e.target.value) || null)}
-            className="border p-2 rounded-lg ml-2"
+            className="border  rounded-lg "
             displayEmpty
             sx={{
               width: "90%",
@@ -153,16 +160,18 @@ const WorkerNearby: React.FC = () => {
 
         {/* Sort Option */}
         <div className="flex flex-col mt-4">
-          <label htmlFor="sort-option">Sort by:</label>
-          <select
-            id="sort-option"
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className="border p-2 rounded-lg ml-2"
-          >
-            <option value="distance">Distance</option>
-            <option value="rating">Rating</option>
-          </select>
+          <InputLabel htmlFor="sort-option">Sort by:</InputLabel>
+          <FormControl sx={{ width: "90%", height: "40px" }} variant="outlined">
+            <Select
+              id="sort-option"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              sx={{ height: "40px" }} 
+            >
+              <MenuItem value="distance">Distance</MenuItem>
+              <MenuItem value="rating">Rating</MenuItem>
+            </Select>
+          </FormControl>
         </div>
       </div>
 
@@ -188,7 +197,7 @@ const WorkerNearby: React.FC = () => {
                 <div className="rounded-lg ">
                   <img
                     src={worker.profilePicture}
-                    width={180}
+                    width={160}
                     alt="profile"
                     className="rounded-xl shadow-md shadow-slate-200"
                   />
@@ -203,7 +212,7 @@ const WorkerNearby: React.FC = () => {
                   <p>
                     <Rating value={worker.averageRating} />
                   </p>
-                  <p className="text-sm font-medium text-blue-950 mb-2">
+                  <p className="text-xs font-medium text-blue-700 mb-2">
                     {worker.distance} km away
                   </p>
                   <button

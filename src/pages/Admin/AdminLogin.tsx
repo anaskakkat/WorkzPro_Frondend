@@ -1,50 +1,33 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Button, CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { toast } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import CustomTextField from "../../components/styleComponents/StyledTextField";
-import logo from "/workzpro-high-resolution-logo.jpeg"; 
+import logo from "/workzpro-high-resolution-logo.jpeg";
 import { verifyloginAdmin } from "../../api/admin";
 import { setadminInfo } from "../../redux/slices/adminSlice";
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=\S)(?=\S{8,})/;
+import { validateEmail, validatePassword } from "@/utils/formValidations";
+import { cn } from "@/lib/utils";
+import DotPattern from "@/components/magicui/dot-pattern";
 
 const WorkerLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const validateEmail = (email: string) => {
-    if (!emailRegex.test(email)) {
-      return "Invalid email format";
-    }
-    return "";
-  };
-
-  const validatePassword = (password: string) => {
-    if (!passwordRegex.test(password)) {
-      return "Password must be at least 8 characters long and contain no spaces.";
-    }
-    return "";
-  };
-
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
-    setEmailError(validateEmail(newEmail));
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
-    setPasswordError(validatePassword(newPassword));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -53,7 +36,6 @@ const WorkerLogin = () => {
     let isValid = true;
 
     if (!email.trim()) {
-      setEmailError("Please enter your email");
       toast.error("Please enter your email");
       isValid = false;
     } else if (validateEmail(email)) {
@@ -62,7 +44,6 @@ const WorkerLogin = () => {
     }
 
     if (!password.trim()) {
-      setPasswordError("Please enter your password");
       toast.error("Please enter your password");
       isValid = false;
     } else if (validatePassword(password)) {
@@ -99,18 +80,25 @@ const WorkerLogin = () => {
   };
 
   return (
-    <div className="flex items-center mx-auto max-w-full justify-center h-screen bg-blue-50">
-      <div className="bg-white border-2 rounded shadow-lg flex flex-col sm:flex-row items-center max-w-4xl mx-4 md:mx-auto">
+    <div className="flex sm:h-[calc(100vh)] ">
+      <DotPattern
+        className={cn(
+          "[mask-image:radial-gradient(800px_circle_at_center,white,transparent)] bg-blue-50 "
+        )}
+      />
+      <div className="flex mx-auto mt-20 border items-center h-fit   sm:w-fit shadow-lg  flex-col   sm:flex-row sm:m-auto bg-white z-0 rounded-md">
         {/* Left Side: Logo */}
-        <div className="flex justify-center items-center max-w-xs p-4 md:border-r-2">
-          <img src={logo} alt="WorkzPro Logo" className="sm:w-auto sm:h-auto" />
+        <div className="flex  mt-6 lg:max-w-80  lg:py-8 px-5 sm:border-r sm:mt-0 sm:w-64  ">
+          <img
+            src={logo}
+            alt="WorkzPro Logo"
+            className="w-32  mx-auto sm:w-fit"
+          />
         </div>
 
         {/* Right Side: Login Form */}
-        <div className="w-full p-8 rounded-md">
-          <Typography variant="h5" className="text-xl mb-4">
-            Admin Login
-          </Typography>
+        <div className="w-96 p-8 rounded-md">
+          <h5 className="text-sm md:text-xl">Admin Login</h5>
 
           <Box
             component="form"
@@ -131,8 +119,6 @@ const WorkerLogin = () => {
               margin="dense"
               value={email}
               onChange={handleEmailChange}
-              error={!!emailError}
-              helperText={emailError}
             />
             <CustomTextField
               id="password"
@@ -146,23 +132,15 @@ const WorkerLogin = () => {
               margin="dense"
               value={password}
               onChange={handlePasswordChange}
-              error={!!passwordError}
-              helperText={passwordError}
             />
             <Box className="flex items-center justify-between">
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                className="w-full px-4 py-2 text-sm font-medium text-white bg-custom_buttonColor rounded"
-                disabled={loading}
-              >
+              <button className="px-4 py-2 w-full text-sm font-medium text-white bg-custom-gradient-blue rounded-md">
                 {loading ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
                   "Login"
                 )}
-              </Button>
+              </button>
             </Box>
           </Box>
         </div>

@@ -10,7 +10,6 @@ import ErrorComponent from "../components/ErrorComponent";
 
 const AdminRouter = () => {
   return (
-    <AdminInterceptor>
       <Routes>
         {/* Public routes */}
 
@@ -25,7 +24,6 @@ const AdminRouter = () => {
 
         </Route>
       </Routes>
-    </AdminInterceptor>
   );
 };
 

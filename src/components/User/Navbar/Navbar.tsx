@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaUserAlt, FaLocationArrow, FaBars, FaTimes } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux/store/store";
+import { useDispatch } from "react-redux";
 import { removeUserInfo } from "../../../redux/slices/userSlices";
 import { logoutUser } from "../../../api/user";
 import toast from "react-hot-toast";
@@ -12,6 +11,7 @@ import { getSystemPosition } from "../../../utils/getCurrentLoaction";
 import { fetchLocationDetails } from "../../../utils/getLocationDetails";
 // import { initAutocomplete } from "../../../utils/googleMapUtils";
 import { setLocationState } from "../../../redux/slices/LocationSlice";
+import { useUserDeatils } from "@/redux/hooks/userSelectors";
 
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
   const searchInput = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const userInfo = useSelector((state: RootState) => state.userInfo.userInfo);
+  const userInfo = useUserDeatils();
   // console.log(userInfo);
 
   // useEffect(() => {
@@ -200,7 +200,7 @@ const Navbar: React.FC = () => {
                 >
                   <FaUserAlt />
                   <span className="text-custom_navyBlue capitalize">
-                    {userInfo.name}
+                    {userInfo.userName}
                   </span>
                 </button>
                 {isDropdownOpen && (
