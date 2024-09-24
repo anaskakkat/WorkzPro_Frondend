@@ -21,7 +21,7 @@ const Cards = () => {
 
   return (
     <>
-      <h2 className="text-sm lg:text-2xl font-bold text-center mt-6">
+      <h2 className="text-sm lg:text-2xl font-bold text-center pt-6">
         What We Can Help With
       </h2>
       <div className="py-8">

@@ -5,9 +5,9 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 
 const Card2 = () => {
   return (
-    <div className="flex flex-col items-center space-y-6 my-4 px-4">
+    <div className="flex flex-col items-center space-y-6 my-14">
       {/* Heading */}
-      <h4 className="text-center text-2xl font-bold">
+      <h4 className="text-center text-2xl font-bold text-gray-200">
         What makes us <span className="text-blue-500">unique</span>?
       </h4>
 

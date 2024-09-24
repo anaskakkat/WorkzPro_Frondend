@@ -15,11 +15,11 @@ const Footer = () => {
         <div className="mb-4 md:mb-0 text-center md:text-left">
           <h3 className="text-sm font-bold mb-2">Contact Us</h3>
           <p className="text-xs">
-            Contact Email: support@yourcompany.com
+             support@yourcompany.com
             <br />
-            Contact Phone: (123) 456-7891 <br />
-            Location: calicut <br />
-            Pincode: 676301
+             (123) 456-7891 <br />
+            calicut <br />
+             676301
           </p>
         </div>
         <div className="mb-4 md:mb-0 text-center md:text-left">

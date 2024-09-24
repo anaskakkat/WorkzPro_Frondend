@@ -14,10 +14,17 @@ const HomePage: React.FC = () => {
     <Suspense fallback={<Loader />}>
       <Banner />
 
-      <Container >
-        <Cards />
-        <Card2 />
-      </Container>
+      <div className="bg-gray-50">
+        <Container>
+          <Cards />
+        </Container>
+      </div>
+
+      <div className="bg-custom-gradient-black mt-4 py-5">
+        <Container>
+          <Card2 />
+        </Container>
+      </div>
 
       {/* <StepsCard/>  */}
     </Suspense>
