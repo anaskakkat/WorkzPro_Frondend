@@ -1,6 +1,6 @@
 import { BarChart } from "@mui/x-charts/BarChart";
 interface YearlyEarning {
-  _id: number;
+  _id: string;
   totalEarnings: number;
 }
 interface YearlyChartProps {

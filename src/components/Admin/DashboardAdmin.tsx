@@ -16,8 +16,12 @@ interface MonthlyData {
   totalWorkers: number;
 }
 interface YearlyEarning {
-  _id: number;
+  _id: string;
   totalEarnings: number;
+}
+interface MonthlyEarning {
+  _id: string;
+  totalAdminProfit: number;
 }
 const chartConfig = {
   users: {
@@ -40,7 +44,7 @@ const DashboardAdmin = () => {
     workerMonthlyData: [] as MonthlyData[],
   });
   const [yearlyEarnings, setYearlyEarnings] = useState<YearlyEarning[]>([]);
-  const [monthlyEarnings, setMonthlyEarnings] = useState<YearlyEarning[]>([]);
+  const [monthlyEarnings, setMonthlyEarnings] = useState<MonthlyEarning[]>([]);
 
   const months = [
     "Jan",

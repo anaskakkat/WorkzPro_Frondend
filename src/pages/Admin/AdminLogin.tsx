@@ -136,7 +136,7 @@ const WorkerLogin = () => {
             <Box className="flex items-center justify-between">
               <button className="px-4 py-2 w-full text-sm font-medium text-white bg-custom-gradient-blue rounded-md">
                 {loading ? (
-                  <CircularProgress size={24} color="inherit" />
+                  <CircularProgress size={12} color="inherit" />
                 ) : (
                   "Login"
                 )}

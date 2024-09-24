@@ -134,7 +134,7 @@ const WorkerLogin = () => {
             <div className="flex flex-col sm:flex-row items-center justify-between">
             <button className="px-4 py-2 w-full sm:w-2/4 text-sm font-medium text-white bg-custom-gradient-blue rounded-md">
                 {loading ? (
-                  <CircularProgress size={24} color="inherit" />
+                  <CircularProgress size={12} color="inherit" />
                 ) : (
                   "Login"
                 )}

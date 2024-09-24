@@ -74,9 +74,13 @@ const WorkerDashboard = () => {
             boxShadow="0rem 0.25rem 1.25rem 0rem rgba(0, 0, 0, 0.14), 0rem 0.4375rem 0.625rem -0.3125rem rgba(233, 30, 98, 0.4)"
           />
         </div>
-        <div>
-          <p className="p-5 text-xl font-semibold">Details</p>
-          <Chart monthlyEarnings={dashboardData.monthlyEarnings} />
+        <div className="flex flex-row">
+          <div>
+            {" "}
+            <p className="p-5 text-xl font-semibold">Details</p>
+            <Chart monthlyEarnings={dashboardData.monthlyEarnings} />
+          </div>
+          <div></div>
         </div>
       </div>
     </>

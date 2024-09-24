@@ -1,18 +1,18 @@
 import { BarChart } from "@mui/x-charts/BarChart";
 
 const monthNames: string[] = [
-  "January",
-  "February",
-  "March",
-  "April",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
   "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 const chartConfig = {
@@ -23,7 +23,7 @@ const chartConfig = {
 };
 
 interface MonthlyEarning {
-  _id: number;
+  month: number;
   totalEarnings: number;
 }
 
@@ -37,7 +37,7 @@ interface ChartProps {
 }
 
 export function Chart({ monthlyEarnings }: ChartProps) {
-  // console.log("earnings----", monthlyEarnings);
+  console.log("earnings----", monthlyEarnings);
 
   const chartData: ChartData[] = monthNames.map((month) => ({
     month,
@@ -45,7 +45,7 @@ export function Chart({ monthlyEarnings }: ChartProps) {
   }));
 
   monthlyEarnings.forEach((item) => {
-    const monthIndex = item._id - 1;
+    const monthIndex = item.month - 1;
     if (monthIndex >= 0 && monthIndex < chartData.length) {
       chartData[monthIndex].earnings = item.totalEarnings || 0;
     }
@@ -61,7 +61,7 @@ export function Chart({ monthlyEarnings }: ChartProps) {
           color: chartConfig.earnings.color,
         },
       ]}
-      width={1000}
+      width={600}
       height={300}
     />
   );

@@ -1,11 +1,8 @@
-// import React from 'react'
-
 import { Route, Routes } from "react-router-dom";
 import AdminPage from "../pages/Admin/AdminPage";
 import AdminLogin from "../pages/Admin/AdminLogin";
 import PublicRouteAdmin from "../components/protectedRoute.tsx/admin/PublicRouteAdmin";
 import ProtectedRouteAdmin from "../components/protectedRoute.tsx/admin/ProtectedRouteAdmin";
-import AdminInterceptor from "../components/axiosInterceptors/AdminInterceptor";
 import ErrorComponent from "../components/ErrorComponent";
 
 const AdminRouter = () => {
