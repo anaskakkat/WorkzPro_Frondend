@@ -18,7 +18,7 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className="h-24 flex w-60 py-4 rounded-lg border gap-2"
+      className="h-24 min-w-60 max-w-fit flex  py-4 rounded-lg border gap-2"
       style={{
         boxShadow:
           "0rem 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0rem 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06)",
