@@ -112,7 +112,7 @@ const BookingsUser = () => {
       if (stripe) {
         window.location.href = URL;
       }
-      await fetchBookings();
+      // await fetchBookings();
     } catch (error) {
       console.error("Payment error:", error);
     }
