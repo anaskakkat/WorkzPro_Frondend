@@ -3,7 +3,7 @@ import WorkerAvailability from "../workerAvailblity/WorkerAvaliblity";
 
 const Bookings = () => {
   return (
-    <div className="flex flex-col  p-6 col-2 w-full md:flex-row">
+    <div className="flex flex-col w-auto col-2 gap-5 lg:flex-row ">
       <WorkerAvailability />
       <BookingForm />
     </div>

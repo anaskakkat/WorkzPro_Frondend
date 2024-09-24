@@ -169,143 +169,144 @@ const BookingForm = () => {
   }
 
   return (
-    <div className="flex-1 p-4 border-l-2 min-w-96 border-blue-100 rounded-sm">
-      <h2 className="font-semibold mb-2 text-custom_navyBlue">
-        Booking Details
-      </h2>
-
-      <form className=" mx-auto" onSubmit={handleSubmit}>
-        {/* Form Fields */}
-        <div className="mb-2">
-          <input
-            type="text"
-            id="description"
-            name="description"
-            className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="mb-2">
-          <input
-            type="text"
-            id="houseNumber"
-            name="houseNumber"
-            className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
-            placeholder="House Number"
-            value={formData.houseNumber}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="flex mb-2 space-x-4">
-          <input
-            type="text"
-            id="street"
-            name="street"
-            className="w-1/2 p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
-            placeholder="Street/Area"
-            value={formData.street}
-            onChange={handleChange}
-          />
-          <button
-            type="button"
-            className="w-1/2 px-5 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 flex gap-2"
-            onClick={() => setIsMapOpen(true)}
-          >
-            <MyLocationIcon />
-            Location
-          </button>
-        </div>
-
-        {/* City and State Fields */}
-        <div className="flex mb-2">
-          <input
-            type="text"
-            id="city"
-            name="city"
-            className="w-1/2 p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
-            placeholder="City"
-            value={formData.city}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            id="state"
-            name="state"
-            className="w-1/2 p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
-            placeholder="State"
-            value={formData.state}
-            onChange={handleChange}
-          />
-        </div>
-
-        {/* Pin Code Field */}
-        <div className="mb-6">
-          <input
-            type="text"
-            id="pinCode"
-            name="pinCode"
-            className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
-            placeholder="Pin Code"
-            value={formData.pinCode}
-            onChange={handleChange}
-          />
-        </div>
-
+    <div className="flex-1 p-4 border lg:border-l-2 min-w-96 border-blue-100 rounded-sm">
+    <h2 className="font-semibold mb-2 text-custom_navyBlue">
+      Booking Details
+    </h2>
+  
+    <form className="mx-auto" onSubmit={handleSubmit}>
+      {/* Form Fields */}
+      <div className="mb-2">
+        <input
+          type="text"
+          id="description"
+          name="description"
+          className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+        />
+      </div>
+  
+      <div className="mb-2">
+        <input
+          type="text"
+          id="houseNumber"
+          name="houseNumber"
+          className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+          placeholder="House Number"
+          value={formData.houseNumber}
+          onChange={handleChange}
+        />
+      </div>
+  
+      <div className="flex mb-2 space-x-2 flex-wrap">
+        <input
+          type="text"
+          id="street"
+          name="street"
+          className="flex-1 min-w-0 p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+          placeholder="Street/Area"
+          value={formData.street}
+          onChange={handleChange}
+        />
         <button
-          type="submit"
-          className="w-full flex justify-center gap-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
+          type="button"
+          className="w-full sm:w-auto px-5 items-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 mt-2 sm:mt-0"
+          onClick={() => setIsMapOpen(true)}
         >
-          <CalendarMonthIcon />
-          Book
+          <MyLocationIcon />
+          Location
         </button>
-      </form>
-
-      {/* Map Modal or Component */}
-      {isMapOpen && (
-        <div className="fixed inset-1 mt-8 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg">
-            <Box sx={{ height: 400, position: "relative" }}>
-              <ReactMapGL
-                mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
-                initialViewState={{
-                  longitude: longitude,
-                  latitude: latitude,
-                  zoom: 14,
-                }}
-                mapStyle="mapbox://styles/mapbox/streets-v11"
-              >
-                <Marker
-                  latitude={markerLatitude ?? latitude}
-                  longitude={markerLongitude ?? longitude}
-                  draggable
-                  onDragEnd={handleMarkerDragEnd}
-                />
-                <NavigationControl position="bottom-right" />
-                <GeolocateControl position="bottom-right" trackUserLocation />
-              </ReactMapGL>
-            </Box>
-            <div className="flex flex-row gap-4 justify-between">
-              <button
-                onClick={() => setIsMapOpen(false)}
-                className="mt-4 border text-red-500 border-red-500 hover:text-white hover:bg-red-600 p-2 rounded"
-              >
-                Close
-              </button>
-              <button
-                onClick={handleSelectLocation}
-                className="mt-4 border text-blue-500 border-blue-500 hover:bg-blue-400 hover:text-white p-2 rounded"
-              >
-                Select
-              </button>
-            </div>
+      </div>
+  
+      {/* City and State Fields */}
+      <div className="flex mb-2 flex-wrap">
+        <input
+          type="text"
+          id="city"
+          name="city"
+          className="flex-1 min-w-0 p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500 mr-2"
+          placeholder="City"
+          value={formData.city}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          id="state"
+          name="state"
+          className="flex-1 min-w-0 p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+          placeholder="State"
+          value={formData.state}
+          onChange={handleChange}
+        />
+      </div>
+  
+      {/* Pin Code Field */}
+      <div className="mb-6">
+        <input
+          type="text"
+          id="pinCode"
+          name="pinCode"
+          className="w-full p-2 border-b border-gray-300 focus:outline-none focus:border-blue-500"
+          placeholder="Pin Code"
+          value={formData.pinCode}
+          onChange={handleChange}
+        />
+      </div>
+  
+      <button
+        type="submit"
+        className="w-full flex justify-center gap-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300"
+      >
+        <CalendarMonthIcon />
+        Book
+      </button>
+    </form>
+  
+    {/* Map Modal or Component */}
+    {isMapOpen && (
+      <div className="fixed inset-0 mt-8 bg-black bg-opacity-40 flex items-center justify-center">
+        <div className="bg-white p-4 rounded-lg shadow-lg w-full max-w-lg">
+          <Box sx={{ height: 400, position: "relative" }}>
+            <ReactMapGL
+              mapboxAccessToken={MAPBOX_ACCESS_TOKEN}
+              initialViewState={{
+                longitude: longitude,
+                latitude: latitude,
+                zoom: 14,
+              }}
+              mapStyle="mapbox://styles/mapbox/streets-v11"
+            >
+              <Marker
+                latitude={markerLatitude ?? latitude}
+                longitude={markerLongitude ?? longitude}
+                draggable
+                onDragEnd={handleMarkerDragEnd}
+              />
+              <NavigationControl position="bottom-right" />
+              <GeolocateControl position="bottom-right" trackUserLocation />
+            </ReactMapGL>
+          </Box>
+          <div className="flex flex-row gap-4 justify-between">
+            <button
+              onClick={() => setIsMapOpen(false)}
+              className="mt-4 border text-red-500 border-red-500 hover:text-white hover:bg-red-600 p-2 rounded"
+            >
+              Close
+            </button>
+            <button
+              onClick={handleSelectLocation}
+              className="mt-4 border text-blue-500 border-blue-500 hover:bg-blue-400 hover:text-white p-2 rounded"
+            >
+              Select
+            </button>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    )}
+  </div>
+  
   );
 };
 

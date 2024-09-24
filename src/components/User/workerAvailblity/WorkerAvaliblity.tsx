@@ -68,7 +68,7 @@ const WorkerAvailability: React.FC = () => {
       console.error("Error fetching booked slots:", error);
     }
   };
-  console.log("--booked Slote----", bookedSlots);
+  // console.log("--booked Slote----", bookedSlots);
 
   const handleWorkerDataFetch = async () => {
     if (!workerId) return console.log("no workerId");
@@ -183,9 +183,7 @@ const WorkerAvailability: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="">
         <Loader />
-      </div>
     );
   }
 
@@ -193,74 +191,76 @@ const WorkerAvailability: React.FC = () => {
   const maxDate = dayjs().add(7, "day");
 
   return (
-    <div className="flex flex-col px-7 min-w-96">
-      <h2 className="font-semibold mt-4 text-custom_navyBlue">
-        Book a Service
-      </h2>
-      <hr />
-      <div className="flex flex-col mt-2">
-        <div className="">
-          <label
-            htmlFor="service"
-            className="block text-sm font-medium text-blue-700"
-          >
-            Select Service
-          </label>
-          <select
-            id="service"
-            name="service"
-            className="w-full mt-1 p-2 border rounded-lg border-blue-400"
-            onChange={handleServiceChange}
-            value={selectedService?._id || ""}
-          >
-            <option value="">Select a service</option>
-            {services.map((service) => (
-              <option key={service._id} value={service._id}>
-                {service.service} ({service.slot} hours {service.amount})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className=" mt-4">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              minDate={minDate}
-              maxDate={maxDate}
-              label="Select a date"
-              value={value}
-              onChange={handleDateChange}
-              shouldDisableDate={isDateDisabled}
-            />
-          </LocalizationProvider>
-        </div>
-      </div>
-
-      {selectDate && timeSlots.length > 0 && (
-        <div className="mt-4">
-          <h3 className="font-semibold mb-2 text-custom_navyBlue">
-            Available Time Slots
-          </h3>
-          <div className="grid grid-cols-2 gap-2">
-            {timeSlots.map((slot, index) => (
-              <div
-                key={index}
-                onClick={() => handleSlotClick(slot)}
-                className={`p-2 border font-medium rounded-lg cursor-pointer transition-colors duration-300 text-center ${
-                  isSlotBooked(slot)
-                    ? "bg-red-200 text-red-800 border-red-300 cursor-not-allowed"
-                    : slot === selectedSlot
-                    ? "bg-blue-500 text-white border-blue-600"
-                    : "bg-white text-gray-800 border-gray-300 hover:bg-blue-200"
-                }`}
-              >
-                {formatTimeSlot(slot)}{" "}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+    <div className="flex flex-col px-4 md:px-7">
+  <h2 className="font-semibold mt-4 text-custom_navyBlue text-lg md:text-xl">
+    Book a Service
+  </h2>
+  <hr />
+  <div className="flex flex-col mt-2">
+    <div>
+      <label
+        htmlFor="service"
+        className="block text-sm w-fit md:w-full font-medium text-blue-700"
+      >
+        Select Service
+      </label>
+      <select
+        id="service"
+        name="service"
+        className="w-fit md:w-full mt-1 p-2 border rounded-lg border-blue-400"
+        onChange={handleServiceChange}
+        value={selectedService?._id || ""}
+      > 
+        <option value="" className="w-fit md:w-full">Select a service</option>
+        {services.map((service) => (
+          <option key={service._id} value={service._id}>
+            {service.service} ({service.slot} hours {service.amount})
+          </option>
+        ))}
+      </select>
     </div>
+
+    <div className="mt-4">
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker
+          minDate={minDate}
+          maxDate={maxDate}
+          label="Select a date"
+          value={value}
+          onChange={handleDateChange}
+          shouldDisableDate={isDateDisabled}
+          className="w-fit sm:w-full" // Ensure date picker is full width
+        />
+      </LocalizationProvider>
+    </div>
+  </div>
+
+  {selectDate && timeSlots.length > 0 && (
+    <div className="mt-4">
+      <h3 className="font-semibold mb-2 text-custom_navyBlue text-lg md:text-xl">
+        Available Time Slots
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {timeSlots.map((slot, index) => (
+          <div
+            key={index}
+            onClick={() => handleSlotClick(slot)}
+            className={`p-2 border font-medium rounded-lg cursor-pointer transition-colors duration-300 text-center ${
+              isSlotBooked(slot)
+                ? "bg-red-200 text-red-800 border-red-300 cursor-not-allowed"
+                : slot === selectedSlot
+                ? "bg-blue-500 text-white border-blue-600"
+                : "bg-white text-gray-800 border-gray-300 hover:bg-blue-200"
+            }`}
+          >
+            {formatTimeSlot(slot)}{" "}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
   );
 };
 

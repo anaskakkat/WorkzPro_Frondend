@@ -7,7 +7,7 @@ import Bookings from "../bookings/Bookings";
 interface CustomTabPanelProps {
   workerId: string;
 }
-// Define components or content for each tab
+
 function DetailsTabContent({ workerId }: { workerId: string }) {
   return <Reviews workerId={workerId} />;
 }
@@ -24,7 +24,7 @@ export default function CustomTabPanel({ workerId }: CustomTabPanelProps) {
   };
 
   return (
-    <div className="border-2 border-blue-100 rounded-lg w-full p-4 ">
+    <div className="container border-2 border-blue-100 rounded-lg w-auto p-4 lg:p-8 sm:p-6 ">
       <div className="flex justify-center mb-4">
         <Tabs
           value={value}
@@ -34,14 +34,21 @@ export default function CustomTabPanel({ workerId }: CustomTabPanelProps) {
           aria-label="secondary tabs example"
           className="w-full"
         >
-          <Tab value="one" label="Reviews" className="flex text-center" />
-          <Tab value="two" label="Booking" className="flex text-center" />
-          {/* Add more tabs if needed */}
+          <Tab
+            value="one"
+            label="Reviews"
+            className="flex text-center text-xs sm:text-sm md:text-base"
+          />
+          <Tab
+            value="two"
+            label="Booking"
+            className="flex text-center text-xs sm:text-sm md:text-base"
+          />
         </Tabs>
       </div>
 
       {/* Conditionally render content based on the selected tab */}
-      <div className="">
+      <div className="mt-4">
         {value === "one" && <DetailsTabContent workerId={workerId} />}
         {value === "two" && <BookingTabContent />}
       </div>

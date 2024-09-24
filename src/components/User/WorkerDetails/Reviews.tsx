@@ -8,7 +8,7 @@ interface ReviewsProps {
 
 const Reviews = ({ workerId }: ReviewsProps) => {
   const [reviews, setReviews] = useState<any[]>([]);
-  
+
   const handleFetchReviews = async () => {
     try {
       const response = await fetchReviews(workerId);
@@ -18,13 +18,13 @@ const Reviews = ({ workerId }: ReviewsProps) => {
       console.error("Error fetching reviews:", error);
     }
   };
-  
+
   useEffect(() => {
     handleFetchReviews();
   }, [workerId]);
 
   return (
-    <div className="w-full md:w-[900px] h-[calc(100vh-9rem)] mx-auto">
+    <div className="w-full lg:w-[48rem] h-[calc(100vh-9rem)] mx-auto p-4 sm:p-6 md:p-8">
       {/* Display message if no reviews are available */}
       {reviews.length === 0 ? (
         <div className="text-center text-gray-500">No reviews available.</div>
