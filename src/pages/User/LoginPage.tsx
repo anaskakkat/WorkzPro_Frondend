@@ -134,6 +134,8 @@ const LoginPage: React.FC = () => {
               id="email"
               name="email"
               label="Email"
+              type="email"
+              autoComplete="off"
               required
               variant="outlined"
               margin="dense"
@@ -146,6 +148,8 @@ const LoginPage: React.FC = () => {
               id="password"
               name="password"
               label="Password"
+              type="password"
+              autoComplete="off"
               required
               fullWidth
               variant="outlined"
