@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
 import { setServices } from "../../../redux/slices/ServiceSlice";
-import Loader from "../../loader/Loader.tsx";
+import Loader from "../../Loader/Loader.tsx";
 import IService from "../../../types/IService";
 import { useNavigate } from "react-router-dom";
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getUsers, blockUser, unblockUser } from "../../api/admin";
 import Swal from "sweetalert2";
 import defaultImage from "/user.png";
-import Loader from "../loader/Loader";
+import Loader from "../Loader/Loader";
 import { Pagination } from "@mui/material";
 interface User {
   profilePicture: string;

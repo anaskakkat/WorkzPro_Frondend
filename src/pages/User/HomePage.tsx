@@ -1,7 +1,7 @@
 import React from "react";
 
 import { lazy, Suspense } from "react";
-import Loader from "../../components/loader/Loader";
+import Loader from "../../components/Loader/Loader";
 import Card2 from "@/components/User/homePage/Card2";
 import { Container } from "@mui/material";
 // import StepsCard from '@/components/User/homePage/StepsCard';

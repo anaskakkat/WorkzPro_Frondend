@@ -22,7 +22,7 @@ import {
 } from "@mui/icons-material";
 import moment from "moment";
 import { Pagination, Rating } from "@mui/material";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 import { useNavigate } from "react-router-dom";
 import PaymentIcon from "@mui/icons-material/Payment";
 import { loadStripe } from "@stripe/stripe-js";

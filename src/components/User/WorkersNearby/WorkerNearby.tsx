@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchWorkers } from "../../../api/user";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 import { useNavigate, useLocation } from "react-router-dom";
 import IWorker from "../../../types/IWorker";
 import { useSelector } from "react-redux";

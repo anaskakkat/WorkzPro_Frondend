@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchBookingsByDate, fetchWorkerDatabyId } from "../../../api/user";
 import { LeaveType, ServiceData, WorkingDayType } from "../../../types/IWorker";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 import { useParams } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";

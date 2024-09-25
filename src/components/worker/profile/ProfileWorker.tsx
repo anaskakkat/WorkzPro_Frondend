@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import { fetchWorker, updateWorkerProfile } from "../../../api/worker";
 import { useWorkerId } from "../../../redux/hooks/userSelectors";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import {

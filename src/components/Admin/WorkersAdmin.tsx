@@ -11,7 +11,7 @@ import {
   Button,
   Pagination,
 } from "@mui/material";
-import Loader from "../loader/Loader";
+import Loader from "../Loader/Loader";
 
 interface Worker {
   _id: string;

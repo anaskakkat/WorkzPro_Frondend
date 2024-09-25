@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { fetchWorkerDatabyId } from "../../../api/user";
 import { useEffect, useState } from "react";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 import IWorker from "../../../types/IWorker";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CustomTabPanel from "./CustomTabPanel";

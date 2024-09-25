@@ -5,7 +5,7 @@ import { acceptRequest, getRequests, rejectRequest } from "../../api/admin";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setWorkerInfo } from "../../redux/slices/workerSlice";
-import Loader from "../loader/Loader";
+import Loader from "../Loader/Loader";
 import {
   Modal,
   Box,

@@ -18,7 +18,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Booking } from "../../../types/Booking";
 import { fetchBookings } from "../../../api/user";
-import Loader from "../../loader/Loader";
+import Loader from "../../Loader/Loader";
 
 const BookingConfirm: React.FC = () => {
   const [booking, setBooking] = useState<Booking>();
