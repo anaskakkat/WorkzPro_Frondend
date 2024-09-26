@@ -44,7 +44,7 @@ const WorkerDashboard = () => {
         <p className="p-4 text-xl font-semibold capitalize">
           Welcome {worker.name}
         </p>
-        <div className="flex flex-row px-3 justify-evenly">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-3">
           <Card
             icon={AssignmentTurnedInIcon}
             title="Completed"
@@ -76,11 +76,9 @@ const WorkerDashboard = () => {
         </div>
         <div className="flex flex-row">
           <div>
-            {" "}
             <p className="p-5 text-xl font-semibold">Details</p>
             <Chart monthlyEarnings={dashboardData.monthlyEarnings} />
           </div>
-          <div></div>
         </div>
       </div>
     </>

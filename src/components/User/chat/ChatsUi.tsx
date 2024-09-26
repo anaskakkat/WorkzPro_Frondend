@@ -51,7 +51,7 @@ const ChatsUi: React.FC<{
   };
 
   return (
-    <div className="w-1/4 border-r border-gray-200 text-custom_navyBlue bg-gray-100 flex flex-col">
+    <div className="lg: w-1/4 border-r border-gray-200 text-custom_navyBlue bg-gray-100 flex flex-col">
       <div className="p-4 border-b border-gray-200 bg-gray-300">
         {/* <img
           className="w-10 h-10 rounded-full"
