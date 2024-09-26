@@ -12,7 +12,6 @@ import {
   MenuItem,
   Select,
   Pagination,
-  InputLabel,
   FormControl,
 } from "@mui/material";
 import WorkerCard from "./WorkerCard";
@@ -106,25 +105,27 @@ const WorkerNearby: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen">
+    <div className="flex flex-col  md:flex-row lg:h-[calc(100vh-4rem)]">
       {/* Sidebar */}
-      <div className="w-full md:w-64 bg-gray-50 p-5 pt-12 md:pt-12">
-        <CustomTextField
-          fullWidth
-          label="Search workers"
-          variant="outlined"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          margin="normal"
-          sx={{
-            width: "90%",
-          }}
-        />
+      <div className="w-full flex flex-col px-2  md:w-64 bg-gray-50 md:p-5 lg:pt-12 md:pt-12">
+        <div className="">
+          {" "}
+          <CustomTextField
+            fullWidth
+            label="Search workers"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            margin="normal"
+            sx={{
+              width: "90%",
+            }}
+          />
+        </div>
 
-        <div className="mt-4 flex flex-col">
-          <label htmlFor="rating-filter">Filter by Rating:</label>
+        <div className="flex flex-col gap-1 mx-aut">
+          <p className="w-fit  block">Filter by Rating:</p>
           <Select
-            id="rating-filter"
             value={ratingFilter || ""}
             onChange={(e) => setRatingFilter(Number(e.target.value) || null)}
             className="border rounded-lg"
@@ -156,8 +157,10 @@ const WorkerNearby: React.FC = () => {
         </div>
 
         {/* Sort Option */}
-        <div className="flex flex-col mt-4">
-          <InputLabel htmlFor="sort-option">Sort by:</InputLabel>
+        <div className="flex flex-col mt-4 w-ful">
+          <label className="w-fit" htmlFor="sort-option">
+            Sort by:
+          </label>
           <FormControl sx={{ width: "90%", height: "40px" }} variant="outlined">
             <Select
               id="sort-option"
@@ -175,7 +178,7 @@ const WorkerNearby: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 p-4 flex flex-col">
         {/* Heading */}
-        <h2 className="text-xl font-bold mb-4 text-custom_navyBlue">
+        <h2 className="text-xl w-fit font-bold mb-4 text-custom_navyBlue">
           Workers Nearby
         </h2>
 
@@ -185,7 +188,7 @@ const WorkerNearby: React.FC = () => {
             No Workers available
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 capitalize">
+          <div className="grid  sm:w-auto mx-auto sm:mx-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 capitalize">
             {filteredWorkers.map((worker) => (
               <WorkerCard
                 key={worker._id}
