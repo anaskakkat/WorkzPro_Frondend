@@ -163,7 +163,7 @@ const BookingsUser = () => {
   }
 
   return (
-    <div className="mx-4 md:mx-8 lg:mx-20 overflow-hidden ">
+    <div className="mx-4 md:mx-8 lg:mx-20 overflow-hidden h-full ">
       <div className="container mt-2 text font-semibold text-custom_navyBlue ">
         My Bookings
       </div>
