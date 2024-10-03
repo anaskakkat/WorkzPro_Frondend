@@ -30,33 +30,40 @@ const WorkerNearby: React.FC = () => {
   const locationData = useSelector((state: RootState) => state.location);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const workersPerPage = 8;
+  console.log("--locationData--", locationData);
 
   useEffect(() => {
     const fetchWorkerData = async () => {
       setLoading(true);
       try {
         const response = await fetchWorkers(serviceID, locationData);
-
         const fetchedWorkers = response.data;
+        console.log("--fetchedWorkers--", fetchedWorkers);
 
-        const workersWithDistance = fetchedWorkers.map((worker: any) => {
-          const distance = getDistance(
-            {
-              latitude: locationData.coordinates[1],
-              longitude: locationData.coordinates[0],
-            },
-            {
-              latitude: worker.location.coordinates[1],
-              longitude: worker.location.coordinates[0],
-            }
-          );
-
-          return {
-            ...worker,
-            distance: (distance / 1000).toFixed(2),
-          };
-        });
-        setWorkers(workersWithDistance);
+        // Check if locationData is available
+        if (locationData && locationData.coordinates) {
+          const workersWithDistance = fetchedWorkers.map((worker: any) => {
+            const distance = getDistance(
+              {
+                latitude: locationData.coordinates[1],
+                longitude: locationData.coordinates[0],
+              },
+              {
+                latitude: worker.location.coordinates[1],
+                longitude: worker.location.coordinates[0],
+              }
+            );
+            return {
+              ...worker,
+              distance: (distance / 1000).toFixed(2),
+            };
+          });
+          console.log("--workersWithDistance--", workersWithDistance);
+          setWorkers(workersWithDistance);
+        } else {
+          // Set all workers if locationData is null
+          setWorkers(fetchedWorkers);
+        }
       } catch (error) {
         console.error("Failed to fetch workers:", error);
       } finally {
@@ -65,7 +72,7 @@ const WorkerNearby: React.FC = () => {
     };
 
     fetchWorkerData();
-  }, [serviceID]);
+  }, [serviceID, locationData]);
 
   const handleDetails = (workerId: string) => {
     navigate(`/WorkerDetails/${workerId}`);
@@ -105,11 +112,10 @@ const WorkerNearby: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col  md:flex-row lg:h-[calc(100vh-4rem)]">
+    <div className="flex flex-col md:flex-row lg:h-[calc(100vh-4rem)]">
       {/* Sidebar */}
-      <div className="w-full flex flex-col px-2  md:w-64 bg-gray-50 md:p-5 lg:pt-12 md:pt-12">
+      <div className="w-full flex flex-col px-2 md:w-64 bg-gray-50 md:p-5 lg:pt-12 md:pt-12">
         <div className="">
-          {" "}
           <CustomTextField
             fullWidth
             label="Search workers"
@@ -124,7 +130,7 @@ const WorkerNearby: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-1 mx-aut">
-          <p className="w-fit  block">Filter by Rating:</p>
+          <p className="w-fit block">Filter by Rating:</p>
           <Select
             value={ratingFilter || ""}
             onChange={(e) => setRatingFilter(Number(e.target.value) || null)}
@@ -188,7 +194,7 @@ const WorkerNearby: React.FC = () => {
             No Workers available
           </div>
         ) : (
-          <div className="grid  sm:w-auto mx-auto sm:mx-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 capitalize">
+          <div className="grid sm:w-auto mx-auto sm:mx-0 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 capitalize">
             {filteredWorkers.map((worker) => (
               <WorkerCard
                 key={worker._id}

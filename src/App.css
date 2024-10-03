@@ -21,3 +21,9 @@ body {
   text-transform: capitalize;
 }
 /* ----- card hover--------  */
+
+.google-autocomplete-dropdown {
+  position: absolute;
+  z-index: 1000; /* Make sure it appears above other elements */
+  width: calc(100% - 20px); /* Adjust as needed */
+}

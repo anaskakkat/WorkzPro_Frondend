@@ -87,7 +87,7 @@ const ProfileSetup: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     initAutocomplete(searchInput, setLocationCoords, setLocation);
-  }, [searchInput]);
+  }, [searchInput]); 
 
   useEffect(() => {
     fetchServices();

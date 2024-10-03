@@ -1,7 +1,7 @@
 export const initAutocomplete = (
   searchInput: React.RefObject<HTMLInputElement>,
   setLocationCoords: (coords: { lat: number; lng: number }) => void,
-  setLocation: (location: string) => void // Added this line
+  setLocation: (location: string) => void 
 ): void => {
   if (!searchInput.current) return;
 
@@ -21,9 +21,13 @@ export const initAutocomplete = (
   const autocomplete = new window.google.maps.places.Autocomplete(
     searchInput.current,
     options
-  ); 
+  );
 
-  autocomplete.setFields(["address_components", "geometry", "formatted_address"]);
+  autocomplete.setFields([
+    "address_components",
+    "geometry",
+    "formatted_address",
+  ]);
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
 
@@ -33,13 +37,14 @@ export const initAutocomplete = (
       setLocationCoords({ lat, lng });
 
       if (place.formatted_address) {
-        // console.log('place.formatted_address---',place.formatted_address);
-        const addressParts = place.formatted_address.split(',');
+        console.log('place.formatted_address---',place.formatted_address);
+        const addressParts = place.formatted_address.split(",");
         const cityName = addressParts[0].trim();
-        // console.log('City name:', cityName);
-        setLocation(cityName); 
-        searchInput.current!.value = place.formatted_address; 
+        console.log('City name:', cityName);
+        setLocation(cityName);
+        searchInput.current!.value = place.formatted_address;
       }
     }
   });
 };
+
