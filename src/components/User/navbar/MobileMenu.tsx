@@ -133,10 +133,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         </>
       ) : (
         <div className="mt-3">
-          <div className="flex items-center space-x-2 hover:bg-custom_lightBlue">
-            <MdLogout />
-            <span>{userInfo.userName}</span>
-          </div>
+        
           <Link
             to="/profile"
             onClick={handleCloseMenu}
