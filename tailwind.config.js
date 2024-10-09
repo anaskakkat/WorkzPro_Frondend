@@ -69,8 +69,10 @@ export default {
       "custom-gradient-blue": "linear-gradient(195deg, #49a3f1, #1A73E8)",
       "custom-gradient-red": "linear-gradient(195deg, #ff6b6b, #d32f2f)",
       "custom-gradient-dark_blue": "linear-gradient(195deg, #00008b, #000033)",
-      "custom-gradient-top-blue": "linear-gradient(to top, #09203f 0%, #537895 100%)",
-
+      "custom-text-gradient-blue-top":
+        "linear-gradient(to top,#62cff4, #2c67f2)",
+      "custom-gradient-orange": "linear-gradient(to right, #ff6900, #c03200)",
+      "custom-gradient-white": "linear-gradient(to right, #b5b5b5, #ffff)",
     },
   },
   plugins: [flowbite.content(), require("tailwindcss-animate")],

@@ -9,7 +9,7 @@ const FutureCard: React.FC<FutureCardProps> = ({
   Icon,
 }) => {
   return (
-    <div className="max-h-48  border border-gray-100 rounded-lg p-4 flex flex-col items-center shadow-sm hover:shadow-lg transition-shadow duration-300">
+    <div className="max-h-48 h-48  border border-gray-100 rounded-lg p-4 flex flex-col items-center shadow-sm hover:shadow-lg transition-shadow duration-300">
       <div className="flex w-full justify-evenly ">
         {" "}
         <Icon className="text-blue-400" fontSize="large" />

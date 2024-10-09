@@ -13,7 +13,7 @@ import { setLocationState } from "../../../redux/slices/LocationSlice";
 import { useUserDeatils } from "@/redux/hooks/userSelectors";
 import { initAutocomplete } from "@/utils/googleMapUtils";
 import MobileMenu from "./MobileMenu";
-
+import { motion } from "framer-motion";
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -120,7 +120,12 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <nav className="sticky top-0 h-16 bg-white shadow-md z-50 px-4 flex-shrink-0">
+    <motion.nav
+      className="sticky top-0 h-16 bg-white shadow-md z-50 px-4 flex-shrink-0"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ type:'just' ,delay:0.8}}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center max-h-16 ">
           <div className="flex-shrink-0  flex items-center">
@@ -164,7 +169,7 @@ const Navbar: React.FC = () => {
             <Link
               to=""
               className={`${
-                isActive("/") ? "text-blue-600" : "text-gray-700"
+                isActive("") ? "text-blue-600" : "text-gray-700"
               } hover:text-blue-600`}
             >
               About
@@ -257,9 +262,10 @@ const Navbar: React.FC = () => {
           setLocation={setLocation}
           handleGetCurrentLocation={handleGetCurrentLocation}
           isLoading={isLoading}
+          isOpen={isMenuOpen}
         />
       )}
-    </nav>
+    </motion.nav>
   );
 };
 

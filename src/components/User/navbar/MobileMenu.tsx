@@ -7,16 +7,17 @@ import { FaLocationArrow } from "react-icons/fa";
 import { initAutocomplete } from "@/utils/googleMapUtils";
 import { setLocationState } from "@/redux/slices/LocationSlice";
 import { useDispatch } from "react-redux";
-
+import { motion } from "framer-motion";
 interface MobileMenuProps {
   isActive: (path: string) => boolean;
   userInfo: any;
   handleCloseMenu: () => void;
   handleSignout: () => void;
-  location: string; // Add location prop
-  setLocation: (value: string) => void; // Add setLocation prop
-  handleGetCurrentLocation: () => Promise<void>; // Add location handler prop
-  isLoading: boolean; // Add loading state prop
+  location: string;
+  setLocation: (value: string) => void; 
+  handleGetCurrentLocation: () => Promise<void>; 
+  isLoading: boolean; 
+  isOpen:boolean
 }
 
 const MobileMenu: React.FC<MobileMenuProps> = ({
@@ -28,6 +29,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   setLocation,
   handleGetCurrentLocation,
   isLoading,
+  isOpen,
 }) => {
   const [locationCoords, setLocationCoords] = useState<{
     lat: number;
@@ -51,13 +53,21 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     }
   }, [searchInputRef, locationCoords]); // Add locationCoords to dependencies
 
-
   return (
-    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
+    <motion.div
+      className="px-2 pt-2 pb-3 space-y-1 w-full sm:px-3 bg-white"
+      initial={{ opacity: 0, height: 0 }} // Initial state
+      animate={{
+        opacity: isOpen ? 1 : 0,
+        height: isOpen ? "auto" : 0, // Animate height
+      }}
+      transition={{ duration: 0.5 }} // Duration of the transition
+      style={{ overflow: "hidden" }} // Prevent content overflow during transition
+    >
       <Link
         to="/"
         onClick={handleCloseMenu}
-        className={`block px-3 py-2 rounded-md text-base font-medium ${
+        className={`block w-full px-3 py-2 rounded-md text-base font-medium ${
           isActive("/")
             ? "text-blue-600 bg-gray-100"
             : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
@@ -68,7 +78,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
       <Link
         to="/services"
         onClick={handleCloseMenu}
-        className={`block px-3 py-2 rounded-md text-base font-medium ${
+        className={`block w-full px-3 py-2 rounded-md text-base font-medium ${
           isActive("/services")
             ? "text-blue-600 bg-gray-100"
             : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
@@ -79,7 +89,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
       <Link
         to="/about"
         onClick={handleCloseMenu}
-        className={`block px-3 py-2 rounded-md text-base font-medium ${
+        className={`block w-full px-3 py-2 rounded-md text-base font-medium ${
           isActive("/about")
             ? "text-blue-600 bg-gray-100"
             : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
@@ -90,7 +100,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
       <Link
         to="/contact"
         onClick={handleCloseMenu}
-        className={`block px-3 py-2 rounded-md text-base font-medium ${
+        className={`block w-full px-3 py-2 rounded-md text-base font-medium ${
           isActive("/contact")
             ? "text-blue-600 bg-gray-100"
             : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
@@ -133,11 +143,10 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         </>
       ) : (
         <div className="mt-3">
-        
           <Link
             to="/profile"
             onClick={handleCloseMenu}
-            className="block mt-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+            className="block w-full mt-2 px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
           >
             Profile
           </Link>
@@ -150,7 +159,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           </button>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
