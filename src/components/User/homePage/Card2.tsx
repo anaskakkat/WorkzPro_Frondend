@@ -42,7 +42,7 @@ const Card2 = () => {
       {/* Cards container */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
         {cardData.map((card, index) => (
-          <AnimatedSection key={index} direction="down" delay={index * 0.2}>
+          <AnimatedSection key={index} direction="up" delay={index * 0.2}>
             <FutureCard title={card.title} description={card.description} Icon={card.Icon} />
           </AnimatedSection>
         ))}
