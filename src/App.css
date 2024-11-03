@@ -27,3 +27,24 @@ body {
   z-index: 1000; /* Make sure it appears above other elements */
   width: calc(100% - 20px); /* Adjust as needed */
 }
+
+
+
+
+/* mapbox------ */
+#location-suggestions::-webkit-scrollbar {
+  width: 8px;
+}
+
+#location-suggestions::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#location-suggestions::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+#location-suggestions::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

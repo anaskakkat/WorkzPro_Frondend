@@ -11,9 +11,10 @@ import { getSystemPosition } from "../../../utils/getCurrentLoaction";
 import { fetchLocationDetails } from "../../../utils/getLocationDetails";
 import { setLocationState } from "../../../redux/slices/LocationSlice";
 import { useUserDeatils } from "@/redux/hooks/userSelectors";
-import { initAutocomplete } from "@/utils/googleMapUtils";
+// import { initAutocomplete } from "@/utils/googleMapUtils";
 import MobileMenu from "./MobileMenu";
 import { motion } from "framer-motion";
+import { initMapboxAutocomplete } from "@/utils/Mapbox Autocomplete Utility";
 const Navbar: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -32,23 +33,38 @@ const Navbar: React.FC = () => {
   const userInfo = useUserDeatils();
   // console.log("locationCoords-----", locationCoords);
 
-  useEffect(() => {
-    initAutocomplete(searchInput, setLocationCoords, setLocation);
-
-    // Dispatch only if locationCoords is not null
-    if (locationCoords) {
-      dispatch(
-        setLocationState({
-          type: "Point",
-          coordinates: [locationCoords.lng, locationCoords.lat],
-        })
-      );
-    }
-  }, [searchInput, locationCoords]); // Add locationCoords to dependencies
+  // useEffect(() => {
+  //   initAutocomplete(searchInput, setLocationCoords, setLocation);
+  //   if (locationCoords) {
+  //     dispatch(
+  //       setLocationState({
+  //         type: "Point",
+  //         coordinates: [locationCoords.lng, locationCoords.lat],
+  //       })
+  //     );
+  //   }
+  // }, [searchInput, locationCoords]);
 
   useEffect(() => {
     handleGetCurrentLocation();
   }, []);
+
+  useEffect(() => {
+    initMapboxAutocomplete(
+      searchInput,
+      setLocationCoords,
+      setLocation
+    );
+    if (locationCoords) {
+          dispatch(
+            setLocationState({
+              type: "Point",
+              coordinates: [locationCoords.lng, locationCoords.lat],
+            })
+          );
+        }
+   
+}, [searchInput, locationCoords]);
 
   const isActive = (path: string): boolean => {
     return currentLocation.pathname === path;
@@ -124,7 +140,7 @@ const Navbar: React.FC = () => {
       className="sticky top-0 h-16 bg-white shadow-md z-50 px-4 flex-shrink-0"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ type:'just' ,delay:0.8}}
+      transition={{ type: "just", delay: 0.8 }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center max-h-16 ">
