@@ -26,7 +26,7 @@ import {
   setWorkerInfo,
 } from "../../../redux/slices/workerSlice";
 import CustomTextField from "../../styleComponents/StyledTextField";
-import { initAutocomplete } from "../../../utils/googleMapUtils";
+// import { initAutocomplete } from "../../../utils/googleMapUtils";
 import { setLocationState } from "@/redux/slices/LocationSlice";
 import { initMapboxAutocomplete } from "@/utils/Mapbox Autocomplete Utility";
 

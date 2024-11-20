@@ -138,7 +138,7 @@
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             <h2 className="text-3xl font-bold mb-6 text-gray-800">Ready to Book a Service?</h2>
-            <button className="bg-blue-600 text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
+            <button className="bg-custom-gradient-blue text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-blue-700  shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
               Book Now
             </button>
           </motion.div>
