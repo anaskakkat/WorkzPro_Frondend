@@ -27,6 +27,8 @@ import {
 } from "../../../redux/slices/workerSlice";
 import CustomTextField from "../../styleComponents/StyledTextField";
 import { initAutocomplete } from "../../../utils/googleMapUtils";
+import { setLocationState } from "@/redux/slices/LocationSlice";
+import { initMapboxAutocomplete } from "@/utils/Mapbox Autocomplete Utility";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
@@ -85,10 +87,20 @@ const ProfileSetup: React.FC = () => {
   // console.log("locationCoords:", locationCoords, "----", location);
   // console.log("------selectRadius:-----", selectRadius,);
   const dispatch = useDispatch();
+  // useEffect(() => {
+  //   initAutocomplete(searchInput, setLocationCoords, setLocation);
+  // }, [searchInput]);
   useEffect(() => {
-    initAutocomplete(searchInput, setLocationCoords, setLocation);
-  }, [searchInput]); 
-
+    initMapboxAutocomplete(searchInput, setLocationCoords, setLocation);
+    if (locationCoords) {
+      dispatch(
+        setLocationState({
+          type: "Point",
+          coordinates: [locationCoords.lng, locationCoords.lat],
+        })
+      );
+    }
+  }, [searchInput, locationCoords, dispatch]);
   useEffect(() => {
     fetchServices();
   }, []);

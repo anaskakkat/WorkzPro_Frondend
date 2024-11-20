@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FaUserAlt, FaLocationArrow, FaBars, FaTimes } from "react-icons/fa";
+import { FaUserAlt, FaBars, FaTimes } from "react-icons/fa";
+import { MdMyLocation } from "react-icons/md";
 import { MdLogout } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { removeUserInfo } from "../../../redux/slices/userSlices";
@@ -45,26 +46,21 @@ const Navbar: React.FC = () => {
   //   }
   // }, [searchInput, locationCoords]);
 
-  useEffect(() => {
-    handleGetCurrentLocation();
-  }, []);
+  // useEffect(() => {
+  //   handleGetCurrentLocation();
+  // }, [handleGetCurrentLocation]);
 
   useEffect(() => {
-    initMapboxAutocomplete(
-      searchInput,
-      setLocationCoords,
-      setLocation
-    );
+    initMapboxAutocomplete(searchInput, setLocationCoords, setLocation);
     if (locationCoords) {
-          dispatch(
-            setLocationState({
-              type: "Point",
-              coordinates: [locationCoords.lng, locationCoords.lat],
-            })
-          );
-        }
-   
-}, [searchInput, locationCoords]);
+      dispatch(
+        setLocationState({
+          type: "Point",
+          coordinates: [locationCoords.lng, locationCoords.lat],
+        })
+      );
+    }
+  }, [searchInput, locationCoords, dispatch]);
 
   const isActive = (path: string): boolean => {
     return currentLocation.pathname === path;
@@ -106,6 +102,7 @@ const Navbar: React.FC = () => {
       const locality = await fetchLocationDetails(latitude, longitude);
       dispatch(setLocationState(locationData));
       setLocation(locality);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.code === error.PERMISSION_DENIED) {
         toast.error("Location access denied. Please enable location services.");
@@ -183,9 +180,9 @@ const Navbar: React.FC = () => {
               Contact
             </Link>
             <Link
-              to=""
+              to="/about"
               className={`${
-                isActive("") ? "text-blue-600" : "text-gray-700"
+                isActive("/about") ? "text-blue-600" : "text-gray-700"
               } hover:text-blue-600`}
             >
               About
@@ -209,7 +206,7 @@ const Navbar: React.FC = () => {
                 disabled={isLoading}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-600"
               >
-                <FaLocationArrow />
+                <MdMyLocation />
               </button>
             </div>
             {!userInfo ? (

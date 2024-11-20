@@ -19,6 +19,7 @@ import DashboarLayout from "../pages/User/DashboarLayout";
 import { SocketProvider } from "../context/socketContext";
 import PaymentSuccess from "../components/User/Profile/PaymentSuccess";
 import HomePage from "@/pages/User/HomePage";
+import About from "@/pages/User/About";
 
 export const UserRouter = () => {
   return (
@@ -32,6 +33,7 @@ export const UserRouter = () => {
 
         <Route path="/" element={<UserLayout />}>
           <Route path="/demo" element={<Demo />} />
+          <Route path="/about" element={<About />} />
 
           {/* homeRoute */}
           <Route path="/" element={<HomePage />} />
